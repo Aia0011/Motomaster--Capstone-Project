@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Simulation</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #000;
+            color: #fff;
+        }
+
+        /* CONTAINER */
+        .container {
+            width: 100%;
+            height: 100vh;
+            background: url('images/assessmentbg.png') no-repeat center/cover;
+            padding: 30px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* DARK + RED OVERLAY (LESS DARK) */
+        .container::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(rgba(0, 0, 0, 0.5),
+                    rgba(0, 0, 0, 0.8)),
+                rgba(255, 0, 0, 0.2);
+        }
+
+        /* RED FRAME */
+        .container::before {
+            content: "";
+            position: absolute;
+            inset: 20px;
+            display: none;
+
+            /* CUT the top-left corner */
+            clip-path: polygon(80px 0, 100% 0, 100% 100%, 0% 100%, 0% 80px);
+
+            z-index: 1;
+        }
+
+        .container .border-bottom {
+            position: absolute;
+            left: 60px;
+            right: 20px;
+            bottom: 20px;
+            height: 2px;
+            width: 53%;
+            background: red;
+            z-index: 3;
+        }
+
+        .container .border-top {
+            position: absolute;
+            top: 20px;
+            margin-top: 1%;
+            width: 94%;
+
+            /* align exactly with the slanted edge */
+            left: 20px;
+            /* 👈 adjusted */
+
+            right: 20px;
+            height: 2px;
+            background: red;
+        }
+
+        /* LEFT VERTICAL LINE */
+        .border-left {
+            position: absolute;
+            top: 20px;
+            bottom: 20px;
+            left: 20px;
+            margin-left: 2.8%;
+
+            width: 2px;
+            background: red;
+
+            z-index: 3;
+        }
+
+        /* RIGHT VERTICAL LINE */
+        .border-right {
+            position: absolute;
+            top: 20px;
+            bottom: 20px;
+            right: 20px;
+            margin-right: 3%;
+            margin-top: 1%;
+            width: 2px;
+            background: red;
+
+            z-index: 3;
+        }
+
+        /* HEADER */
+        .header {
+            position: relative;
+            z-index: 3;
+            padding-left: 100px;
+            padding-top: 10px;
+            /* 👈 moves whole header down */
+        }
+
+        .section-title {
+            font-size: 26px;
+            /* 👈 bigger like title */
+            font-weight: 700;
+            /* bold */
+            color: #fff;
+            letter-spacing: 1px;
+        }
+
+        .title-line {
+            display: flex;
+            flex-direction: column;
+            /* 👈 stack text and line */
+            align-items: flex-start;
+            gap: 10px;
+            /* 👈 space between text and line */
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+
+            width: 100px;
+            height: 80px;
+
+            background: red;
+
+            clip-path: polygon(0 0, 100% 0, 65% 100%, 0% 100%);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 28px;
+            z-index: 5;
+        }
+
+        .back-btn::after {
+            content: "";
+            position: absolute;
+
+            bottom: -2px;
+            /* align with border thickness */
+            left: 0;
+
+            width: 100%;
+            height: 4px;
+
+            background: #000;
+            /* same as background overlay */
+
+            z-index: 11;
+        }
+
+        .title {
+            font-size: 30px;
+            font-weight: 700;
+            margin-top: 25px;
+            /* 👈 pushes it below the line */
+        }
+
+        .title span {
+            color: red;
+        }
+
+
+        /* MAIN */
+        .main {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            /* 👈 instead of space-between */
+            gap: 80px;
+            /* controls spacing between image and text */
+            margin-top: 40px;
+        }
+
+        /* LEFT CARD */
+        .left-card {
+            overflow: hidden;
+            position: relative;
+            z-index: 10;
+            margin-left: 12%;
+            border: 2px solid red;
+            /* 👈 added */
+            border-radius: 15px;
+            /* optional (matches your design) */
+            box-shadow: 0 0 15px red;
+        }
+
+        .left-card img {
+            width: 300px;
+            height: 420px;
+            object-fit: cover;
+        }
+
+        /* RIGHT */
+        .right {
+            max-width: 520px;
+            margin-left: 0;
+            /* remove any push */
+        }
+
+        /* RED LINE */
+        .line {
+            width: 400px;
+            /* 👈 make it longer */
+            height: 3px;
+            background: red;
+            margin-bottom: 15px;
+        }
+
+        /* TEXT */
+        .desc {
+            color: #ccc;
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            /* less space */
+        }
+
+        /* FEATURES */
+        .features {
+            display: flex;
+            gap: 60px;
+        }
+
+        /* each block */
+        .feature {
+            display: flex;
+            align-items: center;
+            /* 👈 vertical alignment */
+            gap: 12px;
+        }
+
+        /* icon */
+        .feature img {
+            width: 35px;
+            filter: brightness(2) saturate(2);
+        }
+
+        /* vertical line */
+        .divider {
+            width: 2px;
+            height: 35px;
+            background: red;
+            opacity: 0.6;
+        }
+
+        /* text block */
+        .feature .text {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .feature span {
+            font-size: 10px;
+            color: #aaa;
+            letter-spacing: 1px;
+        }
+
+        .feature p {
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* BOTTOM PANEL SHAPE */
+        .start-area {
+            position: absolute;
+            right: 60px;
+            bottom: 2px;
+            background: #1f1e1e;
+            padding: 25px 60px;
+            clip-path: polygon(15% 0, 100% 0, 100% 100%, 0% 100%);
+            z-index: 10;
+        }
+
+        /* BUTTON */
+        .start-btn {
+            background: red;
+            border: none;
+            padding: 14px 40px;
+            border-radius: 30px;
+            font-size: 15px;
+            cursor: pointer;
+            box-shadow: 0 0 20px red;
+            color: #fff;
+        }
+
+        .start-btn span {
+            margin-left: 10px;
+        }
+
+        /* FIXED TO BOTTOM RIGHT (LIKE REFERENCE) */
+        .start-fixed {
+            position: absolute;
+            transform: translateY(139%);
+            /* 👈 THIS IS THE KEY */
+
+            right: 1.7%;
+            /* 👈 THIS removes the gap */
+            bottom: 20px;
+
+            z-index: 5;
+        }
+
+        /* PANEL SHAPE */
+        .start-panel {
+            background: linear-gradient(90deg, #2a2a2a, #3a3a3a);
+
+            padding: 18px 120px;
+            /* adjust length */
+
+            clip-path: polygon(18% 0, 100% 0, 100% 100%, 0% 100%);
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .start-panel::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+
+            border: 2px solid red;
+
+            clip-path: polygon(18% 0, 100% 0, 100% 100%, 0% 100%);
+
+            pointer-events: none;
+        }
+
+        /* BUTTON */
+        .start-btn {
+            background: #ff0000;
+            border: none;
+            padding: 14px 45px;
+            border-radius: 30px;
+            margin-left: 150px;
+            color: #fff;
+            font-size: 15px;
+            cursor: pointer;
+
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.9);
+        }
+
+        .start-btn span {
+            margin-left: 8px;
+        }
+
+        .time-limit p {
+            color: #ff2a2a;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .back-btn img {
+            width: 40px;
+            /* 👈 smaller size */
+            height: 40px;
+            /* keep it square */
+            object-fit: contain;
+            /* 👈 prevents stretching */
+            filter: brightness(0) invert(1);
+            margin-left: 2px;
+        }
+
+        /* QUIZ MODAL */
+        .quiz-btn {
+            background: transparent;
+            border: 2px solid var(--red, red);
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 18px;
+            cursor: pointer;
+            font-weight: 700;
+            margin-right: 12px;
+        }
+
+        .quiz-modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 9999;
+        }
+
+        .quiz-panel {
+            background: linear-gradient(180deg, #111, #222);
+            border: 2px solid red;
+            padding: 22px;
+            width: min(720px, 92%);
+            border-radius: 12px;
+            color: #fff;
+        }
+
+        .quiz-question {
+            margin-bottom: 14px;
+            font-weight: 700
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 12px
+        }
+
+        .quiz-options label {
+            cursor: pointer;
+            padding: 8px 10px;
+            border-radius: 8px;
+            background: #0f0f0f
+        }
+
+        .quiz-controls {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end
+        }
+
+        .quiz-result {
+            margin-top: 12px;
+            font-size: 1.05rem
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="border-top"></div>
+        <div class="border-left"></div>
+        <div class="border-right"></div>
+        <div class="border-bottom"></div>
+
+        <a href="feature.html" class="back-btn">
+            <img src="images/back.png" alt="Back">
+        </a>
+
+        <div class="header">
+            <div class="title">ASSESSMENT <span>SIMULATION</span></div>
+        </div>
+
+        <div class="main">
+
+            <div class="left-card">
+                <img src="images/assessmentpic.png">
+            </div>
+
+            <div class="right">
+                <div class="section-title">
+                    <span class="title-line" style="color:rgb(255, 255, 255);">READE TO BE ASSESSED?</span>
+                    <div class="line"></div>
+
+                </div>
+
+                <div class="desc">
+                    This assessment simulation is designed to evaluate your practical skills and
+                    decision-making under real-world conditions. Unlike guided modules, no instructions
+                    or hints will be provided during the process. You are expected to independently
+                    analyze the task, apply your knowledge, and complete the required procedures
+                    within the given time limit. Accuracy, efficiency, and proper execution will determine
+                    your performance. Stay focused and demonstrate your full capability as you complete the assessment.
+                    <br><span style="color: #ff0000; font-family:Verdana, Geneva, Tahoma, sans-serif;">Stay Focus. Think
+                        Smart. Do your best.</style>
+                </div>
+
+                <div class="features">
+
+                    <div class="feature time-limit">
+                        <img src="images/consistency.png">
+
+                        <div class="divider"></div>
+
+                        <div class="text">
+                            <span>TIME LIMIT</span>
+                            <p id="timeLimit">1:00:00</p>
+                        </div>
+                    </div>
+                    <!-- ✅ CORRECT POSITION -->
+                    <div class="start-fixed">
+                        <div class="start-panel">
+                            <div style="display:flex;align-items:center;">
+                                <button class="quiz-btn" id="takeQuizBtn">Take Quiz</button>
+                                <button class="start-btn">START <span>›</span></button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- QUIZ MODAL MARKUP -->
+                <div class="quiz-modal" id="quizModal" role="dialog" aria-hidden="true">
+                    <div class="quiz-panel" role="document">
+                        <div id="quizContent">
+                            <div class="quiz-question" id="qText">Question text</div>
+                            <div class="quiz-options" id="qOptions"></div>
+                            <div class="quiz-controls">
+                                <button id="prevQ" class="quiz-btn">Prev</button>
+                                <button id="nextQ" class="quiz-btn">Next</button>
+                                <button id="submitQuiz" class="quiz-btn">Submit</button>
+                            </div>
+                            <div class="quiz-result" id="quizResult" aria-live="polite"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    (function () {
+                        const quizBtn = document.getElementById('takeQuizBtn');
+                        const modal = document.getElementById('quizModal');
+                        const qText = document.getElementById('qText');
+                        const qOptions = document.getElementById('qOptions');
+                        const prevQ = document.getElementById('prevQ');
+                        const nextQ = document.getElementById('nextQ');
+                        const submitQuiz = document.getElementById('submitQuiz');
+                        const quizResult = document.getElementById('quizResult');
+
+                        const questions = [
+                            { q: 'Before draining oil, you should:', options: ['Start engine', 'Ensure engine is cold', 'Remove the battery', 'None of the above'], a: 1 },
+                            { q: 'Oil filter replacement: you should', options: ['Tighten as much as possible', 'Replace gasket and torque to spec', 'Use glue', 'Skip it'], a: 1 },
+                            { q: 'When checking oil level, do it with the engine:', options: ['Running at high revs', 'Cold and off', 'On idle', 'At full load'], a: 1 }
+                        ];
+
+                        let answers = new Array(questions.length).fill(null);
+                        let idx = 0;
+
+                        function openQuiz() { modal.style.display = 'flex'; modal.setAttribute('aria-hidden', 'false'); renderQuestion(); }
+                        function closeQuiz() { modal.style.display = 'none'; modal.setAttribute('aria-hidden', 'true'); }
+
+                        function renderQuestion() {
+                            const Q = questions[idx];
+                            qText.textContent = (idx + 1) + '. ' + Q.q;
+                            qOptions.innerHTML = '';
+                            Q.options.forEach((opt, i) => {
+                                const id = 'opt-' + i;
+                                const label = document.createElement('label');
+                                label.innerHTML = `<input type="radio" name="quizopt" value="${i}" ${answers[idx] === i ? 'checked' : ''}/> ${opt}`;
+                                qOptions.appendChild(label);
+                            });
+                            quizResult.textContent = '';
+                            prevQ.style.display = idx === 0 ? 'none' : 'inline-block';
+                            nextQ.style.display = idx === questions.length - 1 ? 'none' : 'inline-block';
+                        }
+
+                        qOptions.addEventListener('change', (e) => {
+                            const val = parseInt(e.target.value, 10);
+                            answers[idx] = val;
+                        });
+
+                        prevQ.addEventListener('click', () => { if (idx > 0) { idx--; renderQuestion(); } });
+                        nextQ.addEventListener('click', () => { if (idx < questions.length - 1) { idx++; renderQuestion(); } });
+
+                        submitQuiz.addEventListener('click', () => {
+                            // compute score
+                            let score = 0; let total = questions.length;
+                            for (let i = 0; i < total; i++) if (answers[i] === questions[i].a) score++;
+                            const pct = Math.round((score / total) * 100);
+                            quizResult.textContent = `Score: ${score}/${total} (${pct}%) - ${pct >= 70 ? 'Passed' : 'Review recommended'}`;
+                        });
+
+                        // open/close
+                        quizBtn.addEventListener('click', openQuiz);
+                        modal.addEventListener('click', (e) => { if (e.target === modal) closeQuiz(); });
+
+                        // keyboard support
+                        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeQuiz(); });
+                    })();
+                </script>
+
+</body>
+
+</html>

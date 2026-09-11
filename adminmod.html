@@ -1,0 +1,2462 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotoMaster Admin – Modules</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #f3f4f6;
+            --panel-bg: #ffffff;
+            --border-color: #e5e7eb;
+            --text-primary: #1a1a2e;
+            --text-secondary: #6b7280;
+            --accent: #2563eb;
+            --accent-dark: #1d4ed8;
+            --accent-light: #eff6ff;
+            --green: #16a34a;
+            --red: #dc2626;
+            --orange: #d97706;
+            --sidebar-w: 240px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+            font-family: 'Nunito', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        body {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 10px;
+        }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: #fff;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .logo-container {
+            padding: 18px 20px 14px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-container img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .logo-sub {
+            font-size: 0.62rem;
+            font-weight: 800;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+        }
+
+        .nav-section-label {
+            font-size: 0.6rem;
+            font-weight: 800;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 14px 18px 4px;
+        }
+
+        .nav-menu {
+            list-style: none;
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 8px 0;
+        }
+
+        .nav-menu::-webkit-scrollbar {
+            width: 0;
+        }
+
+        .nav-item {
+            padding: 9px 16px;
+            margin: 2px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            font-weight: 700;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .nav-item i {
+            width: 16px;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+
+        .nav-item:hover {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .nav-item.active {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .nav-item.active i {
+            color: var(--accent);
+        }
+
+        .sidebar-bottom {
+            padding: 12px 0 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* ── MAIN ── */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background: var(--bg-color);
+        }
+
+        /* ── TOPBAR ── */
+        .topbar {
+            background: #fff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 28px;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+        }
+
+        .topbar-left h1 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .topbar-left p {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-color);
+            border: 1.5px solid var(--border-color);
+            border-radius: 8px;
+            padding: 7px 12px;
+        }
+
+        .search-bar i {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .search-bar input {
+            background: none;
+            border: none;
+            outline: none;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            width: 180px;
+        }
+
+        .search-bar input::placeholder {
+            color: #9ca3af;
+        }
+
+        .notif-btn {
+            position: relative;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: var(--bg-color);
+            border: 1.5px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: border-color 0.2s;
+        }
+
+        .notif-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .notif-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: var(--red);
+            color: #fff;
+            font-size: 0.58rem;
+            font-weight: 800;
+            border-radius: 50%;
+            width: 14px;
+            height: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-pill {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 5px 12px 5px 5px;
+            border-radius: 30px;
+            border: 1.5px solid var(--border-color);
+            background: #fff;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .profile-pill:hover {
+            border-color: var(--accent);
+        }
+
+        .profile-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--accent-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 12px;
+        }
+
+        .profile-name {
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .profile-role {
+            font-size: 0.62rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        /* ── DASHBOARD BODY ── */
+        .dashboard-container {
+            padding: 22px 28px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        /* ── KPI CARDS ── */
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 14px;
+        }
+
+        .kpi-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+            transition: box-shadow 0.2s, border-color 0.2s;
+        }
+
+        .kpi-card:hover {
+            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.10);
+            border-color: #bfdbfe;
+        }
+
+        .kpi-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .kpi-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
+            background: var(--accent-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .kpi-title {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .kpi-value {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        .kpi-foot {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            padding-top: 8px;
+        }
+
+        .kpi-foot span:last-child {
+            color: var(--text-primary);
+        }
+
+        /* ── BUTTONS ── */
+        .btn-outline {
+            background: #fff;
+            border: 1.5px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 7px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            transition: border-color 0.2s;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            border: none;
+            color: #fff;
+            padding: 7px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 800;
+            transition: background 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-dark);
+        }
+
+        /* ── PANEL ── */
+        .panel {
+            background: #fff;
+            border-radius: 12px;
+            padding: 0;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+        }
+
+        .panel-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px 14px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .panel-title {
+            font-size: 0.88rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .panel-subtitle {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        /* ── FILTERS BAR ── */
+        .filters-bar {
+            display: flex;
+            gap: 10px;
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border-color);
+            align-items: center;
+        }
+
+        .filter-search {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-color);
+            border: 1.5px solid var(--border-color);
+            border-radius: 8px;
+            padding: 7px 12px;
+            flex: 1;
+        }
+
+        .filter-search i {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .filter-search input {
+            background: none;
+            border: none;
+            outline: none;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            width: 100%;
+        }
+
+        .filter-search input::placeholder {
+            color: #9ca3af;
+        }
+
+        .filter-select {
+            background: var(--bg-color);
+            color: var(--text-secondary);
+            border: 1.5px solid var(--border-color);
+            border-radius: 8px;
+            padding: 7px 10px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .filter-divider {
+            width: 1px;
+            height: 28px;
+            background: var(--border-color);
+            flex-shrink: 0;
+        }
+
+        /* ── MODULES GRID ── */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            padding: 20px;
+        }
+
+        .mod-card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: box-shadow 0.2s, border-color 0.2s;
+        }
+
+        .mod-card:hover {
+            box-shadow: 0 4px 18px rgba(37, 99, 235, 0.10);
+            border-color: #bfdbfe;
+        }
+
+        .mod-banner {
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .mod-banner i {
+            font-size: 2rem;
+            color: #fff;
+            opacity: 0.9;
+        }
+
+        .mod-status-pill {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 0.6rem;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 20px;
+        }
+
+        .pill-published {
+            background: rgba(255, 255, 255, 0.25);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .pill-draft {
+            background: rgba(0, 0, 0, 0.18);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .pill-archived {
+            background: rgba(0, 0, 0, 0.25);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .mod-body {
+            padding: 14px 16px;
+        }
+
+        .mod-tag {
+            font-size: 0.6rem;
+            font-weight: 800;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .mod-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .mod-desc {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .mod-meta {
+            display: flex;
+            gap: 14px;
+            margin-bottom: 12px;
+        }
+
+        .mod-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        .mod-meta-item i {
+            font-size: 11px;
+            color: var(--accent);
+        }
+
+        .mod-prog-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .mod-prog-bar {
+            height: 5px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 14px;
+        }
+
+        .mod-prog-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 3px;
+        }
+
+        .mod-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .mod-teacher {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        .mod-avatar {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            font-weight: 800;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .mod-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .action-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            transition: all 0.2s;
+        }
+
+        .action-btn.edit {
+            background: var(--bg-color);
+            border: 1.5px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .action-btn.edit:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .action-btn.view {
+            background: var(--bg-color);
+            border: 1.5px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .action-btn.view:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .action-btn.del {
+            background: #fef2f2;
+            border: 1.5px solid #fecaca;
+            color: var(--red);
+        }
+
+        .action-btn.del:hover {
+            background: #fee2e2;
+        }
+
+        /* ── PAGINATION ── */
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .pagination-info {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            font-weight: 700;
+        }
+
+        .pagination-btns {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .pg-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            border: 1.5px solid var(--border-color);
+            background: #fff;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .pg-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .pg-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+
+        .pg-select {
+            background: var(--bg-color);
+            border: 1.5px solid var(--border-color);
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            outline: none;
+            margin-left: 8px;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 28px;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            background: #fff;
+            margin-top: auto;
+            font-weight: 700;
+        }
+
+        footer span {
+            color: var(--accent);
+            font-weight: 800;
+        }
+
+        /* ── MODALS ── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
+            width: 100%;
+            max-width: 520px;
+            overflow: hidden;
+            animation: slideUp 0.22s ease;
+        }
+
+        .modal.modal-sm {
+            max-width: 400px;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(24px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 22px 14px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-header h3 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            padding: 4px;
+            border-radius: 6px;
+            transition: background 0.15s;
+        }
+
+        .modal-close:hover {
+            background: var(--bg-color);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 20px 22px;
+        }
+
+        .modal-banner {
+            height: 72px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .modal-banner i {
+            font-size: 1.8rem;
+            color: #fff;
+            opacity: 0.9;
+        }
+
+        .view-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .view-label {
+            font-size: 0.68rem;
+            font-weight: 800;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            min-width: 110px;
+            padding-top: 2px;
+        }
+
+        .view-val {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .view-val.muted {
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .view-divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 12px 0;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 8px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.82rem;
+            color: var(--text-primary);
+            outline: none;
+            transition: border-color 0.2s;
+            background: #fff;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .del-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #fef2f2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 14px;
+        }
+
+        .del-icon i {
+            font-size: 1.4rem;
+            color: var(--red);
+        }
+
+        .del-msg {
+            text-align: center;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .del-msg strong {
+            color: var(--text-primary);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            padding: 14px 22px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn-danger {
+            background: var(--red);
+            border: none;
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 800;
+            transition: background 0.2s;
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
+        .btn-save {
+            background: var(--accent);
+            border: none;
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 800;
+            transition: background 0.2s;
+        }
+
+        .btn-save:hover {
+            background: var(--accent-dark);
+        }
+
+        .btn-cancel {
+            background: #fff;
+            border: 1.5px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 8px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 700;
+            transition: border-color 0.2s;
+        }
+
+        .btn-cancel:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .prog-view-bar {
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .prog-view-fill {
+            height: 100%;
+            border-radius: 3px;
+        }
+
+        .modal.modal-lg {
+            max-width: 700px;
+        }
+
+        .modal-body-scroll {
+            max-height: 70vh;
+            overflow-y: auto;
+            padding: 20px 22px;
+        }
+
+        .modal-body-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .modal-body-scroll::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 10px;
+        }
+
+        .view-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .view-stat-box {
+            background: var(--bg-color);
+            border-radius: 10px;
+            padding: 10px 12px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .view-stat-val {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .view-stat-lbl {
+            font-size: 0.6rem;
+            font-weight: 800;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-top: 2px;
+        }
+
+        .lessons-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .lesson-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 9px;
+            background: #fff;
+        }
+
+        .lesson-num {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--accent-light);
+            color: var(--accent);
+            font-size: 0.68rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .lesson-name {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            flex: 1;
+        }
+
+        .lesson-dur {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        .lesson-icon {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .section-heading {
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="sidebar">
+        <div class="logo-container">
+            <img src="images/finalogo.png" alt="MotoMaster" />
+            <div>
+                <span class="logo-text">MotoMaster</span>
+                <span class="logo-sub">Admin Panel</span>
+            </div>
+        </div>
+
+        <ul class="nav-menu">
+            <li class="nav-section-label">Main</li>
+            <li class="nav-item" onclick="window.location.href='admindash.html'"><i class="fa-solid fa-house"></i>
+                Dashboard</li>
+            <li class="nav-item" onclick="window.location.href='admintech.html'"><i
+                    class="fa-solid fa-chalkboard-user"></i> Teachers</li>
+            <li class="nav-item" onclick="window.location.href='adminstud.html'"><i class="fa-solid fa-users"></i>
+                Students</li>
+            <li class="nav-item active"><i class="fa-solid fa-book-open"></i> Modules</li>
+            <li class="nav-item" onclick="window.location.href='adminassess.html'"><i
+                    class="fa-solid fa-clipboard-check"></i> Assessments</li>
+            <li class="nav-item" onclick="window.location.href='adminpractice.html'"><i class="fa-solid fa-gamepad"></i>
+                Practice Sessions</li>
+
+            <li class="nav-section-label">Insights</li>
+            <li class="nav-item" onclick="window.location.href='adminanalytics.html'"><i
+                    class="fa-solid fa-chart-simple"></i> Analytics</li>
+            <li class="nav-item" onclick="window.location.href='adminreports.html'"><i
+                    class="fa-solid fa-file-invoice"></i> Reports</li>
+
+            <li class="nav-section-label">System</li>
+            <li class="nav-item" onclick="window.location.href='adminsettings.html'"><i class="fa-solid fa-gear"></i> Settings</li>
+            <li class="nav-item" onclick="window.location.href='adminactivitylogs.html'"><i class="fa-solid fa-list-check"></i> Activity Logs</li>
+            <li class="nav-item" onclick="window.location.href='adminsystembackup.html'"><i class="fa-solid fa-server"></i> System Backup</li>
+            <li class="nav-item" onclick="window.location.href='adminnotif.html'"><i class="fa-regular fa-bell"></i> Notifications</li>
+        </ul>
+
+        <div class="sidebar-bottom">
+            <a class="nav-item" href="index.html"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+        </div>
+    </aside>
+
+    <!-- ── MAIN ── -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <h1>Modules Management</h1>
+                <p>View, manage, and monitor all learning modules in the system.</p>
+            </div>
+            <div class="topbar-right">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Search module..." id="topbarSearchInput">
+                </div>
+                <div class="notif-btn">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="notif-badge">8</span>
+                </div>
+                <div class="profile-pill">
+                    <div class="profile-avatar"><i class="fa-solid fa-user"></i></div>
+                    <div>
+                        <div class="profile-name">Administrator</div>
+                        <div class="profile-role">Super Admin</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-container">
+
+            <!-- Page actions -->
+            <div style="display:flex; justify-content:flex-end; gap:8px;">
+                <button class="btn-outline"><i class="fa-solid fa-arrow-up-from-bracket"></i> Export</button>
+                <button class="btn-primary" id="newModuleBtn" onclick="openCreateModule()"><i
+                        class="fa-solid fa-plus"></i> New Module</button>
+            </div>
+
+            <!-- KPI Row -->
+            <div class="kpi-row">
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon"><i class="fa-solid fa-book-open"></i></div>
+                        <div class="kpi-title">Total Modules</div>
+                    </div>
+                    <div class="kpi-value" id="kpiTotalModulesVal">6</div>
+                    <div class="kpi-foot"><span>Published</span><span style="color:var(--green)" id="kpiPublishedVal">6</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon"><i class="fa-solid fa-pencil-ruler"></i></div>
+                        <div class="kpi-title">Drafts</div>
+                    </div>
+                    <div class="kpi-value" id="kpiDraftsVal">0</div>
+                    <div class="kpi-foot"><span>Archived</span><span style="color:var(--text-secondary)" id="kpiArchivedVal">0</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon"><i class="fa-solid fa-users"></i></div>
+                        <div class="kpi-title">Total Enrollments</div>
+                    </div>
+                    <div class="kpi-value" id="kpiEnrollmentsVal">0</div>
+                    <div class="kpi-foot"><span>Active Learners</span><span id="kpiActiveLearnersVal">0</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon"><i class="fa-solid fa-circle-check"></i></div>
+                        <div class="kpi-title">Avg. Completion</div>
+                    </div>
+                    <div class="kpi-value" id="kpiAvgCompletionVal">0%</div>
+                    <div class="kpi-foot"><span>Fully Completed</span><span style="color:var(--green)" id="kpiFullyCompletedVal">0</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon"><i class="fa-solid fa-star"></i></div>
+                        <div class="kpi-title">Avg. Rating</div>
+                    </div>
+                    <div class="kpi-value" id="kpiAvgRatingVal">0.0</div>
+                    <div class="kpi-foot"><span>Total Reviews</span><span id="kpiTotalReviewsVal">0</span></div>
+                </div>
+            </div>
+
+            <!-- Modules Panel -->
+            <div class="panel">
+                <div class="panel-top">
+                    <div>
+                        <div class="panel-title">All Modules</div>
+                        <div class="panel-subtitle" id="panelSubtitle">Showing 6 of 6 modules</div>
+                    </div>
+                    <div style="display:flex;gap:8px">
+                        <button class="btn-outline" style="padding:6px 10px"><i
+                                class="fa-solid fa-table-cells-large"></i></button>
+                        <button class="btn-outline" style="padding:6px 10px"><i class="fa-solid fa-list"></i></button>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="filters-bar">
+                    <div class="filter-search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="moduleSearchInput" placeholder="Search by module title or teacher...">
+                    </div>
+                    <select class="filter-select" id="statusFilterSelect">
+                        <option value="all">All Status</option>
+                        <option value="Published">Published</option>
+                        <option value="Draft">Draft</option>
+                        <option value="Archived">Archived</option>
+                    </select>
+                    <select class="filter-select" id="categoryFilterSelect">
+                        <option value="all">All Categories</option>
+                        <option value="Engine">Engine</option>
+                        <option value="Brakes">Brakes</option>
+                        <option value="Electrical">Electrical</option>
+                        <option value="Fuel">Fuel System</option>
+                        <option value="Air">Air System</option>
+                        <option value="Spark">Spark System</option>
+                    </select>
+                    <select class="filter-select" id="sortFilterSelect">
+                        <option value="default">Sort: Default</option>
+                        <option value="enrolled">Most Enrolled</option>
+                        <option value="completion">Highest Completion</option>
+                    </select>
+                    <div class="filter-divider"></div>
+                    <button class="btn-outline" style="padding:7px 10px;" onclick="resetModuleFilters()" title="Reset Filters"><i class="fa-solid fa-filter"></i></button>
+                </div>
+
+                <!-- Modules Grid -->
+                <div class="modules-grid" id="modulesGrid">
+
+                    <!-- Module 1 -->
+                    <div class="mod-card" data-id="1" data-title="Engine Oil Change & Maintenance"
+                        data-category="Engine System"
+                        data-desc="Step-by-step guide to draining, replacing, and checking engine oil levels for motorcycles."
+                        data-lessons="5" data-duration="45 mins" data-enrolled="214" data-completion="78"
+                        data-status="Published" data-teacher="Juan Dela Cruz" data-teacher-init="JD"
+                        data-teacher-color="#a0522d" data-banner="linear-gradient(135deg,#1e40af,#2563eb)"
+                        data-icon="fa-solid fa-engine" data-prog-color="#2563eb">
+                        <div class="mod-banner" style="background: linear-gradient(135deg, #1e40af, #2563eb);">
+                            <i class="fa-solid fa-engine"></i>
+                            <span class="mod-status-pill pill-published">Published</span>
+                        </div>
+                        <div class="mod-body">
+                            <div class="mod-tag">Engine System</div>
+                            <div class="mod-title">Engine Oil Change & Maintenance</div>
+                            <div class="mod-desc">Step-by-step guide to draining, replacing, and checking engine oil
+                                levels for motorcycles.</div>
+                            <div class="mod-meta">
+                                <div class="mod-meta-item"><i class="fa-solid fa-layer-group"></i> 5 Lessons</div>
+                                <div class="mod-meta-item"><i class="fa-solid fa-clock"></i> 45 mins</div>
+                                <div class="mod-meta-item"><i class="fa-solid fa-users"></i> 214 enrolled</div>
+                            </div>
+                            <div class="mod-prog-label"><span>Avg. Completion</span><span>78%</span></div>
+                            <div class="mod-prog-bar">
+                                <div class="mod-prog-fill" style="width:78%"></div>
+                            </div>
+                            <div class="mod-footer">
+                                <div class="mod-teacher">
+                                    <div class="mod-avatar" style="background:#a0522d">JD</div> Juan Dela Cruz
+                                </div>
+                                <div class="mod-actions">
+                                    <button class="action-btn edit" onclick="openEdit(this)"><i
+                                            class="fa-solid fa-pencil"></i></button>
+                                    <button class="action-btn view" onclick="openView(this)"><i
+                                            class="fa-solid fa-eye"></i></button>
+                                    <button class="action-btn del" onclick="openDelete(this)"><i
+                                            class="fa-solid fa-trash-can"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Module 2 -->
+                    <div class="mod-card" data-id="2" data-title="Fuel System Inspection & Cleaning"
+                        data-category="Fuel System"
+                        data-desc="Learn to inspect fuel lines, clean carburetors, and diagnose common fuel delivery issues."
+                        data-lessons="6" data-duration="55 mins" data-enrolled="189" data-completion="65"
+                        data-status="Published" data-teacher="Maria Santos" data-teacher-init="MS"
+                        data-teacher-color="#6a5acd" data-banner="linear-gradient(135deg,#92400e,#d97706)"
+                        data-icon="fa-solid fa-fire-flame-curved" data-prog-color="#d97706">
+                        <div class="mod-banner" style="background: linear-gradient(135deg, #92400e, #d97706);">
+                            <i class="fa-solid fa-fire-flame-curved"></i>
+                            <span class="mod-status-pill pill-published">Published</span>
+                        </div>
+                        <div class="mod-body">
+                            <div class="mod-tag">Fuel System</div>
+                            <div class="mod-title">Fuel System Inspection & Cleaning</div>
+                            <div class="mod-desc">Learn to inspect fuel lines, clean carburetors, and diagnose common
+                                fuel delivery issues.</div>
+                            <div class="mod-meta">
+                                <div class="mod-meta-item"><i class="fa-solid fa-layer-group"></i> 6 Lessons</div>
+                                <div class="mod-meta-item"><i class="fa-solid fa-clock"></i> 55 mins</div>
+                                <div class="mod-meta-item"><i class="fa-solid fa-users"></i> 189 enrolled</div>
+                            </div>
+                            <div class="mod-prog-label"><span>Avg. Completion</span><span>65%</span></div>
+                            <div class="mod-prog-bar">
+                                <div class="mod-prog-fill" style="width:65%;background:#d97706"></div>
+                            </div>
+                            <div class="mod-footer">
+                                <div class="mod-teacher">
+                                    <div class="mod-avatar" style="background:#6a5acd">MS</div> Maria Santos
+                                </div>
+                                <div class="mod-actions">
+                                    <button class="action-btn edit" onclick="openEdit(this)"><i
+                                            class="fa-solid fa-pencil"></i></button>
+                                    <button class="action-btn view" onclick="openView(this)"><i
+                                            class="fa-solid fa-eye"></i></button>
+                                    <button class="action-btn del" onclick="openDelete(this)"><i
+                                            class="fa-solid fa-trash-can"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Module 3 -->
+                    <div class="mod-card" data-id="3" data-title="Battery & Electrical Diagnostics"
+                        data-category="Electrical System"
+                        data-desc="Understand motorcycle electrical systems, test battery health, and troubleshoot wiring faults."
+                        data-lessons="7" data-duration="60 mins" data-enrolled="176" data-completion="72"
+                        data-status="Published" data-teacher="Ana Reyes" data-teacher-init="AR"
+                        data-teacher-color="#2e8b57" data-banner="linear-gradient(135deg,#065f46,#16a34a)"
+                        data-icon="fa-solid fa-bolt" data-prog-color="#16a34a">
+                        <div class="mod-banner" style="background: linear-gradient(135deg, #065f46, #16a34a);">
+                            <i class="fa-solid fa-bolt"></i>
+                            <span class="mod-status-pill pill-published">Published</span>
+                        </div>
+                        <div class="mod-body">
+                            <div class="mod-tag">Electrical System</div>
+                            <div class="mod-title">Battery & Electrical Diagnostics</div>
+                            <div class="mod-desc">Understand motorcycle electrical systems, test battery health, and
+                                troubleshoot wiring faults.</div>
+                            <div class="mod-meta">
+                                <div class="mod-meta-item"><i class="fa-solid fa-layer-group"></i> 7 Lessons</div>
+                                <div class="mod-meta-item"><i class="fa-solid fa-clock"></i> 60 mins</div>
+                                <div class="mod-meta-item"><i class="fa-solid fa-users"></i> 176 enrolled</div>
+                            </div>
+                            <div class="mod-prog-label"><span>Avg. Completion</span><span>72%</span></div>
+                            <div class="mod-prog-bar">
+                                <div class="mod-prog-fill" style="width:72%;background:#16a34a"></div>
+                            </div>
+                            <div class="mod-footer">
+                                <div class="mod-teacher">
+                                    <div class="mod-avatar" style="background:#2e8b57">AR</div> Ana Reyes
+                                </div>
+                                <div class="mod-actions">
+                                    <button class="action-btn edit" onclick="openEdit(this)"><i
+                                            class="fa-solid fa-pencil"></i></button>
+                                    <button class="action-btn view" onclick="openView(this)"><i
+                                            class="fa-solid fa-eye"></i></button>
+                                    <button class="action-btn del" onclick="openDelete(this)"><i
+                                            class="fa-solid fa-trash-can"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Module 4 -->
+                    <div class="mod-card" data-id="4" data-title="Brake Pad Replacement & Adjustment"
+                        data-category="Brake System"
+                        data-desc="Covers front and rear brake pad inspection, replacement procedures, and brake fluid top-up."
+                        data-lessons="5" data-duration="40 mins" data-enrolled="201" data-completion="81"
+                        data-status="Published" data-teacher="Paul Villanueva" data-teacher-init="PV"
+                        data-teacher-color="#d2691e" data-banner="linear-gradient(135deg,#6d28d9,#7c3aed)"
+                        data-icon="fa-solid fa-circle-stop" data-prog-color="#7c3aed">
+                        <div class="mod-banner" style="background: linear-gradient(135deg, #6d28d9, #7c3aed);">
+                            <i class="fa-solid fa-circle-stop"></i>
+                            <span class="mod-status-pill pill-published">Published</span>
+                        </div>
+                        <div class="mod-body">
+                            <div class="mod-tag">Brake System</div>
+                            <div class="mod-title">Brake Pad Replacement & Adjustment</div>
+                            <div class="mod-desc">Covers front and rear brake pad inspection, replacement procedures,
+                                and brake fluid top-up.</div>
+                            <div class="mod-meta">
+                                <div class="mod-meta-item"><i class="fa-solid fa-layer-group"></i> 5 Lessons</div>
+                                <div class="mod-meta-item"><i class="fa-solid fa-clock"></i> 40 mins</div>
+                                <div class="mod-meta-item"><i class="fa-solid fa-users"></i> 201 enrolled</div>
+                            </div>
+                            <div class="mod-prog-label"><span>Avg. Completion</span><span>81%</span></div>
+                            <div class="mod-prog-bar">
+                                <div class="mod-prog-fill" style="width:81%;background:#7c3aed"></div>
+                            </div>
+                            <div class="mod-footer">
+                                <div class="mod-teacher">
+                                    <div class="mod-avatar" style="background:#d2691e">PV</div> Paul Villanueva
+                                </div>
+                                <div class="mod-actions">
+                                    <button class="action-btn edit" onclick="openEdit(this)"><i
+                                            class="fa-solid fa-pencil"></i></button>
+                                    <button class="action-btn view" onclick="openView(this)"><i
+                                            class="fa-solid fa-eye"></i></button>
+                                    <button class="action-btn del" onclick="openDelete(this)"><i
+                                            class="fa-solid fa-trash-can"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Module 5 (Draft) -->
+                    <div class="mod-card" style="opacity:0.75" data-id="5"
+                        data-title="Air Filter Cleaning & Replacement" data-category="Air System"
+                        data-desc="Teaches proper air filter removal, cleaning methods, and replacement intervals for optimal performance."
+                        data-lessons="4" data-duration="30 mins" data-enrolled="—" data-completion="0"
+                        data-status="Draft" data-teacher="Kevin Garcia" data-teacher-init="KG"
+                        data-teacher-color="#008b8b" data-banner="linear-gradient(135deg,#374151,#6b7280)"
+                        data-icon="fa-solid fa-wind" data-prog-color="#6b7280">
+                        <div class="mod-banner" style="background: linear-gradient(135deg, #374151, #6b7280);">
+                            <i class="fa-solid fa-wind"></i>
+                            <span class="mod-status-pill pill-draft">Draft</span>
+                        </div>
+                        <div class="mod-body">
+                            <div class="mod-tag">Air System</div>
+                            <div class="mod-title">Air Filter Cleaning & Replacement</div>
+                            <div class="mod-desc">Teaches proper air filter removal, cleaning methods, and replacement
+                                intervals for optimal performance.</div>
+                            <div class="mod-meta">
+                                <div class="mod-meta-item"><i class="fa-solid fa-layer-group"></i> 4 Lessons</div>
+                                <div class="mod-meta-item"><i class="fa-solid fa-clock"></i> 30 mins</div>
+                                <div class="mod-meta-item"><i class="fa-solid fa-users"></i> — enrolled</div>
+                            </div>
+                            <div class="mod-prog-label"><span>Avg. Completion</span><span>—</span></div>
+                            <div class="mod-prog-bar">
+                                <div class="mod-prog-fill" style="width:0%"></div>
+                            </div>
+                            <div class="mod-footer">
+                                <div class="mod-teacher">
+                                    <div class="mod-avatar" style="background:#008b8b">KG</div> Kevin Garcia
+                                </div>
+                                <div class="mod-actions">
+                                    <button class="action-btn edit" onclick="openEdit(this)"><i
+                                            class="fa-solid fa-pencil"></i></button>
+                                    <button class="action-btn view" onclick="openView(this)"><i
+                                            class="fa-solid fa-eye"></i></button>
+                                    <button class="action-btn del" onclick="openDelete(this)"><i
+                                            class="fa-solid fa-trash-can"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Module 6 -->
+                    <div class="mod-card" data-id="6" data-title="Spark Plug Inspection & Replacement"
+                        data-category="Spark System"
+                        data-desc="Guide to reading spark plug condition, gapping, and replacement for improved engine ignition."
+                        data-lessons="4" data-duration="35 mins" data-enrolled="168" data-completion="59"
+                        data-status="Published" data-teacher="Juan Dela Cruz" data-teacher-init="JD"
+                        data-teacher-color="#a0522d" data-banner="linear-gradient(135deg,#be123c,#e11d48)"
+                        data-icon="fa-solid fa-gear" data-prog-color="#e11d48">
+                        <div class="mod-banner" style="background: linear-gradient(135deg, #be123c, #e11d48);">
+                            <i class="fa-solid fa-gear"></i>
+                            <span class="mod-status-pill pill-published">Published</span>
+                        </div>
+                        <div class="mod-body">
+                            <div class="mod-tag">Spark System</div>
+                            <div class="mod-title">Spark Plug Inspection & Replacement</div>
+                            <div class="mod-desc">Guide to reading spark plug condition, gapping, and replacement for
+                                improved engine ignition.</div>
+                            <div class="mod-meta">
+                                <div class="mod-meta-item"><i class="fa-solid fa-layer-group"></i> 4 Lessons</div>
+                                <div class="mod-meta-item"><i class="fa-solid fa-clock"></i> 35 mins</div>
+                                <div class="mod-meta-item"><i class="fa-solid fa-users"></i> 168 enrolled</div>
+                            </div>
+                            <div class="mod-prog-label"><span>Avg. Completion</span><span>59%</span></div>
+                            <div class="mod-prog-bar">
+                                <div class="mod-prog-fill" style="width:59%;background:#e11d48"></div>
+                            </div>
+                            <div class="mod-footer">
+                                <div class="mod-teacher">
+                                    <div class="mod-avatar" style="background:#a0522d">JD</div> Juan Dela Cruz
+                                </div>
+                                <div class="mod-actions">
+                                    <button class="action-btn edit" onclick="openEdit(this)"><i
+                                            class="fa-solid fa-pencil"></i></button>
+                                    <button class="action-btn view" onclick="openView(this)"><i
+                                            class="fa-solid fa-eye"></i></button>
+                                    <button class="action-btn del" onclick="openDelete(this)"><i
+                                            class="fa-solid fa-trash-can"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <footer>
+            <div>&copy; 2024 <span>MotoMaster</span>. All rights reserved.</div>
+            <div>Version 1.0.0</div>
+        </footer>
+
+    </main>
+
+    <!-- ═══════════════ VIEW MODAL ═══════════════ -->
+    <div class="modal-overlay" id="viewModal">
+        <div class="modal modal-lg">
+            <div class="modal-header">
+                <h3 id="vHeaderTitle">Module Details</h3>
+                <button class="modal-close" onclick="closeModal('viewModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body-scroll">
+                <!-- Banner -->
+                <div class="modal-banner" id="vBanner" style="height:90px;border-radius:12px;margin-bottom:18px"></div>
+
+                <!-- Meta row -->
+                <div
+                    style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+                    <div>
+                        <div style="font-size:0.62rem;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px"
+                            id="vCategory"></div>
+                        <div style="font-family:'Rajdhani',sans-serif;font-size:1.25rem;font-weight:700;color:var(--text-primary)"
+                            id="vTitle"></div>
+                        <div style="font-size:0.75rem;font-weight:600;color:var(--text-secondary);margin-top:4px;line-height:1.5"
+                            id="vDesc"></div>
+                    </div>
+                    <span id="vStatusBadge"
+                        style="font-size:0.65rem;font-weight:800;padding:4px 12px;border-radius:20px"></span>
+                </div>
+
+                <!-- Stats grid -->
+                <div class="view-stats-grid">
+                    <div class="view-stat-box">
+                        <div class="view-stat-val" id="vLessons"></div>
+                        <div class="view-stat-lbl">Lessons</div>
+                    </div>
+                    <div class="view-stat-box">
+                        <div class="view-stat-val" id="vDuration"></div>
+                        <div class="view-stat-lbl">Duration</div>
+                    </div>
+                    <div class="view-stat-box">
+                        <div class="view-stat-val" id="vEnrolled"></div>
+                        <div class="view-stat-lbl">Enrolled</div>
+                    </div>
+                    <div class="view-stat-box">
+                        <div class="view-stat-val" id="vProgPct"></div>
+                        <div class="view-stat-lbl">Avg. Completion</div>
+                    </div>
+                </div>
+
+                <!-- Progress bar -->
+                <div class="prog-view-bar" style="margin-bottom:16px">
+                    <div class="prog-view-fill" id="vProgFill"></div>
+                </div>
+
+                <!-- Teacher -->
+                <div
+                    style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--bg-color);border-radius:9px;border:1px solid var(--border-color);margin-bottom:16px">
+                    <div id="vTeacherAvatar"
+                        style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0">
+                    </div>
+                    <div>
+                        <div style="font-size:0.72rem;font-weight:800;color:var(--text-primary)" id="vTeacher"></div>
+                        <div style="font-size:0.62rem;color:var(--text-secondary);font-weight:600">Module Instructor
+                        </div>
+                    </div>
+                </div>
+
+                <div class="view-divider"></div>
+
+                <!-- Lessons list -->
+                <div class="section-heading"><i class="fa-solid fa-layer-group"
+                        style="color:var(--accent);margin-right:5px"></i>Lesson Breakdown</div>
+                <ul class="lessons-list" id="vLessonsList"></ul>
+
+                <div class="view-divider"></div>
+
+                <!-- Learning objectives -->
+                <div class="section-heading"><i class="fa-solid fa-bullseye"
+                        style="color:var(--accent);margin-right:5px"></i>Learning Objectives</div>
+                <ul id="vObjectives" style="list-style:none;display:flex;flex-direction:column;gap:6px;margin-top:8px">
+                </ul>
+
+                <div class="view-divider"></div>
+
+                <!-- Requirements -->
+                <div class="section-heading"><i class="fa-solid fa-circle-info"
+                        style="color:var(--accent);margin-right:5px"></i>Requirements</div>
+                <ul id="vRequirements"
+                    style="list-style:none;display:flex;flex-direction:column;gap:6px;margin-top:8px;margin-bottom:4px">
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModal('viewModal')">Close</button>
+                <button class="btn-save" onclick="closeModal('viewModal');openEdit(lastViewBtn)">Edit Module</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════ EDIT MODAL ═══════════════ -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Edit Module</h3>
+                <button class="modal-close" onclick="closeModal('editModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Module Title</label>
+                    <input class="form-control" type="text" id="eTitle">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select class="form-control" id="eCategory">
+                        <option>Engine System</option>
+                        <option>Fuel System</option>
+                        <option>Electrical System</option>
+                        <option>Brake System</option>
+                        <option>Air System</option>
+                        <option>Spark System</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" id="eDesc" rows="3" style="resize:vertical"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">No. of Lessons</label>
+                        <input class="form-control" type="number" id="eLessons" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Duration</label>
+                        <input class="form-control" type="text" id="eDuration" placeholder="e.g. 45 mins">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Teacher</label>
+                        <input class="form-control" type="text" id="eTeacher">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select class="form-control" id="eStatus">
+                            <option>Published</option>
+                            <option>Draft</option>
+                            <option>Archived</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModal('editModal')">Cancel</button>
+                <button class="btn-save" onclick="saveEdit()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════ DELETE MODAL ═══════════════ -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal modal-sm">
+            <div class="modal-header">
+                <h3>Delete Module</h3>
+                <button class="modal-close" onclick="closeModal('deleteModal')"><i
+                        class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="del-icon"><i class="fa-solid fa-trash-can"></i></div>
+                <p class="del-msg">Are you sure you want to delete<br><strong id="dTitle"></strong>?<br><br>This action
+                    cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModal('deleteModal')">Cancel</button>
+                <button class="btn-danger" onclick="confirmDelete()">Yes, Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════ CREATE MODULE MODAL ═══════════════ -->
+    <div class="modal-overlay" id="createModuleModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Add New Module</h3>
+                <button class="modal-close" onclick="closeModal('createModuleModal')"><i
+                        class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Module Title</label>
+                    <input class="form-control" type="text" id="mTitle"
+                        placeholder="e.g. Engine Oil Change & Maintenance">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select class="form-control" id="mCategory">
+                        <option>Engine System</option>
+                        <option>Fuel System</option>
+                        <option>Electrical System</option>
+                        <option>Brake System</option>
+                        <option>Air System</option>
+                        <option>Spark System</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" id="mDesc" rows="3"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">No. of Lessons</label>
+                        <input class="form-control" type="number" id="mLessons" min="1" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Duration</label>
+                        <input class="form-control" type="text" id="mDuration" placeholder="e.g. 45 mins">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Teacher</label>
+                        <input class="form-control" type="text" id="mTeacher" placeholder="Instructor name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select class="form-control" id="mStatus">
+                            <option>Published</option>
+                            <option>Draft</option>
+                            <option>Archived</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModal('createModuleModal')">Cancel</button>
+                <button class="btn-save" onclick="confirmCreateModule()">Create Module</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════ CREATE MODULE SUCCESS MODAL ═══════════════ -->
+    <div class="modal-overlay" id="createModuleSuccessModal">
+        <div class="modal modal-sm">
+            <div class="modal-header">
+                <h3>Module Created</h3>
+                <button class="modal-close" onclick="closeModal('createModuleSuccessModal')"><i
+                        class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <p style="font-weight:700">New module <span id="createdModuleName">—</span> was successfully added.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-save" onclick="closeModal('createModuleSuccessModal')">OK</button>
+            </div>
+        </div>
+    </div>
+
+        <script>
+        const API_BASE = 'admin_data_api.php';
+        let allModules = [];
+        let currentEditId = null;
+        let currentDeleteId = null;
+        let currentViewMod = null;
+        let lastViewBtn = null;
+
+        // Rich lesson, objective, and requirement data mapped by file and id
+        const moduleDetailsData = {
+            'enginemodule.html': {
+                lessons: [
+                    { name: 'Introduction', sub: 'What you will learn' },
+                    { name: 'Tools & Materials', sub: 'Equipment overview' },
+                    { name: 'Step 1', sub: 'Prepare the vehicle' },
+                    { name: 'Step 2', sub: 'Locate drain plug' },
+                    { name: 'Step 3', sub: 'Position oil pan' },
+                    { name: 'Step 4', sub: 'Remove drain plug' },
+                    { name: 'Step 5', sub: 'Drain old oil' },
+                    { name: 'Step 6', sub: 'Remove oil filter' },
+                    { name: 'Step 7', sub: 'Prepare new filter' },
+                    { name: 'Step 8', sub: 'Install new filter' },
+                    { name: 'Step 9', sub: 'Reinstall drain plug' },
+                    { name: 'Step 10', sub: 'Locate filler cap' },
+                    { name: 'Step 11', sub: 'Pour new oil' },
+                    { name: 'Step 12', sub: 'Check oil level' },
+                    { name: 'Step 13', sub: 'Replace filler cap' },
+                    { name: 'Step 14', sub: 'Start engine & verify' },
+                    { name: 'Knowledge Check', sub: 'Test your understanding' },
+                    { name: 'Summary', sub: 'Key takeaways' }
+                ],
+                objectives: [
+                    'Prepare the vehicle and gather the correct tools',
+                    'Safely drain old engine oil using proper technique',
+                    'Remove and replace the oil filter without leaks',
+                    'Refill oil to the correct level and verify with dipstick'
+                ],
+                requirements: [
+                    'Drain pan and correct socket wrench',
+                    'New oil filter and replacement engine oil',
+                    'Basic motorcycle maintenance knowledge'
+                ]
+            },
+            'brakemodule.html': {
+                lessons: [
+                    { name: 'Introduction', sub: 'What you will learn' },
+                    { name: 'Tools & Materials', sub: 'Equipment overview' },
+                    { name: 'Step 1', sub: 'Prepare the vehicle' },
+                    { name: 'Step 2', sub: 'Loosen lug nuts' },
+                    { name: 'Step 3', sub: 'Raise vehicle' },
+                    { name: 'Step 4', sub: 'Remove wheel' },
+                    { name: 'Step 5', sub: 'Inspect rotor & caliper' },
+                    { name: 'Step 6', sub: 'Remove caliper bolts' },
+                    { name: 'Step 7', sub: 'Secure caliper' },
+                    { name: 'Step 8', sub: 'Remove old pads' },
+                    { name: 'Step 9', sub: 'Inspect mounting bracket' },
+                    { name: 'Step 10', sub: 'Compress cylinder' },
+                    { name: 'Step 11', sub: 'Apply brake grease' },
+                    { name: 'Step 12', sub: 'Install new pads' },
+                    { name: 'Step 13', sub: 'Reinstall caliper' },
+                    { name: 'Step 14', sub: 'Reinstall wheel' },
+                    { name: 'Step 15', sub: 'Lower vehicle' },
+                    { name: 'Step 16', sub: 'Pump brakes' },
+                    { name: 'Knowledge Check', sub: 'Test your understanding' },
+                    { name: 'Summary', sub: 'Key takeaways' }
+                ],
+                objectives: [
+                    'Safely lift vehicle and remove the wheel',
+                    'Remove the caliper and extract old brake pads',
+                    'Compress the caliper piston and install new pads',
+                    'Reassemble, lower vehicle, and bed in the new pads'
+                ],
+                requirements: [
+                    'Replacement brake pads (compatible model)',
+                    'Jack, jack stands, and lug wrench',
+                    'Caliper piston press tool and brake grease'
+                ]
+            },
+            'airmodule.html': {
+                lessons: [
+                    { name: 'Introduction', sub: 'What you will learn' },
+                    { name: 'Tools & Materials', sub: 'Equipment overview' },
+                    { name: 'Step 1', sub: 'Locate the air filter housing' },
+                    { name: 'Step 2', sub: 'Inspect the old filter' },
+                    { name: 'Step 3', sub: 'Disconnect the air intake hose' },
+                    { name: 'Step 4', sub: 'Open the filter housing' },
+                    { name: 'Step 5', sub: 'Remove the old air filter' },
+                    { name: 'Step 6', sub: 'Clean the housing' },
+                    { name: 'Step 7', sub: 'Install the new filter' },
+                    { name: 'Step 8', sub: 'Close and secure housing' },
+                    { name: 'Knowledge Check', sub: 'Test your understanding' },
+                    { name: 'Summary', sub: 'Key takeaways' }
+                ],
+                objectives: [
+                    'Locate and safely access the air filter housing',
+                    'Inspect the old filter and determine if replacement is needed',
+                    'Install the new filter with the gasket seated evenly',
+                    'Reassemble the housing and test for air leaks'
+                ],
+                requirements: [
+                    'Replacement air filter (correct size per manual)',
+                    'Flathead screwdriver or socket set',
+                    'Clean cloth and optional compressed air'
+                ]
+            },
+            'fuelmodule.html': {
+                lessons: [
+                    { name: 'Introduction', sub: 'What you will learn' },
+                    { name: 'Tools & Materials', sub: 'Equipment overview' },
+                    { name: 'Step 1', sub: 'Relieve fuel pressure' },
+                    { name: 'Step 2', sub: 'Locate the fuel filter' },
+                    { name: 'Step 3', sub: 'Disconnect the battery' },
+                    { name: 'Step 4', sub: 'Place drain pan' },
+                    { name: 'Step 5', sub: 'Remove fuel lines' },
+                    { name: 'Step 6', sub: 'Remove old filter' },
+                    { name: 'Step 7', sub: 'Install new filter' },
+                    { name: 'Step 8', sub: 'Reconnect fuel lines' },
+                    { name: 'Step 9', sub: 'Reconnect battery' },
+                    { name: 'Step 10', sub: 'Test for leaks' },
+                    { name: 'Knowledge Check', sub: 'Test your understanding' },
+                    { name: 'Summary', sub: 'Key takeaways' }
+                ],
+                objectives: [
+                    'Safely relieve fuel system pressure before starting',
+                    'Locate and correctly remove the fuel filter',
+                    'Install the new filter with proper flow direction',
+                    'Test the system for leaks after reassembly'
+                ],
+                requirements: [
+                    'Fuel-safe drain pan and replacement filter',
+                    'Flathead screwdriver and pliers',
+                    'Fuel-resistant gloves and eye protection'
+                ]
+            },
+            'batterymodule.html': {
+                lessons: [
+                    { name: 'Introduction', sub: 'What you will learn' },
+                    { name: 'Tools & Materials', sub: 'Equipment overview' },
+                    { name: 'Step 1', sub: 'Safety precautions' },
+                    { name: 'Step 2', sub: 'Locate the battery' },
+                    { name: 'Step 3', sub: 'Inspect the battery' },
+                    { name: 'Step 4', sub: 'Disconnect negative cable' },
+                    { name: 'Step 5', sub: 'Disconnect positive cable' },
+                    { name: 'Step 6', sub: 'Remove the battery' },
+                    { name: 'Step 7', sub: 'Clean the tray & terminals' },
+                    { name: 'Step 8', sub: 'Install new battery' },
+                    { name: 'Step 9', sub: 'Connect positive cable' },
+                    { name: 'Step 10', sub: 'Connect negative cable' },
+                    { name: 'Step 11', sub: 'Test and verify' },
+                    { name: 'Knowledge Check', sub: 'Test your understanding' },
+                    { name: 'Summary', sub: 'Key takeaways' }
+                ],
+                objectives: [
+                    'Follow correct cable disconnect and reconnect order',
+                    'Safely remove and install a vehicle battery',
+                    'Clean battery terminals and tray to prevent corrosion',
+                    'Verify battery installation by testing electrical systems'
+                ],
+                requirements: [
+                    'Replacement battery (correct specifications)',
+                    'Wrench set and terminal cleaning brush',
+                    'Safety gloves and eye protection'
+                ]
+            },
+            'sparkmodule.html': {
+                lessons: [
+                    { name: 'Introduction', sub: 'What you will learn' },
+                    { name: 'Tools & Materials', sub: 'Equipment overview' },
+                    { name: 'Step 1', sub: 'Let engine cool' },
+                    { name: 'Step 2', sub: 'Locate the spark plugs' },
+                    { name: 'Step 3', sub: 'Remove ignition wire/coil' },
+                    { name: 'Step 4', sub: 'Remove the spark plug' },
+                    { name: 'Step 5', sub: 'Inspect the old plug' },
+                    { name: 'Step 6', sub: 'Check the gap' },
+                    { name: 'Step 7', sub: 'Apply anti-seize' },
+                    { name: 'Step 8', sub: 'Install new spark plug' },
+                    { name: 'Step 9', sub: 'Torque to spec' },
+                    { name: 'Step 10', sub: 'Reattach wire/coil & test' },
+                    { name: 'Knowledge Check', sub: 'Test your understanding' },
+                    { name: 'Summary', sub: 'Key takeaways' }
+                ],
+                objectives: [
+                    'Allow engine to cool and safely locate all spark plugs',
+                    'Remove the spark plug without cross-threading or damage',
+                    'Inspect old plug condition and gap the replacement correctly',
+                    'Install, torque to spec, reattach coil, and verify engine start'
+                ],
+                requirements: [
+                    'Replacement spark plug (correct heat range)',
+                    'Spark plug socket wrench and feeler gauge',
+                    'Anti-seize compound and torque wrench'
+                ]
+            }
+        };
+
+        // ═══════════════ LOAD DATA FROM DATABASE ═══════════════
+        async function loadAdminModules() {
+            try {
+                const res = await fetch(`${API_BASE}?action=get_modules_data`);
+                if (!res.ok) throw new Error('Failed to fetch modules data');
+                const data = await res.json();
+                if (!data || !data.success) throw new Error(data.message || 'API error');
+
+                // Update KPI Cards directly from motomasterdb
+                updateKPICards(data.kpis);
+
+                // Store all modules
+                allModules = data.modules || [];
+
+                // Render cards
+                renderModules();
+            } catch (err) {
+                console.error('Error loading modules from DB:', err);
+                // Fallback to offline defaults if needed
+                renderModules();
+            }
+        }
+
+        // ═══════════════ UPDATE KPI CARDS ═══════════════
+        function updateKPICards(kpis) {
+            if (!kpis) return;
+            const setTxt = (id, val) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = val;
+            };
+
+            setTxt('kpiTotalModulesVal', kpis.total_modules ?? 6);
+            setTxt('kpiPublishedVal', kpis.published_modules ?? 6);
+            setTxt('kpiDraftsVal', kpis.draft_modules ?? 0);
+            setTxt('kpiArchivedVal', kpis.archived_modules ?? 0);
+            setTxt('kpiEnrollmentsVal', Number(kpis.total_enrollments ?? 6).toLocaleString());
+            setTxt('kpiActiveLearnersVal', Number(kpis.active_learners ?? 1).toLocaleString());
+            setTxt('kpiAvgCompletionVal', (kpis.avg_completion ?? 95) + '%');
+            setTxt('kpiFullyCompletedVal', Number(kpis.fully_completed ?? 5).toLocaleString());
+            setTxt('kpiAvgRatingVal', Number(kpis.avg_rating ?? 4.5).toFixed(1));
+            setTxt('kpiTotalReviewsVal', Number(kpis.total_reviews ?? 2).toLocaleString());
+        }
+
+        // ═══════════════ RENDER MODULE CARDS ═══════════════
+        function renderModules() {
+            const grid = document.getElementById('modulesGrid');
+            if (!grid) return;
+
+            const searchVal = (document.getElementById('moduleSearchInput')?.value || '').toLowerCase().trim();
+            const statusVal = document.getElementById('statusFilterSelect')?.value || 'all';
+            const catVal = document.getElementById('categoryFilterSelect')?.value || 'all';
+            const sortVal = document.getElementById('sortFilterSelect')?.value || 'default';
+
+            let filtered = allModules.filter(m => {
+                if (searchVal) {
+                    const haystack = (m.title + ' ' + m.category + ' ' + m.desc + ' ' + m.teacher).toLowerCase();
+                    if (!haystack.includes(searchVal)) return false;
+                }
+                if (statusVal !== 'all' && m.status !== statusVal) return false;
+                if (catVal !== 'all') {
+                    const c = (m.category || '').toLowerCase();
+                    if (!c.includes(catVal.toLowerCase())) return false;
+                }
+                return true;
+            });
+
+            if (sortVal === 'enrolled') {
+                filtered.sort((a, b) => (Number(b.enrolled) || 0) - (Number(a.enrolled) || 0));
+            } else if (sortVal === 'completion') {
+                filtered.sort((a, b) => (Number(b.completion) || 0) - (Number(a.completion) || 0));
+            } else {
+                filtered.sort((a, b) => Number(a.id) - Number(b.id));
+            }
+
+            const subtitle = document.getElementById('panelSubtitle');
+            if (subtitle) {
+                subtitle.textContent = `Showing ${filtered.length} of ${allModules.length} modules`;
+            }
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 48px 20px; background: #fff; border-radius: 12px; border: 1.5px dashed var(--border-color);">
+                        <i class="fa-solid fa-box-open" style="font-size: 32px; color: #9ca3af; margin-bottom: 12px; display:block;"></i>
+                        <div style="font-weight: 800; color: var(--text-primary); font-size: 1rem; margin-bottom: 6px;">No modules matched your criteria</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 16px;">Try adjusting your search query or reset filters.</div>
+                        <button class="btn-outline" style="margin: 0 auto; padding: 7px 16px;" onclick="resetModuleFilters()"><i class="fa-solid fa-rotate-left"></i> Reset Filters</button>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(mod => {
+                const pillClass = mod.status === 'Published' ? 'pill-published' : mod.status === 'Draft' ? 'pill-draft' : 'pill-archived';
+                const completionPct = Math.round(Number(mod.completion) || 0);
+                const progBg = mod.prog_color || '#2563eb';
+                const bannerBg = mod.banner || 'linear-gradient(135deg, #1e40af, #2563eb)';
+                const iconCls = mod.icon || 'fa-solid fa-book-open';
+                const teacherColor = mod.teacher_color || '#2563eb';
+                const teacherInit = mod.teacher_init || 'MM';
+
+                return `
+                <div class="mod-card" data-id="${mod.id}" data-file="${mod.file}"
+                    data-title="${escapeAttr(mod.title)}" data-category="${escapeAttr(mod.category)}"
+                    data-desc="${escapeAttr(mod.desc)}" data-lessons="${mod.lessons}"
+                    data-duration="${escapeAttr(mod.duration)}" data-enrolled="${mod.enrolled}"
+                    data-completion="${completionPct}" data-status="${escapeAttr(mod.status)}"
+                    data-teacher="${escapeAttr(mod.teacher)}" data-teacher-init="${escapeAttr(teacherInit)}"
+                    data-teacher-color="${escapeAttr(teacherColor)}" data-banner="${escapeAttr(bannerBg)}"
+                    data-icon="${escapeAttr(iconCls)}" data-prog-color="${escapeAttr(progBg)}">
+                    <div class="mod-banner" style="background: ${bannerBg};">
+                        <i class="${iconCls}"></i>
+                        <span class="mod-status-pill ${pillClass}">${mod.status}</span>
+                    </div>
+                    <div class="mod-body">
+                        <div class="mod-tag">${escapeHtml(mod.category)}</div>
+                        <div class="mod-title" style="cursor: pointer;" onclick="openView(this)">
+                            ${escapeHtml(mod.title)}
+                        </div>
+                        <div class="mod-desc">${escapeHtml(mod.desc)}</div>
+                        <div class="mod-meta">
+                            <div class="mod-meta-item"><i class="fa-solid fa-layer-group"></i> ${mod.lessons} Lessons</div>
+                            <div class="mod-meta-item"><i class="fa-solid fa-clock"></i> ${escapeHtml(mod.duration)}</div>
+                            <div class="mod-meta-item"><i class="fa-solid fa-users"></i> ${Number(mod.enrolled).toLocaleString()} enrolled</div>
+                        </div>
+                        <div class="mod-prog-label">
+                            <span>Avg. Completion</span>
+                            <span>${completionPct}%</span>
+                        </div>
+                        <div class="mod-prog-bar">
+                            <div class="mod-prog-fill" style="width:${completionPct}%; background:${progBg};"></div>
+                        </div>
+                        <div class="mod-footer">
+                            <div class="mod-teacher" title="Instructor: ${escapeAttr(mod.teacher)}">
+                                <div class="mod-avatar" style="background:${teacherColor}">${teacherInit}</div>
+                                <span>${escapeHtml(mod.teacher)}</span>
+                            </div>
+                            <div class="mod-actions">
+                                <button class="action-btn edit" title="Edit Module" onclick="openEditById(${mod.id})"><i class="fa-solid fa-pencil"></i></button>
+                                <button class="action-btn view" title="View Module" onclick="openView(this)"><i class="fa-solid fa-eye"></i></button>
+                                <button class="action-btn del" title="Delete Module" onclick="openDeleteById(${mod.id})"><i class="fa-solid fa-trash-can"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // ═══════════════ VIEW MODAL (DETAILS SUMMARY) ═══════════════
+        function openView(btn) {
+            lastViewBtn = btn;
+            const d = btn.closest('.mod-card').dataset;
+            const modId = d.id;
+            const file = d.file || 'enginemodule.html';
+            currentViewMod = { id: modId, file: file, title: d.title };
+
+            const extra = moduleDetailsData[file] || { lessons: [], objectives: [], requirements: [] };
+
+            document.getElementById('vBanner').style.background = d.banner;
+            document.getElementById('vBanner').innerHTML = `<i class="${d.icon}" style="font-size:2rem;color:#fff;opacity:.9"></i>`;
+            document.getElementById('vHeaderTitle').textContent = d.title;
+            document.getElementById('vTitle').textContent = d.title;
+            document.getElementById('vCategory').textContent = d.category;
+            document.getElementById('vDesc').textContent = d.desc;
+            document.getElementById('vDuration').textContent = d.duration;
+            document.getElementById('vEnrolled').textContent = d.enrolled === '—' ? '—' : Number(d.enrolled).toLocaleString();
+            const pct = parseInt(d.completion) || 0;
+            document.getElementById('vProgFill').style.width = pct + '%';
+            document.getElementById('vProgFill').style.background = d.progColor;
+            document.getElementById('vProgPct').textContent = pct + '%';
+
+            const badge = document.getElementById('vStatusBadge');
+            badge.textContent = d.status;
+            if (d.status === 'Published') { badge.style.cssText = 'background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;font-size:0.65rem;font-weight:800;padding:4px 12px;border-radius:20px'; }
+            else if (d.status === 'Draft') { badge.style.cssText = 'background:#fefce8;color:#ca8a04;border:1px solid #fde68a;font-size:0.65rem;font-weight:800;padding:4px 12px;border-radius:20px'; }
+            else { badge.style.cssText = 'background:#f3f4f6;color:#6b7280;border:1px solid #e5e7eb;font-size:0.65rem;font-weight:800;padding:4px 12px;border-radius:20px'; }
+
+            const avatarEl = document.getElementById('vTeacherAvatar');
+            avatarEl.style.background = d.teacherColor;
+            avatarEl.textContent = d.teacherInit;
+            document.getElementById('vTeacher').textContent = d.teacher;
+
+            document.getElementById('vLessons').textContent = extra.lessons.length || d.lessons;
+
+            const lessonsList = document.getElementById('vLessonsList');
+            lessonsList.innerHTML = (extra.lessons || []).map((l, i) =>
+                `<li class="lesson-item">
+                    <span class="lesson-num">${i + 1}</span>
+                    <div style="flex:1;min-width:0">
+                        <div class="lesson-name">${l.name}</div>
+                        <div style="font-size:0.65rem;color:var(--text-secondary);font-weight:600;margin-top:1px">${l.sub}</div>
+                    </div>
+                </li>`
+            ).join('');
+
+            const objEl = document.getElementById('vObjectives');
+            objEl.innerHTML = (extra.objectives || []).map(o =>
+                `<li style="display:flex;align-items:flex-start;gap:8px;font-size:0.78rem;font-weight:700;color:var(--text-primary)"><i class="fa-solid fa-circle-check" style="color:var(--green);margin-top:2px;font-size:11px;flex-shrink:0"></i>${o}</li>`
+            ).join('');
+
+            const reqEl = document.getElementById('vRequirements');
+            reqEl.innerHTML = (extra.requirements || []).map(r =>
+                `<li style="display:flex;align-items:flex-start;gap:8px;font-size:0.78rem;font-weight:700;color:var(--text-primary)"><i class="fa-solid fa-circle-dot" style="color:var(--accent);margin-top:2px;font-size:11px;flex-shrink:0"></i>${r}</li>`
+            ).join('');
+
+            openModal('viewModal');
+        }
+
+        // ═══════════════ EDIT MODAL ═══════════════
+        function openEditById(id) {
+            const mod = allModules.find(m => String(m.id) === String(id));
+            if (!mod) return;
+            currentEditId = id;
+            document.getElementById('eTitle').value = mod.title || '';
+            document.getElementById('eDesc').value = mod.desc || '';
+            document.getElementById('eLessons').value = mod.lessons || 1;
+            document.getElementById('eDuration').value = mod.duration || '';
+            document.getElementById('eTeacher').value = mod.teacher || '';
+
+            const catSel = document.getElementById('eCategory');
+            for (let o of catSel.options) {
+                if (o.value === mod.category || (mod.category && mod.category.toLowerCase().includes(o.value.toLowerCase()))) {
+                    catSel.value = o.value;
+                    break;
+                }
+            }
+
+            const stSel = document.getElementById('eStatus');
+            stSel.value = mod.status || 'Published';
+            openModal('editModal');
+        }
+
+        function openEdit(btn) {
+            const d = btn.closest('.mod-card').dataset;
+            openEditById(d.id);
+        }
+
+        async function saveEdit() {
+            if (!currentEditId) return;
+            const title = document.getElementById('eTitle').value.trim();
+            const desc = document.getElementById('eDesc').value.trim();
+            const lessons = parseInt(document.getElementById('eLessons').value) || 1;
+            const duration = document.getElementById('eDuration').value.trim();
+            const teacher = document.getElementById('eTeacher').value.trim();
+            const category = document.getElementById('eCategory').value;
+            const status = document.getElementById('eStatus').value;
+            if (!title) { alert('Title is required.'); return; }
+
+            const mod = allModules.find(m => String(m.id) === String(currentEditId));
+            if (mod) {
+                mod.title = title;
+                mod.desc = desc;
+                mod.lessons = lessons;
+                mod.duration = duration;
+                mod.teacher = teacher;
+                mod.category = category;
+                mod.status = status;
+
+                // Sync with server API
+                try {
+                    await fetch(`${API_BASE}?action=update_module`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id: mod.id, title, desc, lessons, duration, teacher, category, status })
+                    });
+                } catch (err) {
+                    console.warn('API sync warning:', err);
+                }
+            }
+
+            closeModal('editModal');
+            renderModules();
+        }
+
+        // ═══════════════ DELETE MODAL ═══════════════
+        function openDeleteById(id) {
+            const mod = allModules.find(m => String(m.id) === String(id));
+            if (!mod) return;
+            currentDeleteId = id;
+            document.getElementById('dTitle').textContent = mod.title;
+            openModal('deleteModal');
+        }
+
+        function openDelete(btn) {
+            const d = btn.closest('.mod-card').dataset;
+            openDeleteById(d.id);
+        }
+
+        function confirmDelete() {
+            if (currentDeleteId) {
+                allModules = allModules.filter(m => String(m.id) !== String(currentDeleteId));
+                currentDeleteId = null;
+                renderModules();
+            }
+            closeModal('deleteModal');
+        }
+
+        // ═══════════════ MODAL HELPERS ═══════════════
+        function openModal(id) { document.getElementById(id).classList.add('open'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function (e) {
+                if (e.target === this) {
+                    this.classList.remove('open');
+                }
+            });
+        });
+
+        // ═══════════════ CREATE MODULE HANDLERS ═══════════════
+        function openCreateModule() {
+            document.getElementById('mTitle').value = '';
+            document.getElementById('mCategory').selectedIndex = 0;
+            document.getElementById('mDesc').value = '';
+            document.getElementById('mLessons').value = 1;
+            document.getElementById('mDuration').value = '';
+            document.getElementById('mTeacher').value = '';
+            document.getElementById('mStatus').selectedIndex = 0;
+            openModal('createModuleModal');
+        }
+
+        function confirmCreateModule() {
+            const title = document.getElementById('mTitle').value.trim();
+            if (!title) { alert('Please enter a module title'); return; }
+            document.getElementById('createdModuleName').textContent = title;
+            closeModal('createModuleModal');
+            openModal('createModuleSuccessModal');
+        }
+
+        // ═══════════════ FILTER LISTENERS ═══════════════
+        function resetModuleFilters() {
+            const s1 = document.getElementById('moduleSearchInput');
+            const s2 = document.getElementById('topbarSearchInput');
+            const st = document.getElementById('statusFilterSelect');
+            const cat = document.getElementById('categoryFilterSelect');
+            const sort = document.getElementById('sortFilterSelect');
+
+            if (s1) s1.value = '';
+            if (s2) s2.value = '';
+            if (st) st.value = 'all';
+            if (cat) cat.value = 'all';
+            if (sort) sort.value = 'default';
+            renderModules();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const s1 = document.getElementById('moduleSearchInput');
+            const s2 = document.getElementById('topbarSearchInput');
+            const st = document.getElementById('statusFilterSelect');
+            const cat = document.getElementById('categoryFilterSelect');
+            const sort = document.getElementById('sortFilterSelect');
+
+            if (s1) s1.addEventListener('input', () => {
+                if (s2) s2.value = s1.value;
+                renderModules();
+            });
+
+            if (s2) s2.addEventListener('input', () => {
+                if (s1) s1.value = s2.value;
+                renderModules();
+            });
+
+            if (st) st.addEventListener('change', renderModules);
+            if (cat) cat.addEventListener('change', renderModules);
+            if (sort) sort.addEventListener('change', renderModules);
+
+            loadAdminModules();
+        });
+
+        // ═══════════════ SANITIZATION HELPERS ═══════════════
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+        }
+        function escapeAttr(str) {
+            if (!str) return '';
+            return String(str).replace(/"/g, '&quot;');
+        }
+        function escapeJs(str) {
+            if (!str) return '';
+            return String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+        }
+    </script>
+
+</body>
+
+</html>

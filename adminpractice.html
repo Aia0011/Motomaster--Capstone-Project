@@ -1,0 +1,2550 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotoMaster Admin – Practice Sessions</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #f3f4f6;
+            --panel-bg: #ffffff;
+            --border-color: #e5e7eb;
+            --text-primary: #1a1a2e;
+            --text-secondary: #6b7280;
+            --accent: #2563eb;
+            --accent-dark: #1d4ed8;
+            --accent-light: #eff6ff;
+            --green: #16a34a;
+            --red: #dc2626;
+            --orange: #d97706;
+            --sidebar-w: 240px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+            font-family: 'Nunito', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        body {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 10px;
+        }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: #fff;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .logo-container {
+            padding: 18px 20px 14px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-container img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .logo-sub {
+            font-size: 0.62rem;
+            font-weight: 800;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+        }
+
+        .nav-section-label {
+            font-size: 0.6rem;
+            font-weight: 800;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 14px 18px 4px;
+        }
+
+        .nav-menu {
+            list-style: none;
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 8px 0;
+        }
+
+        .nav-menu::-webkit-scrollbar {
+            width: 0;
+        }
+
+        .nav-item {
+            padding: 9px 16px;
+            margin: 2px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            font-weight: 700;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .nav-item i {
+            width: 16px;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+
+        .nav-item:hover {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .nav-item.active {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .nav-item.active i {
+            color: var(--accent);
+        }
+
+        .sidebar-bottom {
+            padding: 12px 0 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* ── MAIN ── */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background: var(--bg-color);
+        }
+
+        /* ── TOPBAR ── */
+        .topbar {
+            background: #fff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 28px;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+        }
+
+        .topbar-left h1 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .topbar-left p {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-color);
+            border: 1.5px solid var(--border-color);
+            border-radius: 8px;
+            padding: 7px 12px;
+        }
+
+        .search-bar i {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .search-bar input {
+            background: none;
+            border: none;
+            outline: none;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            width: 180px;
+        }
+
+        .search-bar input::placeholder {
+            color: #9ca3af;
+        }
+
+        .notif-btn {
+            position: relative;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: var(--bg-color);
+            border: 1.5px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: border-color 0.2s;
+        }
+
+        .notif-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .notif-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: var(--red);
+            color: #fff;
+            font-size: 0.58rem;
+            font-weight: 800;
+            border-radius: 50%;
+            width: 14px;
+            height: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-pill {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 5px 12px 5px 5px;
+            border-radius: 30px;
+            border: 1.5px solid var(--border-color);
+            background: #fff;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .profile-pill:hover {
+            border-color: var(--accent);
+        }
+
+        .profile-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--accent-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 12px;
+        }
+
+        .profile-name {
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .profile-role {
+            font-size: 0.62rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        /* ── DASHBOARD BODY ── */
+        .dashboard-container {
+            padding: 22px 28px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        /* ── KPI CARDS ── */
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 14px;
+        }
+
+        .kpi-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+            transition: box-shadow 0.2s, border-color 0.2s;
+        }
+
+        .kpi-card:hover {
+            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.10);
+            border-color: #bfdbfe;
+        }
+
+        .kpi-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .kpi-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
+            background: var(--accent-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .kpi-title {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .kpi-value {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        .kpi-foot {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            padding-top: 8px;
+        }
+
+        .kpi-foot span:last-child {
+            color: var(--text-primary);
+        }
+
+        /* ── BUTTONS ── */
+        .btn-outline {
+            background: #fff;
+            border: 1.5px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 7px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            transition: border-color 0.2s;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            border: none;
+            color: #fff;
+            padding: 7px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 800;
+            transition: background 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-dark);
+        }
+
+        /* ── PANEL ── */
+        .panel {
+            background: #fff;
+            border-radius: 12px;
+            padding: 0;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+        }
+
+        .panel-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px 14px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .panel-title {
+            font-size: 0.88rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .panel-subtitle {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        /* ── FILTERS BAR ── */
+        .filters-bar {
+            display: flex;
+            gap: 10px;
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border-color);
+            align-items: center;
+        }
+
+        .filter-search {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-color);
+            border: 1.5px solid var(--border-color);
+            border-radius: 8px;
+            padding: 7px 12px;
+            flex: 1;
+        }
+
+        .filter-search i {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .filter-search input {
+            background: none;
+            border: none;
+            outline: none;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            width: 100%;
+        }
+
+        .filter-search input::placeholder {
+            color: #9ca3af;
+        }
+
+        .filter-select {
+            background: var(--bg-color);
+            color: var(--text-secondary);
+            border: 1.5px solid var(--border-color);
+            border-radius: 8px;
+            padding: 7px 10px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .filter-divider {
+            width: 1px;
+            height: 28px;
+            background: var(--border-color);
+            flex-shrink: 0;
+        }
+
+        /* ── PRACTICE SESSIONS TABLE ── */
+        .assess-table-wrap {
+            overflow-x: auto;
+        }
+
+        .assess-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .assess-table thead th {
+            padding: 10px 16px;
+            text-align: left;
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: var(--bg-color);
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        .assess-table tbody tr {
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.15s;
+            cursor: pointer;
+        }
+
+        .assess-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .assess-table tbody tr:hover {
+            background: #f8f9ff;
+        }
+
+        .assess-table td {
+            padding: 12px 16px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            vertical-align: middle;
+        }
+
+        .assess-table td.muted {
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .assess-title-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .assess-icon-box {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .assess-name {
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .assess-module-link {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-top: 1px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.62rem;
+            font-weight: 800;
+        }
+
+        .badge-published {
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+        }
+
+        .badge-draft {
+            background: #fefce8;
+            color: #ca8a04;
+            border: 1px solid #fde68a;
+        }
+
+        .badge-archived {
+            background: #f3f4f6;
+            color: #6b7280;
+            border: 1px solid #e5e7eb;
+        }
+
+        .badge-quiz {
+            background: #eff6ff;
+            color: #2563eb;
+            border: 1px solid #bfdbfe;
+        }
+
+        .badge-final {
+            background: #fdf4ff;
+            color: #9333ea;
+            border: 1px solid #e9d5ff;
+        }
+
+        .badge-practice {
+            background: #fff7ed;
+            color: #c2410c;
+            border: 1px solid #fed7aa;
+        }
+
+        .pass-rate-cell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pass-rate-bar {
+            flex: 1;
+            height: 5px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            overflow: hidden;
+            min-width: 60px;
+        }
+
+        .pass-rate-fill {
+            height: 100%;
+            border-radius: 3px;
+        }
+
+        .pass-rate-pct {
+            font-size: 0.72rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .action-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .action-btn.edit {
+            background: var(--bg-color);
+            border: 1.5px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .action-btn.edit:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .action-btn.view {
+            background: var(--bg-color);
+            border: 1.5px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .action-btn.view:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .action-btn.del {
+            background: #fef2f2;
+            border: 1.5px solid #fecaca;
+            color: var(--red);
+        }
+
+        .action-btn.del:hover {
+            background: #fee2e2;
+        }
+
+        .actions-cell {
+            display: flex;
+            gap: 5px;
+        }
+
+        /* ── PAGINATION ── */
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .pagination-info {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            font-weight: 700;
+        }
+
+        .pagination-btns {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .pg-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            border: 1.5px solid var(--border-color);
+            background: #fff;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .pg-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .pg-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+
+        /* ── BOTTOM GRID ── */
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        /* ── RECENT SUBMISSIONS ── */
+        .submission-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .submission-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 20px;
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.15s;
+        }
+
+        .submission-item:last-child {
+            border-bottom: none;
+        }
+
+        .submission-item:hover {
+            background: #f8f9ff;
+        }
+
+        .sub-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 800;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .sub-name {
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .sub-meta {
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-top: 1px;
+        }
+
+        .sub-score {
+            text-align: right;
+        }
+
+        .sub-score-val {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .sub-score-lbl {
+            font-size: 0.6rem;
+            font-weight: 800;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .sub-badge {
+            font-size: 0.6rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-top: 3px;
+            display: inline-block;
+        }
+
+        .sub-pass {
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+        }
+
+        .sub-fail {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        /* ── TOP PERFORMERS ── */
+        .performer-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .performer-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 20px;
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.15s;
+        }
+
+        .performer-item:last-child {
+            border-bottom: none;
+        }
+
+        .performer-item:hover {
+            background: #f8f9ff;
+        }
+
+        .performer-rank {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .rank-gold {
+            background: #fef9c3;
+            color: #a16207;
+            border: 1px solid #fde047;
+        }
+
+        .rank-silver {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        .rank-bronze {
+            background: #fff7ed;
+            color: #c2410c;
+            border: 1px solid #fed7aa;
+        }
+
+        .rank-default {
+            background: var(--bg-color);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .performer-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 800;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .performer-name {
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .performer-meta {
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-top: 1px;
+        }
+
+        .performer-score {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-left: auto;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 28px;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            background: #fff;
+            margin-top: auto;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        footer span {
+            color: var(--accent);
+            font-weight: 800;
+        }
+
+        /* ── MODALS ── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
+            width: 100%;
+            max-width: 520px;
+            overflow: hidden;
+            animation: slideUp 0.22s ease;
+        }
+
+        .modal.modal-sm {
+            max-width: 400px;
+        }
+
+        .modal.modal-lg {
+            max-width: 680px;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(24px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 22px 14px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-header h3 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            padding: 4px;
+            border-radius: 6px;
+            transition: background 0.15s;
+        }
+
+        .modal-close:hover {
+            background: var(--bg-color);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 20px 22px;
+        }
+
+        .modal-body-scroll {
+            max-height: 68vh;
+            overflow-y: auto;
+            padding: 20px 22px;
+        }
+
+        .modal-body-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .modal-body-scroll::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 10px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            padding: 14px 22px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn-danger {
+            background: var(--red);
+            border: none;
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 800;
+            transition: background 0.2s;
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
+        .btn-save {
+            background: var(--accent);
+            border: none;
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 800;
+            transition: background 0.2s;
+        }
+
+        .btn-save:hover {
+            background: var(--accent-dark);
+        }
+
+        .btn-cancel {
+            background: #fff;
+            border: 1.5px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 8px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 700;
+            transition: border-color 0.2s;
+        }
+
+        .btn-cancel:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 8px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.82rem;
+            color: var(--text-primary);
+            outline: none;
+            transition: border-color 0.2s;
+            background: #fff;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .del-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #fef2f2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 14px;
+        }
+
+        .del-icon i {
+            font-size: 1.4rem;
+            color: var(--red);
+        }
+
+        .del-msg {
+            text-align: center;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .del-msg strong {
+            color: var(--text-primary);
+        }
+
+        .view-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .view-stat-box {
+            background: var(--bg-color);
+            border-radius: 10px;
+            padding: 10px 12px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .view-stat-val {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .view-stat-lbl {
+            font-size: 0.6rem;
+            font-weight: 800;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-top: 2px;
+        }
+
+        .section-heading {
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            margin-top: 16px;
+        }
+
+        .view-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .view-label {
+            font-size: 0.68rem;
+            font-weight: 800;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            min-width: 120px;
+            padding-top: 2px;
+        }
+
+        .view-val {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .view-divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 12px 0;
+        }
+
+        .q-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .q-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 9px;
+            background: #fff;
+        }
+
+        .q-num {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--accent-light);
+            color: var(--accent);
+            font-size: 0.68rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .q-text {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            flex: 1;
+        }
+
+        .q-pts {
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .prog-view-bar {
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .prog-view-fill {
+            height: 100%;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="sidebar">
+        <div class="logo-container">
+            <img src="images/finalogo.png" alt="MotoMaster" />
+            <div>
+                <span class="logo-text">MotoMaster</span>
+                <span class="logo-sub">Admin Panel</span>
+            </div>
+        </div>
+
+        <ul class="nav-menu">
+            <li class="nav-section-label">Main</li>
+            <li class="nav-item" onclick="window.location.href='admindash.html'"><i class="fa-solid fa-house"></i>
+                Dashboard</li>
+            <li class="nav-item" onclick="window.location.href='admintech.html'"><i
+                    class="fa-solid fa-chalkboard-user"></i> Teachers</li>
+            <li class="nav-item" onclick="window.location.href='adminstud.html'"><i class="fa-solid fa-users"></i>
+                Students</li>
+            <li class="nav-item" onclick="window.location.href='adminmod.html'"><i class="fa-solid fa-book-open"></i>
+                Modules</li>
+            <li class="nav-item" onclick="window.location.href='adminassess.html'"><i
+                    class="fa-solid fa-clipboard-check"></i> Assessments</li>
+            <li class="nav-item active" onclick="window.location.href='adminpractice.html'"><i
+                    class="fa-solid fa-gamepad"></i> Practice Sessions</li>
+
+            <li class="nav-section-label">Insights</li>
+            <li class="nav-item" onclick="window.location.href='adminanalytics.html'"><i
+                    class="fa-solid fa-chart-simple"></i> Analytics</li>
+            <li class="nav-item" onclick="window.location.href='adminreports.html'"><i
+                    class="fa-solid fa-file-invoice"></i> Reports</li>
+
+            <li class="nav-section-label">System</li>
+            <li class="nav-item" onclick="window.location.href='adminsettings.html'"><i class="fa-solid fa-gear"></i> Settings</li>
+            <li class="nav-item" onclick="window.location.href='adminactivitylogs.html'"><i class="fa-solid fa-list-check"></i> Activity Logs</li>
+            <li class="nav-item" onclick="window.location.href='adminsystembackup.html'"><i class="fa-solid fa-server"></i> System Backup</li>
+            <li class="nav-item" onclick="window.location.href='adminnotif.html'"><i class="fa-regular fa-bell"></i> Notifications</li>
+        </ul>
+
+        <div class="sidebar-bottom">
+            <a class="nav-item" href="index.html"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+        </div>
+    </aside>
+
+    <!-- ── MAIN ── -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <h1>Practice Sessions Management</h1>
+                <p>View, create, and monitor all practice sessions (Knowledge Check) across modules.</p>
+            </div>
+            <div class="topbar-right">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input id="topSearch" type="text" placeholder="Search practice session...">
+                </div>
+                <div class="notif-btn">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="notif-badge">8</span>
+                </div>
+                <div class="profile-pill">
+                    <div class="profile-avatar"><i class="fa-solid fa-user"></i></div>
+                    <div>
+                        <div class="profile-name">Administrator</div>
+                        <div class="profile-role">Super Admin</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-container">
+
+            <!-- Page actions -->
+            <div style="display:flex; justify-content:flex-end; gap:8px;">
+                <button class="btn-outline"><i class="fa-solid fa-arrow-up-from-bracket"></i> Export</button>
+                <button class="btn-primary" onclick="openCreate()"><i class="fa-solid fa-plus"></i> New Practice
+                    Session</button>
+            </div>
+
+            <!-- KPI Row -->
+            <div class="kpi-row">
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+                        <div class="kpi-title">Total Practice Sessions</div>
+                    </div>
+                    <div class="kpi-value">18</div>
+                    <div class="kpi-foot"><span>Published</span><span style="color:var(--green)">14</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon"><i class="fa-solid fa-paper-plane"></i></div>
+                        <div class="kpi-title">Total Submissions</div>
+                    </div>
+                    <div class="kpi-value">2,841</div>
+                    <div class="kpi-foot"><span>This Month</span><span>318</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon"><i class="fa-solid fa-circle-check"></i></div>
+                        <div class="kpi-title">Avg. Pass Rate</div>
+                    </div>
+                    <div class="kpi-value">74%</div>
+                    <div class="kpi-foot"><span>Passed</span><span style="color:var(--green)">2,102</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon"><i class="fa-solid fa-star-half-stroke"></i></div>
+                        <div class="kpi-title">Avg. Score</div>
+                    </div>
+                    <div class="kpi-value">81.4</div>
+                    <div class="kpi-foot"><span>Passing Mark</span><span>75 pts</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon"><i class="fa-solid fa-triangle-exclamation"
+                                style="color:var(--orange)"></i></div>
+                        <div class="kpi-title">Needs Review</div>
+                    </div>
+                    <div class="kpi-value" style="color:var(--orange)">7</div>
+                    <div class="kpi-foot"><span>Pending Grading</span><span style="color:var(--orange)">7</span></div>
+                </div>
+            </div>
+
+            <!-- Practice Sessions Table Panel -->
+            <div class="panel">
+                <div class="panel-top">
+                    <div>
+                        <div class="panel-title">All Practice Sessions</div>
+                        <div class="panel-subtitle" id="panelSubtitle">Showing 12 of 18 practice sessions</div>
+                    </div>
+                    <div style="display:flex;gap:8px">
+                        <button class="btn-outline" style="padding:6px 10px" onclick="resetFilters()"><i
+                                class="fa-solid fa-rotate"></i> Refresh</button>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="filters-bar">
+                    <div class="filter-search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input id="filterSearch" type="text" placeholder="Search by practice title or module...">
+                    </div>
+                    <select id="filterStatus" class="filter-select">
+                        <option>All Status</option>
+                        <option>Published</option>
+                        <option>Draft</option>
+                        <option>Archived</option>
+                    </select>
+                    <select id="filterType" class="filter-select">
+                        <option>All Types</option>
+                        <option>Knowledge Check</option>
+                    </select>
+                    <select id="filterModule" class="filter-select">
+                        <option>All Modules</option>
+                        <option>Engine Oil Change</option>
+                        <option>Brake Pad Replacement</option>
+                        <option>Battery Maintenance</option>
+                        <option>Fuel Filter Replacement</option>
+                        <option>Air Filter Replacement</option>
+                        <option>Spark Plug Replacement</option>
+                    </select>
+                    <div class="filter-divider"></div>
+                    <button class="btn-outline" style="padding:7px 10px;"><i class="fa-solid fa-filter"></i></button>
+                </div>
+
+                <!-- Table -->
+                <div class="assess-table-wrap">
+                    <table class="assess-table">
+                        <thead>
+                            <tr>
+                                <th style="width:30px"><input type="checkbox" style="cursor:pointer"></th>
+                                <th>Practice Session</th>
+                                <th>Type</th>
+                                <th>Module</th>
+                                <th>Questions</th>
+                                <th>Time Limit</th>
+                                <th>Submissions</th>
+                                <th>Pass Rate</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="assessTableBody">
+                            <!-- Rows injected by JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination">
+                    <div class="pagination-info" id="paginationInfo">Showing 1–12 of 18 practice sessions</div>
+                    <div class="pagination-btns">
+                        <button class="pg-btn"><i class="fa-solid fa-chevron-left" style="font-size:9px"></i></button>
+                        <button class="pg-btn active">1</button>
+                        <button class="pg-btn">2</button>
+                        <button class="pg-btn"><i class="fa-solid fa-chevron-right" style="font-size:9px"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Grid -->
+            <div class="bottom-grid">
+
+                <!-- Recent Submissions -->
+                <div class="panel">
+                    <div class="panel-top">
+                        <div>
+                            <div class="panel-title">Recent Submissions</div>
+                            <div class="panel-subtitle">Latest student practice attempts</div>
+                        </div>
+                        <button class="btn-outline" style="font-size:0.72rem;padding:5px 12px">View All</button>
+                    </div>
+                    <div class="submission-list">
+                        <div class="submission-item">
+                            <div class="sub-avatar" style="background:#2563eb">MR</div>
+                            <div style="flex:1;min-width:0">
+                                <div class="sub-name">Miguel Reyes</div>
+                                <div class="sub-meta">Engine Oil Change – Knowledge Check &bull; 2 mins ago</div>
+                            </div>
+                            <div class="sub-score" style="text-align:right">
+                                <div class="sub-score-val" style="color:var(--green)">92</div>
+                                <div class="sub-score-lbl">/ 100</div>
+                                <span class="sub-badge sub-pass">PASSED</span>
+                            </div>
+                        </div>
+                        <div class="submission-item">
+                            <div class="sub-avatar" style="background:#9333ea">AS</div>
+                            <div style="flex:1;min-width:0">
+                                <div class="sub-name">Ana Santos</div>
+                                <div class="sub-meta">Brake Pad Replacement – Knowledge Check &bull; 14 mins ago</div>
+                            </div>
+                            <div class="sub-score" style="text-align:right">
+                                <div class="sub-score-val" style="color:var(--red)">68</div>
+                                <div class="sub-score-lbl">/ 100</div>
+                                <span class="sub-badge sub-fail">FAILED</span>
+                            </div>
+                        </div>
+                        <div class="submission-item">
+                            <div class="sub-avatar" style="background:#16a34a">LC</div>
+                            <div style="flex:1;min-width:0">
+                                <div class="sub-name">Luis Cruz</div>
+                                <div class="sub-meta">Battery Maintenance – Knowledge Check &bull; 31 mins ago</div>
+                            </div>
+                            <div class="sub-score" style="text-align:right">
+                                <div class="sub-score-val" style="color:var(--green)">88</div>
+                                <div class="sub-score-lbl">/ 100</div>
+                                <span class="sub-badge sub-pass">PASSED</span>
+                            </div>
+                        </div>
+                        <div class="submission-item">
+                            <div class="sub-avatar" style="background:#d97706">JM</div>
+                            <div style="flex:1;min-width:0">
+                                <div class="sub-name">Jana Mendoza</div>
+                                <div class="sub-meta">Fuel Filter Replacement – Knowledge Check &bull; 1 hr ago</div>
+                            </div>
+                            <div class="sub-score" style="text-align:right">
+                                <div class="sub-score-val" style="color:var(--green)">79</div>
+                                <div class="sub-score-lbl">/ 100</div>
+                                <span class="sub-badge sub-pass">PASSED</span>
+                            </div>
+                        </div>
+                        <div class="submission-item">
+                            <div class="sub-avatar" style="background:#be123c">RV</div>
+                            <div style="flex:1;min-width:0">
+                                <div class="sub-name">Rico Villanueva</div>
+                                <div class="sub-meta">Spark Plug Replacement – Knowledge Check &bull; 2 hrs ago</div>
+                            </div>
+                            <div class="sub-score" style="text-align:right">
+                                <div class="sub-score-val" style="color:var(--red)">64</div>
+                                <div class="sub-score-lbl">/ 100</div>
+                                <span class="sub-badge sub-fail">FAILED</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Performers -->
+                <div class="panel">
+                    <div class="panel-top">
+                        <div>
+                            <div class="panel-title">Top Performers</div>
+                            <div class="panel-subtitle">Highest overall practice scores this month</div>
+                        </div>
+                        <button class="btn-outline" style="font-size:0.72rem;padding:5px 12px">View All</button>
+                    </div>
+                    <div class="performer-list">
+                        <div class="performer-item">
+                            <div class="performer-rank rank-gold">1</div>
+                            <div class="performer-avatar" style="background:#2563eb">JD</div>
+                            <div style="flex:1;min-width:0">
+                                <div class="performer-name">Juan Dela Cruz</div>
+                                <div class="performer-meta">6 assessments &bull; Avg. 97.2</div>
+                            </div>
+                            <div class="performer-score">97.2</div>
+                        </div>
+                        <div class="performer-item">
+                            <div class="performer-rank rank-silver">2</div>
+                            <div class="performer-avatar" style="background:#9333ea">CP</div>
+                            <div style="flex:1;min-width:0">
+                                <div class="performer-name">Carla Perez</div>
+                                <div class="performer-meta">5 assessments &bull; Avg. 95.4</div>
+                            </div>
+                            <div class="performer-score">95.4</div>
+                        </div>
+                        <div class="performer-item">
+                            <div class="performer-rank rank-bronze">3</div>
+                            <div class="performer-avatar" style="background:#16a34a">RG</div>
+                            <div style="flex:1;min-width:0">
+                                <div class="performer-name">Ramon Garcia</div>
+                                <div class="performer-meta">6 assessments &bull; Avg. 93.8</div>
+                            </div>
+                            <div class="performer-score">93.8</div>
+                        </div>
+                        <div class="performer-item">
+                            <div class="performer-rank rank-default">4</div>
+                            <div class="performer-avatar" style="background:#d97706">BT</div>
+                            <div style="flex:1;min-width:0">
+                                <div class="performer-name">Bianca Torres</div>
+                                <div class="performer-meta">5 assessments &bull; Avg. 91.6</div>
+                            </div>
+                            <div class="performer-score">91.6</div>
+                        </div>
+                        <div class="performer-item">
+                            <div class="performer-rank rank-default">5</div>
+                            <div class="performer-avatar" style="background:#be123c">MR</div>
+                            <div style="flex:1;min-width:0">
+                                <div class="performer-name">Miguel Reyes</div>
+                                <div class="performer-meta">4 assessments &bull; Avg. 90.0</div>
+                            </div>
+                            <div class="performer-score">90.0</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <footer>
+            <span>MotoMaster</span> Admin Panel &mdash; Practice Sessions Management &copy; 2025
+            <span>v2.1.0</span>
+        </footer>
+
+    </main>
+
+    <!-- ══════════════════════════════
+         VIEW MODAL
+    ══════════════════════════════ -->
+    <div class="modal-overlay" id="viewModal">
+        <div class="modal modal-lg">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-eye" style="color:var(--accent);margin-right:8px;font-size:0.9rem"></i>
+                    Practice Session Details</h3>
+                <button class="modal-close" onclick="closeModal('viewModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body-scroll">
+                <!-- Stats -->
+                <div class="view-stats-grid">
+                    <div class="view-stat-box">
+                        <div class="view-stat-val" id="vQuestions">—</div>
+                        <div class="view-stat-lbl">Questions</div>
+                    </div>
+                    <div class="view-stat-box">
+                        <div class="view-stat-val" id="vTimeLimit">—</div>
+                        <div class="view-stat-lbl">Time Limit</div>
+                    </div>
+                    <div class="view-stat-box">
+                        <div class="view-stat-val" id="vPassMark">—</div>
+                        <div class="view-stat-lbl">Passing Mark</div>
+                    </div>
+                    <div class="view-stat-box">
+                        <div class="view-stat-val" id="vPassRate">—</div>
+                        <div class="view-stat-lbl">Pass Rate</div>
+                    </div>
+                </div>
+
+                <!-- Info rows -->
+                <div class="view-row">
+                    <div class="view-label">Title</div>
+                    <div class="view-val" id="vTitle">—</div>
+                </div>
+                <div class="view-row">
+                    <div class="view-label">Type</div>
+                    <div class="view-val" id="vType">—</div>
+                </div>
+                <div class="view-row">
+                    <div class="view-label">Linked Module</div>
+                    <div class="view-val" id="vModule">—</div>
+                </div>
+                <div class="view-row">
+                    <div class="view-label">Status</div>
+                    <div id="vStatus">—</div>
+                </div>
+                <div class="view-row">
+                    <div class="view-label">Submissions</div>
+                    <div class="view-val" id="vSubmissions">—</div>
+                </div>
+                <div class="view-row">
+                    <div class="view-label">Avg. Score</div>
+                    <div class="view-val" id="vAvgScore">—</div>
+                </div>
+
+                <div class="view-divider"></div>
+
+                <!-- Pass rate bar -->
+                <div style="margin-bottom:16px">
+                    <div
+                        style="display:flex;justify-content:space-between;font-size:0.68rem;font-weight:800;color:var(--text-secondary);margin-bottom:4px">
+                        <span>PASS RATE</span><span id="vPassRateBar">0%</span>
+                    </div>
+                    <div class="prog-view-bar">
+                        <div class="prog-view-fill" id="vPassFill" style="background:var(--green)"></div>
+                    </div>
+                </div>
+
+                <!-- Questions -->
+                <div class="section-heading">Questions Preview</div>
+                <ul class="q-list" id="vQuestionsList"></ul>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModal('viewModal')">Close</button>
+                <button class="btn-save" onclick="switchToEdit()"><i class="fa-solid fa-pen" style="font-size:11px"></i>
+                    Edit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════
+         EDIT MODAL
+    ══════════════════════════════ -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal modal-lg">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-pen" style="color:var(--accent);margin-right:8px;font-size:0.9rem"></i> Edit
+                    Practice Session</h3>
+                <button class="modal-close" onclick="closeModal('editModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body-scroll">
+                <div class="form-group">
+                    <label class="form-label">Practice Session Title</label>
+                    <input class="form-control" id="eTitle" type="text">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Type</label>
+                        <select class="form-control" id="eType">
+                            <option>Knowledge Check</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Linked Module</label>
+                        <select class="form-control" id="eModule">
+                            <option>Engine Oil Change &amp; Maintenance</option>
+                            <option>Brake Pad Replacement</option>
+                            <option>Battery Maintenance</option>
+                            <option>Fuel Filter Replacement</option>
+                            <option>Air Filter Replacement</option>
+                            <option>Spark Plug Replacement</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Number of Questions</label>
+                        <input class="form-control" id="eQuestions" type="number" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Time Limit</label>
+                        <input class="form-control" id="eTimeLimit" type="text" placeholder="e.g. 20 mins">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Passing Mark (pts)</label>
+                        <input class="form-control" id="ePassMark" type="number" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select class="form-control" id="eStatus">
+                            <option>Published</option>
+                            <option>Draft</option>
+                            <option>Archived</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModal('editModal')">Cancel</button>
+                <button class="btn-save" onclick="saveEdit()"><i class="fa-solid fa-floppy-disk"
+                        style="font-size:11px"></i> Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════
+         DELETE MODAL
+    ══════════════════════════════ -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal modal-sm">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-trash" style="color:var(--red);margin-right:8px;font-size:0.9rem"></i> Delete
+                    Practice Session</h3>
+                <button class="modal-close" onclick="closeModal('deleteModal')"><i
+                        class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="del-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div class="del-msg">Are you sure you want to delete<br><strong id="dTitle">this practice
+                        session</strong>?<br>This action cannot be undone.</div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModal('deleteModal')">Cancel</button>
+                <button class="btn-danger" onclick="confirmDelete()"><i class="fa-solid fa-trash"
+                        style="font-size:11px"></i> Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════
+         CREATE MODAL
+    ══════════════════════════════ -->
+    <div class="modal-overlay" id="createModal">
+        <div class="modal modal-lg">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-plus" style="color:var(--accent);margin-right:8px;font-size:0.9rem"></i> New
+                    Practice Session</h3>
+                <button class="modal-close" onclick="closeModal('createModal')"><i
+                        class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body-scroll">
+                <div class="form-group">
+                    <label class="form-label">Practice Session Title</label>
+                    <input class="form-control" id="cTitle" type="text"
+                        placeholder="e.g. Engine Oil Change – Knowledge Check">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Type</label>
+                        <select class="form-control" id="cType">
+                            <option>Knowledge Check</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Linked Module</label>
+                        <select class="form-control" id="cModule">
+                            <option>Engine Oil Change &amp; Maintenance</option>
+                            <option>Brake Pad Replacement</option>
+                            <option>Battery Maintenance</option>
+                            <option>Fuel Filter Replacement</option>
+                            <option>Air Filter Replacement</option>
+                            <option>Spark Plug Replacement</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Number of Questions</label>
+                        <input class="form-control" id="cQuestions" type="number" min="1" value="10">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Time Limit</label>
+                        <input class="form-control" id="cTimeLimit" type="text" placeholder="e.g. 20 mins">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Passing Mark (pts)</label>
+                        <input class="form-control" id="cPassMark" type="number" min="1" value="75">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select class="form-control" id="cStatus">
+                            <option>Draft</option>
+                            <option>Published</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModal('createModal')">Cancel</button>
+                <button class="btn-save" onclick="confirmCreate()"><i class="fa-solid fa-plus"
+                        style="font-size:11px"></i> Create Practice Session</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═════════════════════════════=
+         CREATE SUCCESS MODAL
+    ══════════════════════════════ -->
+    <div class="modal-overlay" id="createSuccessModal">
+        <div class="modal modal-sm">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-circle-check"
+                        style="color:var(--green);margin-right:8px;font-size:0.9rem"></i> Practice Session Created</h3>
+                <button class="modal-close" onclick="closeModal('createSuccessModal')"><i
+                        class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align:center">
+                    <div class="del-icon" style="background:#ecfdf5"><i class="fa-solid fa-circle-check"
+                            style="color:var(--green)"></i></div>
+                    <div class="del-msg" style="margin-top:6px">"<strong id="createdTitle">New Practice
+                            Session</strong>" has been created.</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-outline" id="createdCreateAnotherBtn">Create Another</button>
+                <button class="btn-primary" id="createdViewBtn">View Practice Session</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ── DATA ── */
+        const assessments = [
+            {
+                id: 1,
+                title: 'Engine Oil Change – Knowledge Check',
+                type: 'Knowledge Check',
+                module: 'Engine Oil Change & Maintenance',
+                moduleColor: 'linear-gradient(135deg,#1e40af,#2563eb)',
+                questions: 10,
+                timeLimit: '15 mins',
+                passMark: 75,
+                submissions: 198,
+                passRate: 82,
+                avgScore: 84.6,
+                status: 'Published',
+                questionList: [
+                    { text: 'What is the primary purpose of engine oil in a motorcycle?', pts: 10 },
+                    { text: 'What tool is used to remove the oil drain plug?', pts: 10 },
+                    { text: 'Why must the engine be warm before draining oil?', pts: 10 },
+                    { text: 'How do you check if the new oil level is correct?', pts: 10 },
+                    { text: 'What happens if you over-fill the engine with oil?', pts: 10 },
+                    { text: 'Which direction do you turn to loosen the drain plug?', pts: 10 },
+                    { text: 'What should be applied to the oil filter gasket before installation?', pts: 10 },
+                    { text: 'How long should you run the engine after an oil change?', pts: 10 },
+                    { text: 'What does a milky-colored engine oil indicate?', pts: 10 },
+                    { text: 'At what interval should engine oil typically be changed?', pts: 10 }
+                ]
+            },
+            {
+                id: 2,
+                title: 'Engine Oil Change – Knowledge Check',
+                type: 'Knowledge Check',
+                module: 'Engine Oil Change & Maintenance',
+                moduleColor: 'linear-gradient(135deg,#1e40af,#2563eb)',
+                questions: 20,
+                timeLimit: '30 mins',
+                passMark: 75,
+                submissions: 174,
+                passRate: 78,
+                avgScore: 80.3,
+                status: 'Published',
+                questionList: [
+                    { text: 'Describe the full engine oil change procedure step by step.', pts: 5 },
+                    { text: 'What grade of oil is recommended for high-mileage engines?', pts: 5 },
+                    { text: 'Why is it important to replace the oil filter during every oil change?', pts: 5 },
+                    { text: 'Identify the safety precautions when working with hot engine oil.', pts: 5 },
+                    { text: 'What is the torque specification for a typical drain plug?', pts: 5 }
+                ]
+            },
+            {
+                id: 3,
+                title: 'Brake Pad Replacement – Knowledge Check',
+                type: 'Knowledge Check',
+                module: 'Brake Pad Replacement',
+                moduleColor: 'linear-gradient(135deg,#6d28d9,#7c3aed)',
+                questions: 10,
+                timeLimit: '15 mins',
+                passMark: 75,
+                submissions: 162,
+                passRate: 71,
+                avgScore: 78.4,
+                status: 'Published',
+                questionList: [
+                    { text: 'What is the minimum brake pad thickness before replacement is required?', pts: 10 },
+                    { text: 'Why should the caliper NOT be hung by the brake hose?', pts: 10 },
+                    { text: 'What is the purpose of compressing the caliper piston?', pts: 10 },
+                    { text: 'Where should brake grease be applied during pad installation?', pts: 10 },
+                    { text: 'Why must brake pads be bedded in after installation?', pts: 10 },
+                    { text: 'What indicates the brake rotor needs replacement, not just the pads?', pts: 10 },
+                    { text: 'Which lug nut tightening pattern should be used?', pts: 10 },
+                    { text: 'What is the first step before loosening lug nuts?', pts: 10 },
+                    { text: 'Why should you pump the brake pedal after replacing pads?', pts: 10 },
+                    { text: 'What brake fluid specification is commonly required?', pts: 10 }
+                ]
+            },
+            {
+                id: 4,
+                title: 'Brake Pad Replacement – Knowledge Check',
+                type: 'Knowledge Check',
+                module: 'Brake Pad Replacement',
+                moduleColor: 'linear-gradient(135deg,#6d28d9,#7c3aed)',
+                questions: 20,
+                timeLimit: '30 mins',
+                passMark: 75,
+                submissions: 148,
+                passRate: 68,
+                avgScore: 76.1,
+                status: 'Published',
+                questionList: [
+                    { text: 'Describe the complete brake pad replacement procedure.', pts: 5 },
+                    { text: 'Explain the risks of driving with worn brake pads.', pts: 5 },
+                    { text: 'What are the signs of a seized caliper piston?', pts: 5 },
+                    { text: 'How does brake fade occur and how is it prevented?', pts: 5 },
+                    { text: 'What safety equipment is required when performing brake work?', pts: 5 }
+                ]
+            },
+            {
+                id: 5,
+                title: 'Battery Maintenance – Knowledge Check',
+                type: 'Knowledge Check',
+                module: 'Battery Maintenance',
+                moduleColor: 'linear-gradient(135deg,#374151,#6b7280)',
+                questions: 10,
+                timeLimit: '15 mins',
+                passMark: 75,
+                submissions: 141,
+                passRate: 79,
+                avgScore: 82.0,
+                status: 'Published',
+                questionList: [
+                    { text: 'Which cable must be disconnected first when removing a battery?', pts: 10 },
+                    { text: 'What tool is used to clean corroded battery terminals?', pts: 10 },
+                    { text: 'What is the correct order for reconnecting battery cables?', pts: 10 },
+                    { text: 'What does a bloated or swollen battery indicate?', pts: 10 },
+                    { text: 'What voltage should a fully charged 12V battery read?', pts: 10 },
+                    { text: 'Why is it dangerous to connect the negative cable first?', pts: 10 },
+                    { text: 'What is applied to terminals after installation to prevent corrosion?', pts: 10 },
+                    { text: 'What safety gear is required when handling a car battery?', pts: 10 },
+                    { text: 'What does CCA stand for in battery specifications?', pts: 10 },
+                    { text: 'How do you confirm a new battery is installed correctly?', pts: 10 }
+                ]
+            },
+            {
+                id: 6,
+                title: 'Battery Maintenance – Knowledge Check',
+                type: 'Knowledge Check',
+                module: 'Battery Maintenance',
+                moduleColor: 'linear-gradient(135deg,#374151,#6b7280)',
+                questions: 15,
+                timeLimit: '25 mins',
+                passMark: 75,
+                submissions: 122,
+                passRate: 75,
+                avgScore: 79.5,
+                status: 'Published',
+                questionList: [
+                    { text: 'Walk through the full battery replacement procedure.', pts: 7 },
+                    { text: 'Explain what happens to a vehicles electronics if battery polarity is reversed.', pts: 7 },
+                    { text: 'How is battery capacity (Ah) relevant to vehicle type?', pts: 7 }
+                ]
+            },
+            {
+                id: 7,
+                title: 'Fuel Filter Replacement – Knowledge Check',
+                type: 'Knowledge Check',
+                module: 'Fuel Filter Replacement',
+                moduleColor: 'linear-gradient(135deg,#92400e,#d97706)',
+                questions: 10,
+                timeLimit: '15 mins',
+                passMark: 75,
+                submissions: 136,
+                passRate: 77,
+                avgScore: 81.2,
+                status: 'Published',
+                questionList: [
+                    { text: 'Why must fuel pressure be relieved before removing the fuel filter?', pts: 10 },
+                    { text: 'What indicates the fuel filter flow direction?', pts: 10 },
+                    { text: 'Why is the battery disconnected during fuel filter replacement?', pts: 10 },
+                    { text: 'What safety hazard is present when working near fuel lines?', pts: 10 },
+                    { text: 'How do you test for fuel leaks after filter installation?', pts: 10 },
+                    { text: 'At what interval should a fuel filter typically be replaced?', pts: 10 },
+                    { text: 'What symptoms indicate a clogged fuel filter?', pts: 10 },
+                    { text: 'Why should a drain pan be placed before disconnecting fuel lines?', pts: 10 },
+                    { text: 'What type of gloves should be worn when handling fuel?', pts: 10 },
+                    { text: 'How is the correct replacement filter verified?', pts: 10 }
+                ]
+            },
+            {
+                id: 8,
+                title: 'Fuel Filter Replacement – Knowledge Check',
+                type: 'Knowledge Check',
+                module: 'Fuel Filter Replacement',
+                moduleColor: 'linear-gradient(135deg,#92400e,#d97706)',
+                questions: 15,
+                timeLimit: '25 mins',
+                passMark: 75,
+                submissions: 119,
+                passRate: 72,
+                avgScore: 78.8,
+                status: 'Published',
+                questionList: [
+                    { text: 'Describe the complete fuel filter replacement procedure.', pts: 7 },
+                    { text: 'What are the consequences of installing a fuel filter backwards?', pts: 7 },
+                    { text: 'Explain the fire risks and how to mitigate them during fuel work.', pts: 7 }
+                ]
+            },
+            {
+                id: 9,
+                title: 'Air Filter Replacement – Knowledge Check',
+                type: 'Knowledge Check',
+                module: 'Air Filter Replacement',
+                moduleColor: 'linear-gradient(135deg,#065f46,#16a34a)',
+                questions: 10,
+                timeLimit: '15 mins',
+                passMark: 75,
+                submissions: 154,
+                passRate: 85,
+                avgScore: 87.3,
+                status: 'Published',
+                questionList: [
+                    { text: 'How can you tell if an air filter needs replacement without removing it?', pts: 10 },
+                    { text: 'Why should you cover the intake port while the housing is open?', pts: 10 },
+                    { text: 'What does a whistling sound after reassembly indicate?', pts: 10 },
+                    { text: 'Why must the rubber gasket of the new filter seat evenly?', pts: 10 },
+                    { text: 'What is the effect of a clogged air filter on engine performance?', pts: 10 },
+                    { text: 'How is the air intake hose clamp loosened?', pts: 10 },
+                    { text: 'At what mileage interval is air filter replacement typically recommended?', pts: 10 },
+                    { text: 'What tool can be used to clean the inside of the filter housing?', pts: 10 },
+                    { text: 'What safety reminder applies before reaching into the engine bay?', pts: 10 },
+                    { text: 'What is the last check performed after air filter replacement?', pts: 10 }
+                ]
+            },
+            {
+                id: 10,
+                title: 'Air Filter Replacement – Knowledge Check',
+                type: 'Knowledge Check',
+                module: 'Air Filter Replacement',
+                moduleColor: 'linear-gradient(135deg,#065f46,#16a34a)',
+                questions: 15,
+                timeLimit: '25 mins',
+                passMark: 75,
+                submissions: 131,
+                passRate: 80,
+                avgScore: 83.1,
+                status: 'Published',
+                questionList: [
+                    { text: 'Describe the full air filter replacement procedure.', pts: 7 },
+                    { text: 'Explain what oil contamination on an air filter indicates.', pts: 7 },
+                    { text: 'How does unfiltered air ingestion affect the engine long-term?', pts: 7 }
+                ]
+            },
+            {
+                id: 11,
+                title: 'Spark Plug Replacement – Knowledge Check',
+                type: 'Knowledge Check',
+                module: 'Spark Plug Replacement',
+                moduleColor: 'linear-gradient(135deg,#be123c,#e11d48)',
+                questions: 10,
+                timeLimit: '15 mins',
+                passMark: 75,
+                submissions: 143,
+                passRate: 70,
+                avgScore: 77.6,
+                status: 'Published',
+                questionList: [
+                    { text: 'Why must the engine be fully cool before removing spark plugs?', pts: 10 },
+                    { text: 'What tool is used to measure spark plug gap?', pts: 10 },
+                    { text: 'What does a black, sooty spark plug indicate?', pts: 10 },
+                    { text: 'Why is anti-seize compound applied to spark plug threads?', pts: 10 },
+                    { text: 'What happens if a spark plug is over-torqued?', pts: 10 },
+                    { text: 'How is the spark plug gap adjusted?', pts: 10 },
+                    { text: 'What does a white or gray electrode tip indicate?', pts: 10 },
+                    { text: 'Why should ignition wires be removed one at a time?', pts: 10 },
+                    { text: 'What is the correct way to hand-thread a spark plug?', pts: 10 },
+                    { text: 'At what interval should spark plugs be inspected?', pts: 10 }
+                ]
+            },
+            {
+                id: 12,
+                title: 'Spark Plug Replacement – Knowledge Check',
+                type: 'Knowledge Check',
+                module: 'Spark Plug Replacement',
+                moduleColor: 'linear-gradient(135deg,#be123c,#e11d48)',
+                questions: 15,
+                timeLimit: '25 mins',
+                passMark: 75,
+                submissions: 117,
+                passRate: 66,
+                avgScore: 74.9,
+                status: 'Draft',
+                questionList: [
+                    { text: 'Describe the complete spark plug replacement procedure.', pts: 7 },
+                    { text: 'Explain how to read spark plug condition and diagnose engine issues.', pts: 7 },
+                    { text: 'What are the consequences of incorrect torque during installation?', pts: 7 }
+                ]
+            }
+        ];
+
+        /* ── RENDER TABLE ── */
+        function getTypeClass(type) {
+            if (type === 'Final Exam') return 'badge-final';
+            if (type === 'Practice Quiz') return 'badge-practice';
+            return 'badge-quiz';
+        }
+        function getStatusClass(status) {
+            if (status === 'Published') return 'badge-published';
+            if (status === 'Draft') return 'badge-draft';
+            return 'badge-archived';
+        }
+        function getPassColor(rate) {
+            if (rate >= 80) return 'var(--green)';
+            if (rate >= 65) return 'var(--orange)';
+            return 'var(--red)';
+        }
+
+        // Filtering & pagination state
+        const state = {
+            search: '',
+            status: 'All Status',
+            type: 'All Types',
+            module: 'All Modules',
+            page: 1,
+            pageSize: 12
+        };
+
+        function applyFilters() {
+            let list = assessments.slice();
+            const s = state.search.trim().toLowerCase();
+            if (s) list = list.filter(a => (a.title || '').toLowerCase().includes(s) || (a.module || '').toLowerCase().includes(s));
+            if (state.status && state.status !== 'All Status') list = list.filter(a => a.status === state.status);
+            if (state.type && state.type !== 'All Types') list = list.filter(a => a.type === state.type);
+            if (state.module && state.module !== 'All Modules') list = list.filter(a => a.module === state.module);
+            return list;
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('assessTableBody');
+            const filtered = applyFilters();
+            const total = filtered.length;
+            const totalPages = Math.max(1, Math.ceil(total / state.pageSize));
+            if (state.page > totalPages) state.page = totalPages;
+            const start = (state.page - 1) * state.pageSize;
+            const pageItems = filtered.slice(start, start + state.pageSize);
+
+            if (!pageItems.length) {
+                tbody.innerHTML = `<tr><td colspan="10" style="padding:28px 16px;text-align:center;color:var(--text-secondary);font-weight:700">No practice sessions found.</td></tr>`;
+            } else {
+                tbody.innerHTML = pageItems.map(a => `
+                <tr>
+                    <td><input type="checkbox" style="cursor:pointer"></td>
+                    <td>
+                        <div class="assess-title-cell">
+                            <div class="assess-icon-box" style="background:${a.moduleColor}">
+                                <i class="fa-solid fa-clipboard-check"></i>
+                            </div>
+                            <div>
+                                <div class="assess-name">${a.title}</div>
+                                <div class="assess-module-link">${a.module}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="badge ${getTypeClass(a.type)}">${a.type}</span></td>
+                    <td class="muted">${a.module}</td>
+                    <td>${a.questions} Qs</td>
+                    <td class="muted">${a.timeLimit}</td>
+                    <td>${a.submissions.toLocaleString()}</td>
+                    <td>
+                        <div class="pass-rate-cell">
+                            <div class="pass-rate-bar">
+                                <div class="pass-rate-fill" style="width:${a.passRate}%;background:${getPassColor(a.passRate)}"></div>
+                            </div>
+                            <span class="pass-rate-pct" style="color:${getPassColor(a.passRate)}">${a.passRate}%</span>
+                        </div>
+                    </td>
+                    <td><span class="badge ${getStatusClass(a.status)}">${a.status}</span></td>
+                    <td>
+                        <div class="actions-cell">
+                            <button class="action-btn view" title="View" onclick="openView(${a.id})"><i class="fa-solid fa-eye"></i></button>
+                            <button class="action-btn edit" title="Edit" onclick="openEdit(${a.id})"><i class="fa-solid fa-pen"></i></button>
+                            <button class="action-btn del" title="Delete" onclick="openDelete(${a.id})"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+            }
+
+            // update subtitles / pagination info
+            const panelSubtitle = document.getElementById('panelSubtitle');
+            if (panelSubtitle) panelSubtitle.textContent = `Showing ${Math.min(state.pageSize, total)} of ${total} practice sessions`;
+            const paginationInfo = document.getElementById('paginationInfo');
+            if (paginationInfo) {
+                if (total === 0) paginationInfo.textContent = `Showing 0 of 0 practice sessions`;
+                else paginationInfo.textContent = `Showing ${start + 1}–${start + pageItems.length} of ${total} practice sessions`;
+            }
+
+            renderPagination(totalPages);
+        }
+
+        function renderPagination(totalPages) {
+            const container = document.querySelector('.pagination-btns');
+            if (!container) return;
+            let html = '';
+            html += `<button class="pg-btn" ${state.page === 1 ? 'disabled' : ''} onclick="changePage(${state.page - 1})"><i class=\"fa-solid fa-chevron-left\" style=\"font-size:9px\"></i></button>`;
+
+            const maxButtons = 5;
+            let start = Math.max(1, state.page - 2);
+            let end = Math.min(totalPages, start + maxButtons - 1);
+            if (end - start < maxButtons - 1) start = Math.max(1, end - maxButtons + 1);
+
+            for (let i = start; i <= end; i++) {
+                html += `<button class="pg-btn ${i === state.page ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+            }
+
+            html += `<button class="pg-btn" ${state.page === totalPages ? 'disabled' : ''} onclick="changePage(${state.page + 1})"><i class=\"fa-solid fa-chevron-right\" style=\"font-size:9px\"></i></button>`;
+            container.innerHTML = html;
+        }
+
+        function changePage(n) {
+            const totalFiltered = applyFilters().length;
+            const totalPages = Math.max(1, Math.ceil(totalFiltered / state.pageSize));
+            if (n < 1) n = 1;
+            if (n > totalPages) n = totalPages;
+            state.page = n;
+            renderTable();
+        }
+
+        function debounce(fn, ms = 200) {
+            let t;
+            return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
+        }
+
+        function resetFilters() {
+            state.search = '';
+            state.status = 'All Status';
+            state.type = 'All Types';
+            state.module = 'All Modules';
+            state.page = 1;
+            const f1 = document.getElementById('filterSearch'); if (f1) f1.value = '';
+            const f2 = document.getElementById('topSearch'); if (f2) f2.value = '';
+            const s = document.getElementById('filterStatus'); if (s) s.value = 'All Status';
+            const t = document.getElementById('filterType'); if (t) t.value = 'All Types';
+            const m = document.getElementById('filterModule'); if (m) m.value = 'All Modules';
+            renderTable();
+        }
+
+        /* wire up filter inputs */
+        (function attachFilters() {
+            const filterSearch = document.getElementById('filterSearch');
+            const topSearch = document.getElementById('topSearch');
+            const statusSel = document.getElementById('filterStatus');
+            const typeSel = document.getElementById('filterType');
+            const moduleSel = document.getElementById('filterModule');
+
+            const onSearch = debounce(() => {
+                state.search = (filterSearch && filterSearch.value) ? filterSearch.value : (topSearch && topSearch.value ? topSearch.value : '');
+                state.page = 1;
+                renderTable();
+            }, 220);
+
+            if (filterSearch) filterSearch.addEventListener('input', onSearch);
+            if (topSearch) topSearch.addEventListener('input', onSearch);
+            if (statusSel) statusSel.addEventListener('change', () => { state.status = statusSel.value; state.page = 1; renderTable(); });
+            if (typeSel) typeSel.addEventListener('change', () => { state.type = typeSel.value; state.page = 1; renderTable(); });
+            if (moduleSel) moduleSel.addEventListener('change', () => { state.module = moduleSel.value; state.page = 1; renderTable(); });
+        })();
+
+        /* ── CREATED MODAL HELPERS ── */
+        function openCreatedModal(id) {
+            const a = assessments.find(x => x.id === id);
+            if (!a) return;
+            const titleEl = document.getElementById('createdTitle');
+            if (titleEl) titleEl.textContent = a.title;
+            const viewBtn = document.getElementById('createdViewBtn');
+            const anotherBtn = document.getElementById('createdCreateAnotherBtn');
+            if (viewBtn) viewBtn.onclick = function () { closeModal('createSuccessModal'); openView(id); };
+            if (anotherBtn) anotherBtn.onclick = function () { closeModal('createSuccessModal'); openCreate(); };
+            openModal('createSuccessModal');
+        }
+
+        /* ── MODAL HELPERS ── */
+        let currentId = null;
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('open');
+        }
+        function openModal(id) {
+            document.getElementById(id).classList.add('open');
+        }
+        document.querySelectorAll('.modal-overlay').forEach(o => {
+            o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
+        });
+
+        /* ── VIEW ── */
+        function openView(id) {
+            const a = assessments.find(x => x.id === id);
+            if (!a) return;
+            currentId = id;
+            document.getElementById('vTitle').textContent = a.title;
+            document.getElementById('vType').innerHTML = `<span class="badge ${getTypeClass(a.type)}">${a.type}</span>`;
+            document.getElementById('vModule').textContent = a.module;
+            document.getElementById('vQuestions').textContent = a.questions;
+            document.getElementById('vTimeLimit').textContent = a.timeLimit;
+            document.getElementById('vPassMark').textContent = a.passMark + ' pts';
+            document.getElementById('vPassRate').textContent = a.passRate + '%';
+            document.getElementById('vSubmissions').textContent = a.submissions.toLocaleString();
+            document.getElementById('vAvgScore').textContent = a.avgScore + ' / 100';
+
+            const statusEl = document.getElementById('vStatus');
+            statusEl.innerHTML = `<span class="badge ${getStatusClass(a.status)}">${a.status}</span>`;
+
+            const fill = document.getElementById('vPassFill');
+            fill.style.width = a.passRate + '%';
+            fill.style.background = getPassColor(a.passRate);
+            document.getElementById('vPassRateBar').textContent = a.passRate + '%';
+
+            const ql = document.getElementById('vQuestionsList');
+            ql.innerHTML = a.questionList.map((q, i) =>
+                `<li class="q-item">
+                    <div class="q-num">${i + 1}</div>
+                    <div class="q-text">${q.text}</div>
+                    <div class="q-pts">${q.pts} pts</div>
+                </li>`
+            ).join('');
+
+            openModal('viewModal');
+        }
+
+        function switchToEdit() {
+            closeModal('viewModal');
+            openEdit(currentId);
+        }
+
+        /* ── EDIT ── */
+        function openEdit(id) {
+            const a = assessments.find(x => x.id === id);
+            if (!a) return;
+            currentId = id;
+            document.getElementById('eTitle').value = a.title;
+            document.getElementById('eType').value = a.type;
+            document.getElementById('eModule').value = a.module;
+            document.getElementById('eQuestions').value = a.questions;
+            document.getElementById('eTimeLimit').value = a.timeLimit;
+            document.getElementById('ePassMark').value = a.passMark;
+            document.getElementById('eStatus').value = a.status;
+            openModal('editModal');
+        }
+
+        function saveEdit() {
+            const a = assessments.find(x => x.id === currentId);
+            if (!a) return;
+            a.title = document.getElementById('eTitle').value.trim() || a.title;
+            a.type = document.getElementById('eType').value;
+            a.module = document.getElementById('eModule').value;
+            a.questions = parseInt(document.getElementById('eQuestions').value) || a.questions;
+            a.timeLimit = document.getElementById('eTimeLimit').value.trim() || a.timeLimit;
+            a.passMark = parseInt(document.getElementById('ePassMark').value) || a.passMark;
+            a.status = document.getElementById('eStatus').value;
+            renderTable();
+            closeModal('editModal');
+        }
+
+        /* ── DELETE ── */
+        function openDelete(id) {
+            const a = assessments.find(x => x.id === id);
+            if (!a) return;
+            currentId = id;
+            document.getElementById('dTitle').textContent = '"' + a.title + '"';
+            openModal('deleteModal');
+        }
+
+        function confirmDelete() {
+            const idx = assessments.findIndex(x => x.id === currentId);
+            if (idx !== -1) assessments.splice(idx, 1);
+            renderTable();
+            closeModal('deleteModal');
+        }
+
+        /* ── CREATE ── */
+        function openCreate() {
+            document.getElementById('cTitle').value = '';
+            document.getElementById('cType').value = 'Knowledge Check';
+            document.getElementById('cModule').value = 'Engine Oil Change & Maintenance';
+            document.getElementById('cQuestions').value = 10;
+            document.getElementById('cTimeLimit').value = '';
+            document.getElementById('cPassMark').value = 75;
+            document.getElementById('cStatus').value = 'Draft';
+            openModal('createModal');
+        }
+
+        function confirmCreate() {
+            const title = document.getElementById('cTitle').value.trim();
+            if (!title) { document.getElementById('cTitle').focus(); return; }
+            const newId = assessments.length ? Math.max(...assessments.map(a => a.id)) + 1 : 1;
+            const mod = document.getElementById('cModule').value;
+            assessments.push({
+                id: newId,
+                title,
+                type: document.getElementById('cType').value,
+                module: mod,
+                moduleColor: 'linear-gradient(135deg,#2563eb,#1d4ed8)',
+                questions: parseInt(document.getElementById('cQuestions').value) || 10,
+                timeLimit: document.getElementById('cTimeLimit').value.trim() || '—',
+                passMark: parseInt(document.getElementById('cPassMark').value) || 75,
+                submissions: 0,
+                passRate: 0,
+                avgScore: 0,
+                status: document.getElementById('cStatus').value,
+                questionList: []
+            });
+            renderTable();
+            closeModal('createModal');
+            // show success modal with quick actions
+            openCreatedModal(newId);
+        }
+
+        /* ── INIT ── */
+        renderTable();
+    </script>
+</body>
+
+</html>

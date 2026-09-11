@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotoMaster Admin Dashboard</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-color: #f3f4f6;
+            --panel-bg: #ffffff;
+            --border-color: #e5e7eb;
+            --text-primary: #1a1a2e;
+            --text-secondary: #6b7280;
+            --accent: #2563eb;
+            --accent-dark: #1d4ed8;
+            --accent-light: #eff6ff;
+            --green: #16a34a;
+            --green-bg: #f0fdf4;
+            --red: #dc2626;
+            --red-bg: #fef2f2;
+            --orange: #d97706;
+            --orange-bg: #fef3c7;
+            --sidebar-w: 240px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+            font-family: 'Nunito', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        body {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ── SCROLLBAR ── */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 10px;
+        }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: #fff;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .logo-container {
+            padding: 18px 20px 14px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-container img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .logo-sub {
+            font-size: 0.62rem;
+            font-weight: 800;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+        }
+
+        .nav-section-label {
+            font-size: 0.6rem;
+            font-weight: 800;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 14px 18px 4px;
+        }
+
+        .nav-menu {
+            list-style: none;
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 8px 0;
+        }
+
+        .nav-menu::-webkit-scrollbar {
+            width: 0;
+        }
+
+        .nav-item {
+            padding: 9px 16px;
+            margin: 2px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            font-weight: 700;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .nav-item i {
+            width: 16px;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+
+        .nav-item:hover {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .nav-item.active {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .nav-item.active i {
+            color: var(--accent);
+        }
+
+        .nav-divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 8px 16px;
+        }
+
+        .sidebar-bottom {
+            padding: 12px 0 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* ── MAIN ── */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background: var(--bg-color);
+        }
+
+        /* ── TOPBAR ── */
+        .topbar {
+            background: #fff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 28px;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+        }
+
+        .topbar-left h1 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .topbar-left p {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-color);
+            border: 1.5px solid var(--border-color);
+            border-radius: 8px;
+            padding: 7px 12px;
+        }
+
+        .search-bar i {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .search-bar input {
+            background: none;
+            border: none;
+            outline: none;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            width: 180px;
+        }
+
+        .search-bar input::placeholder {
+            color: #9ca3af;
+        }
+
+        .notif-btn {
+            position: relative;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: var(--bg-color);
+            border: 1.5px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: border-color 0.2s;
+        }
+
+        .notif-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .notif-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: var(--red);
+            color: #fff;
+            font-size: 0.58rem;
+            font-weight: 800;
+            border-radius: 50%;
+            width: 14px;
+            height: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-pill {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 5px 12px 5px 5px;
+            border-radius: 30px;
+            border: 1.5px solid var(--border-color);
+            background: #fff;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .profile-pill:hover {
+            border-color: var(--accent);
+        }
+
+        .profile-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--accent-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 12px;
+        }
+
+        .profile-name {
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .profile-role {
+            font-size: 0.62rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        /* ── DASHBOARD BODY ── */
+        .dashboard-container {
+            padding: 22px 28px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        /* ── KPI ROW ── */
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 14px;
+        }
+
+        .kpi-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+            transition: box-shadow 0.2s, border-color 0.2s;
+        }
+
+        .kpi-card:hover {
+            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.10);
+            border-color: #bfdbfe;
+        }
+
+        .kpi-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .kpi-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: var(--accent-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 12px;
+        }
+
+        .kpi-title {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .kpi-value {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        .kpi-stat {
+            font-size: 0.68rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .text-green {
+            color: var(--green);
+        }
+
+        .text-blue {
+            color: var(--accent);
+        }
+
+        .text-red {
+            color: var(--red);
+        }
+
+        .text-muted {
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        /* ── PANELS ── */
+        .middle-row {
+            display: grid;
+            grid-template-columns: 2fr 1.3fr 1fr;
+            gap: 14px;
+        }
+
+        .bottom-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 14px;
+        }
+
+        .panel {
+            background: #fff;
+            border-radius: 12px;
+            padding: 18px 20px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .panel-title {
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .panel-select {
+            background: var(--bg-color);
+            color: var(--text-secondary);
+            border: 1.5px solid var(--border-color);
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 700;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .view-all {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.72rem;
+            font-weight: 800;
+        }
+
+        .view-all:hover {
+            text-decoration: underline;
+        }
+
+        /* ── PERFORMANCE CHART ── */
+        .chart-container-large {
+            height: 180px;
+            width: 100%;
+            position: relative;
+        }
+
+        .performance-metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .metric-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .metric-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .metric-val {
+            font-size: 0.88rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--text-primary);
+        }
+
+        .metric-sub {
+            font-size: 0.68rem;
+            font-weight: 700;
+        }
+
+        /* ── DOUGHNUT ── */
+        .doughnut-layout {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+
+        .doughnut-wrapper {
+            width: 55%;
+            position: relative;
+        }
+
+        .doughnut-container {
+            position: relative;
+            height: 160px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .doughnut-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .doughnut-center-val {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .doughnut-center-label {
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+            font-weight: 700;
+        }
+
+        .legend-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-left: 12px;
+            flex: 1;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 700;
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .legend-val {
+            color: var(--text-primary);
+            margin-left: auto;
+            font-weight: 800;
+            font-size: 0.75rem;
+        }
+
+        .view-report {
+            text-align: center;
+            margin-top: 12px;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.72rem;
+            font-weight: 800;
+        }
+
+        .view-report:hover {
+            text-decoration: underline;
+        }
+
+        /* ── ACTIVITY LIST ── */
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .activity-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            background: var(--accent-light);
+            border: 1px solid #bfdbfe;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 11px;
+            flex-shrink: 0;
+        }
+
+        .activity-header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            gap: 8px;
+        }
+
+        .activity-text {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .activity-text span {
+            color: var(--text-primary);
+            font-weight: 800;
+        }
+
+        .activity-time {
+            font-size: 0.65rem;
+            color: #9ca3af;
+            white-space: nowrap;
+            font-weight: 700;
+        }
+
+        /* ── MODULE LIST ── */
+        .module-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .module-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .module-rank {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: var(--text-secondary);
+            width: 14px;
+            text-align: center;
+        }
+
+        .module-img {
+            width: 32px;
+            height: 32px;
+            background: var(--accent-light);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+
+        .module-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .module-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .module-sessions {
+            color: var(--text-secondary);
+            font-size: 0.68rem;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        /* ── CLASSES TABLE ── */
+        .classes-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .classes-table th {
+            text-align: left;
+            color: var(--text-secondary);
+            font-size: 0.62rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding-bottom: 12px;
+        }
+
+        .classes-table td {
+            padding: 9px 0;
+            font-size: 0.78rem;
+            font-weight: 700;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .classes-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .rank-medal {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 0.68rem;
+            font-weight: 800;
+        }
+
+        .rank-1 {
+            background: rgba(255, 215, 0, 0.15);
+            color: #b45309;
+            border: 1px solid #fbbf24;
+        }
+
+        .rank-2 {
+            background: rgba(156, 163, 175, 0.15);
+            color: #6b7280;
+            border: 1px solid #9ca3af;
+        }
+
+        .rank-3 {
+            background: rgba(180, 83, 9, 0.1);
+            color: #b45309;
+            border: 1px solid #d97706;
+        }
+
+        .rank-other {
+            color: var(--text-secondary);
+            padding-left: 6px;
+        }
+
+        .class-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .class-name i {
+            color: var(--accent);
+            background: var(--accent-light);
+            padding: 4px;
+            border-radius: 4px;
+            font-size: 10px;
+        }
+
+        /* ── BAR CHART ── */
+        .bar-chart-container {
+            height: 160px;
+            width: 100%;
+            position: relative;
+        }
+
+        .chart-legend-bottom {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            margin-top: 10px;
+        }
+
+        .chart-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            font-weight: 700;
+        }
+
+        .box-blue {
+            width: 10px;
+            height: 10px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .box-grey {
+            width: 10px;
+            height: 10px;
+            background: #d1d5db;
+            border-radius: 2px;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 28px;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            background: #fff;
+            margin-top: auto;
+            font-weight: 700;
+        }
+
+        footer span {
+            color: var(--accent);
+            font-weight: 800;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="sidebar">
+        <div class="logo-container">
+            <img src="images/finalogo.png" alt="MotoMaster" />
+            <div>
+                <span class="logo-text">MotoMaster</span>
+                <span class="logo-sub">Admin Panel</span>
+            </div>
+        </div>
+
+        <ul class="nav-menu">
+            <li class="nav-section-label">Main</li>
+            <li class="nav-item active">
+                <i class="fa-solid fa-house"></i> Dashboard
+            </li>
+            <li class="nav-item" onclick="window.location.href='admintech.html'">
+                <i class="fa-solid fa-chalkboard-user"></i> Teachers
+            </li>
+            <li class="nav-item" onclick="window.location.href='adminstud.html'">
+                <i class="fa-solid fa-users"></i> Students
+            </li>
+            <li class="nav-item" onclick="window.location.href='adminmod.html'">
+                <i class="fa-solid fa-book-open"></i> Modules
+            </li>
+            <li class="nav-item" onclick="window.location.href='adminassess.html'">
+                <i class="fa-solid fa-clipboard-check"></i> Assessments
+            </li>
+            <li class="nav-item" onclick="window.location.href='adminpractice.html'">
+                <i class="fa-solid fa-gamepad"></i> Practice Sessions
+            </li>
+
+            <li class="nav-section-label">Insights</li>
+            <li class="nav-item" onclick="window.location.href='adminanalytics.html'">
+                <i class="fa-solid fa-chart-simple"></i> Analytics
+            </li>
+            <li class="nav-item" onclick="window.location.href='adminreports.html'">
+                <i class="fa-solid fa-file-invoice"></i> Reports
+            </li>
+
+            <li class="nav-section-label">System</li>
+            <li class="nav-item" onclick="window.location.href='adminsettings.html'">
+                <i class="fa-solid fa-gear"></i> Settings
+            </li>
+            <li class="nav-item" onclick="window.location.href='messages.html'">
+                <i class="fa-solid fa-envelope"></i> Messages
+            </li>
+            <li class="nav-item">
+                <i class="fa-solid fa-list-check" onclick="window.location.href='adminactivitylogs.html'"></i> Activity
+                Logs
+            </li>
+            <li class="nav-item">
+                <i class="fa-solid fa-server" onclick="window.location.href='adminsystembackup.html'"></i> System Backup
+            </li>
+            <li class="nav-item">
+                <i class="fa-regular fa-bell" onclick="window.location.href='adminnotif.html'"></i> Notifications
+            </li>
+        </ul>
+
+        <div class="sidebar-bottom">
+            <a class="nav-item" href="index.html">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+            </a>
+        </div>
+    </aside>
+
+    <!-- ── MAIN ── -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <h1>Welcome back, Administrator</h1>
+                <p>Here's an overview of the MotoMaster system.</p>
+            </div>
+            <div class="topbar-right">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Search...">
+                </div>
+                <div class="notif-btn">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="notif-badge">8</span>
+                </div>
+                <div class="profile-pill">
+                    <div class="profile-avatar"><i class="fa-solid fa-user"></i></div>
+                    <div>
+                        <div class="profile-name">Administrator</div>
+                        <div class="profile-role">Super Admin</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DASHBOARD -->
+        <div class="dashboard-container">
+
+            <!-- KPI Row -->
+            <div class="kpi-row">
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon"><i class="fa-solid fa-users"></i></div>
+                        <div class="kpi-title">Total Students</div>
+                    </div>
+                    <div class="kpi-value">256</div>
+                    <div class="kpi-stat text-green"><i class="fa-solid fa-arrow-up"></i> 12% <span
+                            class="text-muted">vs last month</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+                        <div class="kpi-title">Total Teachers</div>
+                    </div>
+                    <div class="kpi-value">18</div>
+                    <div class="kpi-stat text-green"><i class="fa-solid fa-arrow-up"></i> 5% <span class="text-muted">vs
+                            last month</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon"><i class="fa-solid fa-book-open"></i></div>
+                        <div class="kpi-title">Total Modules</div>
+                    </div>
+                    <div class="kpi-value">34</div>
+                    <div class="kpi-stat text-blue"><i class="fa-solid fa-arrow-up"></i> 3 new <span
+                            class="text-muted">this month</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+                        <div class="kpi-title">Total Assessments</div>
+                    </div>
+                    <div class="kpi-value">27</div>
+                    <div class="kpi-stat text-blue"><i class="fa-solid fa-arrow-up"></i> 4 new <span
+                            class="text-muted">this month</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon"><i class="fa-solid fa-display"></i></div>
+                        <div class="kpi-title">Active Sessions</div>
+                    </div>
+                    <div class="kpi-value">18</div>
+                    <div class="kpi-stat text-red"><i class="fa-solid fa-circle" style="font-size:7px"></i> Live ongoing
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon"><i class="fa-solid fa-trophy"></i></div>
+                        <div class="kpi-title">Avg. Score</div>
+                    </div>
+                    <div class="kpi-value">72%</div>
+                    <div class="kpi-stat text-green"><i class="fa-solid fa-arrow-up"></i> 8% <span class="text-muted">vs
+                            last month</span></div>
+                </div>
+            </div>
+
+            <!-- Middle Row -->
+            <div class="middle-row">
+                <!-- Performance Chart -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">System Performance Overview</div>
+                        <select class="panel-select">
+                            <option>This Month</option>
+                            <option>Last Month</option>
+                            <option>This Year</option>
+                        </select>
+                    </div>
+                    <div class="chart-container-large">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                    <div class="performance-metrics">
+                        <div class="metric-item">
+                            <div class="metric-label">Assessments Done</div>
+                            <div class="metric-val">1,248 <span class="metric-sub text-green"><i
+                                        class="fa-solid fa-arrow-up"></i> 18%</span></div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">Modules Completed</div>
+                            <div class="metric-val">2,459 <span class="metric-sub text-green"><i
+                                        class="fa-solid fa-arrow-up"></i> 16%</span></div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">Avg. Completion Time</div>
+                            <div class="metric-val">18m 42s <span class="metric-sub text-red"><i
+                                        class="fa-solid fa-arrow-down"></i> 5m</span></div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">Success Rate</div>
+                            <div class="metric-val">72% <span class="metric-sub text-green"><i
+                                        class="fa-solid fa-arrow-up"></i> 8%</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Doughnut -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">Assessment Performance</div>
+                        <select class="panel-select">
+                            <option>This Month</option>
+                            <option>Last Month</option>
+                        </select>
+                    </div>
+                    <div class="doughnut-layout">
+                        <div class="doughnut-wrapper">
+                            <div class="doughnut-container">
+                                <canvas id="doughnutChart"></canvas>
+                                <div class="doughnut-center">
+                                    <div class="doughnut-center-val">1,248</div>
+                                    <div class="doughnut-center-label">Total</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="legend-container">
+                            <div class="legend-item">
+                                <div class="legend-dot" style="background:#16a34a"></div>
+                                <span>Passed</span>
+                                <span class="legend-val">872 <span style="color:#9ca3af">(70%)</span></span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-dot" style="background:#dc2626"></div>
+                                <span>Failed</span>
+                                <span class="legend-val">276 <span style="color:#9ca3af">(22%)</span></span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-dot" style="background:#d97706"></div>
+                                <span>In Progress</span>
+                                <span class="legend-val">100 <span style="color:#9ca3af">(8%)</span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#" class="view-report">View Full Report &rarr;</a>
+                </div>
+
+                <!-- Recent Activities -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">Recent Activities</div>
+                        <a href="#" class="view-all">View All</a>
+                    </div>
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <div class="activity-icon"><i class="fa-solid fa-user-plus"></i></div>
+                            <div class="activity-header-flex">
+                                <div class="activity-text">Teacher <span>Juan Dela Cruz</span> was added</div>
+                                <div class="activity-time">2 min ago</div>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon"><i class="fa-solid fa-book"></i></div>
+                            <div class="activity-header-flex">
+                                <div class="activity-text">Module <span>"Fuel System"</span> was updated</div>
+                                <div class="activity-time">15 min ago</div>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+                            <div class="activity-header-flex">
+                                <div class="activity-text">Assessment <span>"Engine Tune-Up"</span> created</div>
+                                <div class="activity-time">28 min ago</div>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon"><i class="fa-solid fa-user-graduate"></i></div>
+                            <div class="activity-header-flex">
+                                <div class="activity-text">Student <span>Carla Santos</span> was added</div>
+                                <div class="activity-time">1 hr ago</div>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                            <div class="activity-header-flex">
+                                <div class="activity-text"><span>Backup</span> completed successfully</div>
+                                <div class="activity-time">2 hrs ago</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Row -->
+            <div class="bottom-row">
+                <!-- Most Used Modules -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">Most Used Modules</div>
+                        <a href="#" class="view-all">View All</a>
+                    </div>
+                    <div class="module-list">
+                        <div class="module-item">
+                            <div class="module-rank">1</div>
+                            <div class="module-img"><i class="fa-solid fa-gear"></i></div>
+                            <div class="module-info">
+                                <div class="module-header"><span>Engine Oil Change</span><span
+                                        class="module-sessions">1,245 sessions</span></div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width:90%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="module-item">
+                            <div class="module-rank">2</div>
+                            <div class="module-img"><i class="fa-solid fa-circle-stop"></i></div>
+                            <div class="module-info">
+                                <div class="module-header"><span>Brake Pad Module</span><span
+                                        class="module-sessions">1,120 sessions</span></div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width:85%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="module-item">
+                            <div class="module-rank">3</div>
+                            <div class="module-img"><i class="fa-solid fa-filter"></i></div>
+                            <div class="module-info">
+                                <div class="module-header"><span>Air Filter Module</span><span
+                                        class="module-sessions">1,032 sessions</span></div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width:80%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="module-item">
+                            <div class="module-rank">4</div>
+                            <div class="module-img"><i class="fa-solid fa-gas-pump"></i></div>
+                            <div class="module-info">
+                                <div class="module-header"><span>Fuel Filter Module</span><span
+                                        class="module-sessions">765 sessions</span></div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width:55%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="module-item">
+                            <div class="module-rank">5</div>
+                            <div class="module-img"><i class="fa-solid fa-plug"></i></div>
+                            <div class="module-info">
+                                <div class="module-header"><span>Spark Plug Module</span><span
+                                        class="module-sessions">680 sessions</span></div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width:50%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="module-item">
+                            <div class="module-rank">6</div>
+                            <div class="module-img"><i class="fa-solid fa-car-battery"></i></div>
+                            <div class="module-info">
+                                <div class="module-header"><span>Battery Maintenance</span><span
+                                        class="module-sessions">654 sessions</span></div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width:45%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Performing Classes -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">Top Performing Classes</div>
+                        <a href="#" class="view-all">View All</a>
+                    </div>
+                    <table class="classes-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Class</th>
+                                <th>Avg. Score</th>
+                                <th>Students</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="rank-medal rank-1">1</span></td>
+                                <td>
+                                    <div class="class-name"><i class="fa-solid fa-users"></i> BSMA 2A</div>
+                                </td>
+                                <td>89%</td>
+                                <td>28</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-medal rank-2">2</span></td>
+                                <td>
+                                    <div class="class-name"><i class="fa-solid fa-users"></i> BSMA 2B</div>
+                                </td>
+                                <td>86%</td>
+                                <td>25</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-medal rank-3">3</span></td>
+                                <td>
+                                    <div class="class-name"><i class="fa-solid fa-users"></i> BSMA 1A</div>
+                                </td>
+                                <td>83%</td>
+                                <td>30</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-medal rank-other">4</span></td>
+                                <td>
+                                    <div class="class-name"><i class="fa-solid fa-users"></i> BSMA 1B</div>
+                                </td>
+                                <td>80%</td>
+                                <td>26</td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-medal rank-other">5</span></td>
+                                <td>
+                                    <div class="class-name"><i class="fa-solid fa-users"></i> BSMA 3A</div>
+                                </td>
+                                <td>78%</td>
+                                <td>24</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- System Usage Chart -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">System Usage</div>
+                        <select class="panel-select">
+                            <option>This Month</option>
+                            <option>Last Month</option>
+                        </select>
+                    </div>
+                    <div class="bar-chart-container">
+                        <canvas id="usageChart"></canvas>
+                    </div>
+                    <div class="chart-legend-bottom">
+                        <div class="chart-legend-item">
+                            <div class="box-blue"></div><span>Practices</span>
+                        </div>
+                        <div class="chart-legend-item">
+                            <div class="box-grey"></div><span>Assessments</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <footer>
+            <div>&copy; 2024 <span>MotoMaster</span>. All rights reserved.</div>
+            <div>Version 1.0.0</div>
+        </footer>
+
+    </main>
+
+    <script>
+        Chart.defaults.color = '#6b7280';
+        Chart.defaults.font.family = "'Nunito', sans-serif";
+        Chart.defaults.font.size = 11;
+
+        // 1. Line Chart
+        const perfCtx = document.getElementById('performanceChart').getContext('2d');
+        const gradBlue = perfCtx.createLinearGradient(0, 0, 0, 180);
+        gradBlue.addColorStop(0, 'rgba(37,99,235,0.18)');
+        gradBlue.addColorStop(1, 'rgba(37,99,235,0)');
+
+        new Chart(perfCtx, {
+            type: 'line',
+            data: {
+                labels: ['May 1', 'May 8', 'May 15', 'May 22', 'May 29'],
+                datasets: [{
+                    label: 'Performance',
+                    data: [30, 50, 45, 65, 72],
+                    borderColor: '#2563eb',
+                    backgroundColor: gradBlue,
+                    borderWidth: 2,
+                    pointBackgroundColor: '#2563eb',
+                    pointBorderColor: '#fff',
+                    pointRadius: [0, 0, 0, 0, 5],
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        mode: 'index', intersect: false,
+                        backgroundColor: '#1a1a2e',
+                        titleColor: '#fff', bodyColor: '#e5e7eb',
+                        borderColor: '#374151', borderWidth: 1
+                    }
+                },
+                scales: {
+                    x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+                    y: {
+                        grid: { color: 'rgba(0,0,0,0.04)' },
+                        min: 0, max: 100,
+                        ticks: { stepSize: 25, callback: v => v + '%', font: { size: 10 } }
+                    }
+                }
+            }
+        });
+
+        // 2. Doughnut
+        new Chart(document.getElementById('doughnutChart').getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Passed', 'Failed', 'In Progress'],
+                datasets: [{ data: [872, 276, 100], backgroundColor: ['#16a34a', '#dc2626', '#d97706'], borderWidth: 0, hoverOffset: 4 }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '80%',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { backgroundColor: '#1a1a2e', titleColor: '#fff', bodyColor: '#e5e7eb' }
+                }
+            }
+        });
+
+        // 3. Bar Chart
+        new Chart(document.getElementById('usageChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5'],
+                datasets: [
+                    { label: 'Practices', data: [480, 580, 720, 850, 450], backgroundColor: '#2563eb', barPercentage: 0.55, categoryPercentage: 0.8, borderRadius: 4 },
+                    { label: 'Assessments', data: [350, 420, 600, 950, 200], backgroundColor: '#d1d5db', barPercentage: 0.55, categoryPercentage: 0.8, borderRadius: 4 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+                    y: { grid: { color: 'rgba(0,0,0,0.04)' }, beginAtZero: true, ticks: { font: { size: 10 } } }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

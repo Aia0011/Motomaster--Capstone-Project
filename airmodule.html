@@ -1,0 +1,1826 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Filter Replacement</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap"
+        rel="stylesheet" />
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: #eef1f8;
+            color: #1a1a2e;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: #fff;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            height: 60px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+            flex-shrink: 0;
+            z-index: 100;
+        }
+
+        .nav-back {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1.5px solid #e5e7eb;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            text-decoration: none;
+            color: #374151;
+            margin-right: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .nav-back:hover {
+            border-color: #2563eb;
+            color: #2563eb;
+        }
+
+        .nav-back svg {
+            width: 15px;
+            height: 15px;
+        }
+
+        .nav-title-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            line-height: 1.1;
+        }
+
+        .nav-breadcrumb {
+            font-size: 0.72rem;
+            color: #9ca3af;
+        }
+
+        .nav-breadcrumb span {
+            color: #6b7280;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-left: auto;
+        }
+
+        .nav-bell {
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #f3f4f6;
+            color: #6b7280;
+            cursor: pointer;
+            border: none;
+        }
+
+        .nav-bell svg {
+            width: 17px;
+            height: 17px;
+        }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 10px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 10px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .nav-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #2563eb;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .nav-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .nav-user-name {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            line-height: 1.2;
+        }
+
+        .nav-user-role {
+            font-size: 0.68rem;
+            color: #6b7280;
+        }
+
+        .nav-chevron svg {
+            width: 12px;
+            height: 12px;
+            color: #9ca3af;
+        }
+
+        /* BODY LAYOUT */
+        .body-layout {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* LEFT SIDEBAR */
+        .left-sidebar {
+            width: 220px;
+            flex-shrink: 0;
+            background: #fff;
+            border-right: 1px solid #f0f0f5;
+            display: flex;
+            flex-direction: column;
+            padding: 18px 14px;
+            overflow-y: auto;
+            scrollbar-width: none;
+            gap: 14px;
+        }
+
+        .left-sidebar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .mod-info-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+
+        .mod-info-desc {
+            font-size: 0.72rem;
+            color: #6b7280;
+            margin-top: 2px;
+            line-height: 1.4;
+        }
+
+        .mod-prog-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: #6b7280;
+            margin-top: 10px;
+            margin-bottom: 4px;
+        }
+
+        .mod-prog-label strong {
+            color: #1a1a2e;
+        }
+
+        .mod-prog-bar {
+            height: 5px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .mod-prog-fill {
+            height: 100%;
+            background: #2563eb;
+            border-radius: 3px;
+            width: 0%;
+        }
+
+        .lessons-label {
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .lesson-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .lesson-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 7px 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.15s;
+            text-decoration: none;
+            border-left: 3px solid transparent;
+        }
+
+        .lesson-item:hover {
+            background: #f5f7ff;
+        }
+
+        .lesson-item.active {
+            background: #eff6ff;
+            border-left-color: #2563eb;
+        }
+
+        .lesson-item.locked {
+            opacity: 0.45;
+            cursor: default;
+        }
+
+        .lesson-icon {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .lesson-icon.done {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .lesson-icon.active {
+            background: #2563eb;
+            color: #fff;
+        }
+
+        .lesson-icon.locked {
+            background: #f3f4f6;
+            color: #9ca3af;
+        }
+
+        .lesson-icon svg {
+            width: 11px;
+            height: 11px;
+        }
+
+        .lesson-text-title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            line-height: 1.2;
+        }
+
+        .lesson-text-sub {
+            font-size: 0.68rem;
+            color: #6b7280;
+        }
+
+        .lesson-item.active .lesson-text-title {
+            color: #2563eb;
+        }
+
+        .dl-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            padding: 8px;
+            background: #fff;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #374151;
+            cursor: pointer;
+            text-decoration: none;
+            margin-top: 4px;
+        }
+
+        .dl-btn svg {
+            width: 13px;
+            height: 13px;
+        }
+
+        .dl-btn:hover {
+            border-color: #2563eb;
+            color: #2563eb;
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            min-width: 0;
+        }
+
+        .lesson-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 24px;
+            scrollbar-width: none;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .lesson-area::-webkit-scrollbar {
+            display: none;
+        }
+
+        .lesson-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .lesson-step-label {
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 4px;
+        }
+
+        .lesson-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            line-height: 1.1;
+        }
+
+        .lesson-desc {
+            font-size: 0.82rem;
+            color: #6b7280;
+            margin-top: 6px;
+            line-height: 1.5;
+        }
+
+        .mark-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background: #fff;
+            border: 1.5px solid #2563eb;
+            border-radius: 8px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #2563eb;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .mark-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .mark-btn:hover {
+            background: #eff6ff;
+        }
+
+        .meta-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .meta-tag {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .meta-tag.time {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .meta-tag.diff {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .meta-tag svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        .lesson-img {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 12px;
+            display: block;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+        }
+
+        .steps-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .steps-card-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: #1a1a2e;
+            margin-bottom: 12px;
+        }
+
+        .steps-card-title svg {
+            width: 18px;
+            height: 18px;
+            color: #2563eb;
+        }
+
+        .step-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.8rem;
+            color: #374151;
+            line-height: 1.4;
+        }
+
+        .step-num {
+            width: 20px;
+            height: 20px;
+            background: #2563eb;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            font-weight: 800;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .safety-card {
+            background: #f0f4ff;
+            border: 1.5px solid #bfdbfe;
+            border-radius: 10px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .safety-card svg {
+            width: 16px;
+            height: 16px;
+            color: #2563eb;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .safety-title {
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: #1d4ed8;
+            margin-bottom: 2px;
+        }
+
+        .safety-desc {
+            font-size: 0.72rem;
+            color: #374151;
+            line-height: 1.4;
+        }
+
+        /* BOTTOM NAV BAR */
+        .bottom-bar {
+            flex-shrink: 0;
+            background: #fff;
+            border-top: 1px solid #e5e7eb;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .bottom-step-info {
+            font-size: 0.78rem;
+            color: #6b7280;
+            font-weight: 700;
+        }
+
+        .bottom-step-info strong {
+            color: #1a1a2e;
+        }
+
+        .bottom-nav-btns {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1.5px solid #e5e7eb;
+            background: #fff;
+            color: #374151;
+            transition: all 0.15s;
+        }
+
+        .nav-btn:hover {
+            border-color: #2563eb;
+            color: #2563eb;
+        }
+
+        .nav-btn.primary {
+            background: #2563eb;
+            color: #fff;
+            border-color: #2563eb;
+        }
+
+        .nav-btn.primary:hover {
+            background: #1d4ed8;
+            border-color: #1d4ed8;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.35;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .nav-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* LESSON SECTION DIVIDER */
+        .lesson-section {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding-bottom: 32px;
+            border-bottom: 2px dashed #e5e7eb;
+            margin-bottom: 8px;
+        }
+
+        .lesson-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 8px;
+        }
+
+        /* RIGHT SIDEBAR */
+        .right-sidebar {
+            width: 220px;
+            flex-shrink: 0;
+            background: #fff;
+            border-left: 1px solid #f0f0f5;
+            display: flex;
+            flex-direction: column;
+            padding: 18px 14px;
+            overflow-y: auto;
+            scrollbar-width: none;
+            gap: 16px;
+        }
+
+        .right-sidebar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .rs-label {
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 8px;
+        }
+
+        .progress-ring-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .progress-ring {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin-bottom: 8px;
+        }
+
+        .progress-ring svg {
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring-bg {
+            fill: none;
+            stroke: #e5e7eb;
+            stroke-width: 9;
+        }
+
+        .progress-ring-fill {
+            fill: none;
+            stroke: #2563eb;
+            stroke-width: 9;
+            stroke-linecap: round;
+            stroke-dasharray: 330;
+            stroke-dashoffset: 132;
+        }
+
+        .progress-ring-text {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .progress-ring-pct {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1a1a2e;
+            line-height: 1;
+        }
+
+        .progress-ring-sub {
+            font-size: 0.65rem;
+            color: #6b7280;
+        }
+
+        .ring-caption {
+            font-size: 0.72rem;
+            color: #6b7280;
+            text-align: center;
+        }
+
+        .ring-caption strong {
+            color: #2563eb;
+        }
+
+        .res-list {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .res-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .res-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .res-icon.blue {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+
+        .res-icon.red {
+            background: #fef2f2;
+            color: #ef4444;
+        }
+
+        .res-icon.grey {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .res-icon svg {
+            width: 13px;
+            height: 13px;
+        }
+
+        .res-name {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            line-height: 1.2;
+        }
+
+        .res-link {
+            font-size: 0.68rem;
+            color: #2563eb;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .notes-box {
+            width: 100%;
+            height: 80px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 8px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.72rem;
+            color: #374151;
+            resize: none;
+            outline: none;
+        }
+
+        .notes-box:focus {
+            border-color: #2563eb;
+        }
+
+        .notes-hint {
+            font-size: 0.65rem;
+            color: #9ca3af;
+            margin-top: 4px;
+        }
+
+        .help-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #eff6ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2563eb;
+            margin-bottom: 6px;
+        }
+
+        .help-icon svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .help-title {
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: #1a1a2e;
+            margin-bottom: 2px;
+        }
+
+        .help-desc {
+            font-size: 0.68rem;
+            color: #6b7280;
+            line-height: 1.4;
+            margin-bottom: 6px;
+        }
+
+        .help-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .help-link svg {
+            width: 13px;
+            height: 13px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <a href="modules.html" class="nav-back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="15 18 9 12 15 6" />
+            </svg>
+        </a>
+        <div class="nav-title-group">
+            <div class="nav-title">Learning Modules</div>
+            <div class="nav-breadcrumb">Dashboard <span>&rsaquo;</span> Learning Modules <span>&rsaquo;</span> Air
+                Filter Replacement</div>
+        </div>
+        <div class="nav-right">
+            <button class="nav-bell">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                </svg>
+            </button>
+            <a class="nav-user" href="index.html" title="Log Out">
+                <div class="nav-avatar"><img src="images/bluehumanbg.png" alt="User"></div>
+                <div>
+                    <div class="nav-user-name">Juan Dela Cruz</div>
+                    <div class="nav-user-role">Student</div>
+                </div>
+                <span class="nav-chevron">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                </span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- BODY LAYOUT -->
+    <div class="body-layout">
+        <!-- LEFT SIDEBAR -->
+        <div class="left-sidebar">
+            <div>
+                <div class="mod-info-title">Air Filter Replacement</div>
+                <div class="mod-info-desc">Learn the correct process of safely replacing an engine air filter.</div>
+                <div class="mod-prog-label"><span>Overall Progress</span><strong>0%</strong></div>
+                <div class="mod-prog-bar">
+                    <div class="mod-prog-fill"></div>
+                </div>
+            </div>
+            <div>
+                <div class="lessons-label"><span>LESSONS</span><span>0 / 12 completed</span></div>
+            </div>
+            <div class="lesson-list">
+                <a class="lesson-item" data-index="0" href="#">
+                    <div class="lesson-icon" id="icon-0"></div>
+                    <div>
+                        <div class="lesson-text-title">Introduction</div>
+                        <div class="lesson-text-sub">What you will learn</div>
+                    </div>
+                </a>
+                <a class="lesson-item" data-index="1" href="#">
+                    <div class="lesson-icon" id="icon-1"></div>
+                    <div>
+                        <div class="lesson-text-title">Tools &amp; Materials</div>
+                        <div class="lesson-text-sub">Equipment overview</div>
+                    </div>
+                </a>
+                <a class="lesson-item" data-index="2" href="#">
+                    <div class="lesson-icon" id="icon-2"></div>
+                    <div>
+                        <div class="lesson-text-title">Step 1</div>
+                        <div class="lesson-text-sub">Locate the air filter housing</div>
+                    </div>
+                </a>
+                <a class="lesson-item" data-index="3" href="#">
+                    <div class="lesson-icon" id="icon-3"></div>
+                    <div>
+                        <div class="lesson-text-title">Step 2</div>
+                        <div class="lesson-text-sub">Inspect the old filter</div>
+                    </div>
+                </a>
+                <a class="lesson-item" data-index="4" href="#">
+                    <div class="lesson-icon" id="icon-4"></div>
+                    <div>
+                        <div class="lesson-text-title">Step 3</div>
+                        <div class="lesson-text-sub">Disconnect the air intake hose</div>
+                    </div>
+                </a>
+                <a class="lesson-item" data-index="5" href="#">
+                    <div class="lesson-icon" id="icon-5"></div>
+                    <div>
+                        <div class="lesson-text-title">Step 4</div>
+                        <div class="lesson-text-sub">Open the filter housing</div>
+                    </div>
+                </a>
+                <a class="lesson-item" data-index="6" href="#">
+                    <div class="lesson-icon" id="icon-6"></div>
+                    <div>
+                        <div class="lesson-text-title">Step 5</div>
+                        <div class="lesson-text-sub">Remove the old air filter</div>
+                    </div>
+                </a>
+                <a class="lesson-item" data-index="7" href="#">
+                    <div class="lesson-icon" id="icon-7"></div>
+                    <div>
+                        <div class="lesson-text-title">Step 6</div>
+                        <div class="lesson-text-sub">Clean the housing</div>
+                    </div>
+                </a>
+                <a class="lesson-item" data-index="8" href="#">
+                    <div class="lesson-icon" id="icon-8"></div>
+                    <div>
+                        <div class="lesson-text-title">Step 7</div>
+                        <div class="lesson-text-sub">Install the new filter</div>
+                    </div>
+                </a>
+                <a class="lesson-item" data-index="9" href="#">
+                    <div class="lesson-icon" id="icon-9"></div>
+                    <div>
+                        <div class="lesson-text-title">Step 8</div>
+                        <div class="lesson-text-sub">Close and secure housing</div>
+                    </div>
+                </a>
+                <a class="lesson-item" data-index="10" href="#">
+                    <div class="lesson-icon" id="icon-10"></div>
+                    <div>
+                        <div class="lesson-text-title">Knowledge Check</div>
+                        <div class="lesson-text-sub">Test your understanding</div>
+                    </div>
+                </a>
+                <a class="lesson-item" data-index="11" href="#">
+                    <div class="lesson-icon" id="icon-11"></div>
+                    <div>
+                        <div class="lesson-text-title">Summary</div>
+                        <div class="lesson-text-sub">Key takeaways</div>
+                    </div>
+                </a>
+            </div>
+            <a href="#" class="dl-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                Download Module Guide
+            </a>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <div class="lesson-area" id="lessonArea">
+
+                <div class="lesson-section" id="section-0">
+                    <div class="lesson-header">
+                        <div>
+                            <div class="lesson-step-label">LESSON 1 OF 12</div>
+                            <div class="lesson-title">Introduction</div>
+                            <div class="lesson-desc">Get an overview of what you will learn — the complete air filter
+                                replacement process from inspection to reinstallation.</div>
+                        </div>
+                    </div>
+                    <div class="meta-row">
+                        <div class="meta-tag time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>Estimated time: 3 min</div>
+                        <div class="meta-tag diff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>Difficulty: Easy</div>
+                    </div>
+                    <img class="lesson-img" src="images/airmodule/intro.jpg" alt="Introduction">
+                    <div class="steps-card">
+                        <div class="steps-card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="8" y1="6" x2="21" y2="6" />
+                                <line x1="8" y1="12" x2="21" y2="12" />
+                                <line x1="8" y1="18" x2="21" y2="18" />
+                                <line x1="3" y1="6" x2="3.01" y2="6" />
+                                <line x1="3" y1="12" x2="3.01" y2="12" />
+                                <line x1="3" y1="18" x2="3.01" y2="18" />
+                            </svg>What You Will Learn</div>
+                        <div class="step-list">
+                            <div class="step-item">
+                                <div class="step-num">1</div>Understand why a clean air filter is critical for engine
+                                performance and fuel efficiency.
+                            </div>
+                            <div class="step-item">
+                                <div class="step-num">2</div>Identify the tools and materials needed for an air filter
+                                replacement.
+                            </div>
+                            <div class="step-item">
+                                <div class="step-num">3</div>Follow an 8-step procedure to safely replace the engine air
+                                filter.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lesson-section" id="section-1">
+                    <div class="lesson-header">
+                        <div>
+                            <div class="lesson-step-label">LESSON 2 OF 12</div>
+                            <div class="lesson-title">Tools &amp; Materials</div>
+                            <div class="lesson-desc">Gather all necessary tools and materials before starting the air
+                                filter replacement.</div>
+                        </div>
+                    </div>
+                    <div class="meta-row">
+                        <div class="meta-tag time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>Estimated time: 3 min</div>
+                        <div class="meta-tag diff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>Difficulty: Easy</div>
+                    </div>
+                    <img class="lesson-img" src="images/airmodule/tools.jpg" alt="Tools and Materials">
+                    <div class="steps-card">
+                        <div class="steps-card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path
+                                    d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+                            </svg>Required Tools</div>
+                        <div class="step-list">
+                            <div class="step-item">
+                                <div class="step-num">1</div>New replacement air filter (check vehicle manual for
+                                correct size)
+                            </div>
+                            <div class="step-item">
+                                <div class="step-num">2</div>Flathead screwdriver or socket set (for housing
+                                clips/bolts)
+                            </div>
+                            <div class="step-item">
+                                <div class="step-num">3</div>Clean cloth or shop rag
+                            </div>
+                            <div class="step-item">
+                                <div class="step-num">4</div>Compressed air or vacuum (optional, for cleaning housing)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="safety-card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
+                        <div>
+                            <div class="safety-title">Safety Reminder</div>
+                            <div class="safety-desc">Always work on a cool engine. Never replace an air filter
+                                immediately after driving.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lesson-section" id="section-2">
+                    <div class="lesson-header">
+                        <div>
+                            <div class="lesson-step-label">LESSON 3 OF 12 — STEP 1</div>
+                            <div class="lesson-title">Locate the Air Filter Housing</div>
+                            <div class="lesson-desc">Find the air filter housing in the engine bay before starting any
+                                work.</div>
+                        </div>
+                    </div>
+                    <div class="meta-row">
+                        <div class="meta-tag time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>2 min</div>
+                        <div class="meta-tag diff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>Easy</div>
+                    </div>
+                    <img class="lesson-img" src="images/airmodule/s1.jpg" alt="Step 1">
+                    <div class="steps-card">
+                        <div class="steps-card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="8" y1="6" x2="21" y2="6" />
+                                <line x1="8" y1="12" x2="21" y2="12" />
+                                <line x1="8" y1="18" x2="21" y2="18" />
+                                <line x1="3" y1="6" x2="3.01" y2="6" />
+                                <line x1="3" y1="12" x2="3.01" y2="12" />
+                                <line x1="3" y1="18" x2="3.01" y2="18" />
+                            </svg>Instructions</div>
+                        <div class="step-list">
+                            <div class="step-item">
+                                <div class="step-num">1</div>Open the vehicle hood and secure it with the prop rod.
+                            </div>
+                            <div class="step-item">
+                                <div class="step-num">2</div>Locate the air filter housing — it is typically a large
+                                black plastic box connected to a large rubber intake hose.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="safety-card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
+                        <div>
+                            <div class="safety-title">Safety Reminder</div>
+                            <div class="safety-desc">Ensure the engine is off and fully cooled before reaching into the
+                                engine bay.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lesson-section" id="section-3">
+                    <div class="lesson-header">
+                        <div>
+                            <div class="lesson-step-label">LESSON 4 OF 12 — STEP 2</div>
+                            <div class="lesson-title">Inspect the Old Filter</div>
+                            <div class="lesson-desc">Before removing, assess the condition of the existing air filter.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="meta-row">
+                        <div class="meta-tag time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>2 min</div>
+                        <div class="meta-tag diff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>Easy</div>
+                    </div>
+                    <img class="lesson-img" src="images/airmodule/s2.jpg" alt="Step 2">
+                    <div class="steps-card">
+                        <div class="steps-card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="8" y1="6" x2="21" y2="6" />
+                                <line x1="8" y1="12" x2="21" y2="12" />
+                                <line x1="8" y1="18" x2="21" y2="18" />
+                                <line x1="3" y1="6" x2="3.01" y2="6" />
+                                <line x1="3" y1="12" x2="3.01" y2="12" />
+                                <line x1="3" y1="18" x2="3.01" y2="18" />
+                            </svg>Instructions</div>
+                        <div class="step-list">
+                            <div class="step-item">
+                                <div class="step-num">1</div>Unclip one side of the housing lid to peek at the filter.
+                            </div>
+                            <div class="step-item">
+                                <div class="step-num">2</div>Hold the filter up to the light — if you cannot see light
+                                through the folds, it must be replaced.
+                            </div>
+                            <div class="step-item">
+                                <div class="step-num">3</div>Check for oil contamination, insects, or physical damage.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lesson-section" id="section-4">
+                    <div class="lesson-header">
+                        <div>
+                            <div class="lesson-step-label">LESSON 5 OF 12 — STEP 3</div>
+                            <div class="lesson-title">Disconnect the Air Intake Hose</div>
+                            <div class="lesson-desc">Loosen the clamp securing the rubber intake hose to the housing.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="meta-row">
+                        <div class="meta-tag time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>3 min</div>
+                        <div class="meta-tag diff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>Easy</div>
+                    </div>
+                    <img class="lesson-img" src="images/airmodule/s3.jpg" alt="Step 3">
+                    <div class="steps-card">
+                        <div class="steps-card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="8" y1="6" x2="21" y2="6" />
+                                <line x1="8" y1="12" x2="21" y2="12" />
+                                <line x1="8" y1="18" x2="21" y2="18" />
+                                <line x1="3" y1="6" x2="3.01" y2="6" />
+                                <line x1="3" y1="12" x2="3.01" y2="12" />
+                                <line x1="3" y1="18" x2="3.01" y2="18" />
+                            </svg>Instructions</div>
+                        <div class="step-list">
+                            <div class="step-item">
+                                <div class="step-num">1</div>Use a flathead screwdriver or socket to loosen the hose
+                                clamp screw.
+                            </div>
+                            <div class="step-item">
+                                <div class="step-num">2</div>Gently twist and pull the rubber hose away from the housing
+                                port.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="safety-card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
+                        <div>
+                            <div class="safety-title">Safety Reminder</div>
+                            <div class="safety-desc">Do not force or kink the intake hose — it can crack and cause an
+                                air leak affecting engine performance.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lesson-section" id="section-5">
+                    <div class="lesson-header">
+                        <div>
+                            <div class="lesson-step-label">LESSON 6 OF 12 — STEP 4</div>
+                            <div class="lesson-title">Open the Filter Housing</div>
+                            <div class="lesson-desc">Unclip or unscrew the air filter housing lid to access the filter
+                                inside.</div>
+                        </div>
+                    </div>
+                    <div class="meta-row">
+                        <div class="meta-tag time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>2 min</div>
+                        <div class="meta-tag diff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>Easy</div>
+                    </div>
+                    <img class="lesson-img" src="images/airmodule/s4.png" alt="Step 4">
+                    <div class="steps-card">
+                        <div class="steps-card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="8" y1="6" x2="21" y2="6" />
+                                <line x1="8" y1="12" x2="21" y2="12" />
+                                <line x1="8" y1="18" x2="21" y2="18" />
+                                <line x1="3" y1="6" x2="3.01" y2="6" />
+                                <line x1="3" y1="12" x2="3.01" y2="12" />
+                                <line x1="3" y1="18" x2="3.01" y2="18" />
+                            </svg>Instructions</div>
+                        <div class="step-list">
+                            <div class="step-item">
+                                <div class="step-num">1</div>Release all spring clips or unscrew the bolts holding the
+                                housing lid in place.
+                            </div>
+                            <div class="step-item">
+                                <div class="step-num">2</div>Lift the lid away carefully and set it aside without
+                                straining any attached sensor wires.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lesson-section" id="section-6">
+                    <div class="lesson-header">
+                        <div>
+                            <div class="lesson-step-label">LESSON 7 OF 12 — STEP 5</div>
+                            <div class="lesson-title">Remove the Old Air Filter</div>
+                            <div class="lesson-desc">Lift the old filter out of the housing without shaking debris into
+                                the intake.</div>
+                        </div>
+                    </div>
+                    <div class="meta-row">
+                        <div class="meta-tag time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>2 min</div>
+                        <div class="meta-tag diff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>Easy</div>
+                    </div>
+                    <img class="lesson-img" src="images/airmodule/s5.png" alt="Step 5">
+                    <div class="steps-card">
+                        <div class="steps-card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="8" y1="6" x2="21" y2="6" />
+                                <line x1="8" y1="12" x2="21" y2="12" />
+                                <line x1="8" y1="18" x2="21" y2="18" />
+                                <line x1="3" y1="6" x2="3.01" y2="6" />
+                                <line x1="3" y1="12" x2="3.01" y2="12" />
+                                <line x1="3" y1="18" x2="3.01" y2="18" />
+                            </svg>Instructions</div>
+                        <div class="step-list">
+                            <div class="step-item">
+                                <div class="step-num">1</div>Carefully lift the old filter straight up out of the
+                                housing.
+                            </div>
+                            <div class="step-item">
+                                <div class="step-num">2</div>Avoid tilting or shaking it — loose debris can fall into
+                                the intake manifold.
+                            </div>
+                            <div class="step-item">
+                                <div class="step-num">3</div>Place the old filter in a bag immediately for disposal.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="safety-card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
+                        <div>
+                            <div class="safety-title">Safety Reminder</div>
+                            <div class="safety-desc">Cover the open intake port with a clean cloth while the housing is
+                                open to prevent debris ingestion.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lesson-section" id="section-7">
+                    <div class="lesson-header">
+                        <div>
+                            <div class="lesson-step-label">LESSON 8 OF 12 — STEP 6</div>
+                            <div class="lesson-title">Clean the Housing</div>
+                            <div class="lesson-desc">Remove any dirt, dust, or debris from inside the air filter housing
+                                before fitting the new filter.</div>
+                        </div>
+                    </div>
+                    <div class="meta-row">
+                        <div class="meta-tag time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>3 min</div>
+                        <div class="meta-tag diff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>Easy</div>
+                    </div>
+                    <img class="lesson-img" src="images/airmodule/s6.jpg" alt="Step 6">
+                    <div class="steps-card">
+                        <div class="steps-card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="8" y1="6" x2="21" y2="6" />
+                                <line x1="8" y1="12" x2="21" y2="12" />
+                                <line x1="8" y1="18" x2="21" y2="18" />
+                                <line x1="3" y1="6" x2="3.01" y2="6" />
+                                <line x1="3" y1="12" x2="3.01" y2="12" />
+                                <line x1="3" y1="18" x2="3.01" y2="18" />
+                            </svg>Instructions</div>
+                        <div class="step-list">
+                            <div class="step-item">
+                                <div class="step-num">1</div>Use a clean dry cloth to wipe out the interior of the
+                                housing.
+                            </div>
+                            <div class="step-item">
+                                <div class="step-num">2</div>If available, use compressed air or a vacuum to remove fine
+                                dust particles.
+                            </div>
+                            <div class="step-item">
+                                <div class="step-num">3</div>Inspect the housing for cracks or damage that may cause air
+                                leaks.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lesson-section" id="section-8">
+                    <div class="lesson-header">
+                        <div>
+                            <div class="lesson-step-label">LESSON 9 OF 12 — STEP 7</div>
+                            <div class="lesson-title">Install the New Air Filter</div>
+                            <div class="lesson-desc">Place the new filter correctly into the housing with the rubber
+                                seal facing down.</div>
+                        </div>
+                    </div>
+                    <div class="meta-row">
+                        <div class="meta-tag time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>2 min</div>
+                        <div class="meta-tag diff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>Easy</div>
+                    </div>
+                    <img class="lesson-img" src="images/airmodule/s7.png" alt="Step 7">
+                    <div class="steps-card">
+                        <div class="steps-card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="8" y1="6" x2="21" y2="6" />
+                                <line x1="8" y1="12" x2="21" y2="12" />
+                                <line x1="8" y1="18" x2="21" y2="18" />
+                                <line x1="3" y1="6" x2="3.01" y2="6" />
+                                <line x1="3" y1="12" x2="3.01" y2="12" />
+                                <line x1="3" y1="18" x2="3.01" y2="18" />
+                            </svg>Instructions</div>
+                        <div class="step-list">
+                            <div class="step-item">
+                                <div class="step-num">1</div>Verify the new filter matches the old one in size and
+                                shape.
+                            </div>
+                            <div class="step-item">
+                                <div class="step-num">2</div>Lower the new filter into the housing, ensuring the rubber
+                                gasket seats evenly all the way around.
+                            </div>
+                            <div class="step-item">
+                                <div class="step-num">3</div>Press down gently to confirm a snug, even fit.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lesson-section" id="section-9">
+                    <div class="lesson-header">
+                        <div>
+                            <div class="lesson-step-label">LESSON 10 OF 12 — STEP 8</div>
+                            <div class="lesson-title">Close and Secure the Housing</div>
+                            <div class="lesson-desc">Reattach the housing lid and reconnect the intake hose to complete
+                                the installation.</div>
+                        </div>
+                    </div>
+                    <div class="meta-row">
+                        <div class="meta-tag time"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>3 min</div>
+                        <div class="meta-tag diff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>Easy</div>
+                    </div>
+                    <img class="lesson-img" src="images/airmodule/s8.png" alt="Step 8">
+                    <div class="steps-card">
+                        <div class="steps-card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="8" y1="6" x2="21" y2="6" />
+                                <line x1="8" y1="12" x2="21" y2="12" />
+                                <line x1="8" y1="18" x2="21" y2="18" />
+                                <line x1="3" y1="6" x2="3.01" y2="6" />
+                                <line x1="3" y1="12" x2="3.01" y2="12" />
+                                <line x1="3" y1="18" x2="3.01" y2="18" />
+                            </svg>Instructions</div>
+                        <div class="step-list">
+                            <div class="step-item">
+                                <div class="step-num">1</div>Place the housing lid back on and fasten all clips or bolts
+                                firmly.
+                            </div>
+                            <div class="step-item">
+                                <div class="step-num">2</div>Reattach the rubber intake hose to the housing port and
+                                tighten the hose clamp.
+                            </div>
+                            <div class="step-item">
+                                <div class="step-num">3</div>Start the engine and listen for any unusual whistling or
+                                air-sucking sounds indicating a leak.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="safety-card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
+                        <div>
+                            <div class="safety-title">Safety Reminder</div>
+                            <div class="safety-desc">Never run the engine with the air filter housing open — unfiltered
+                                air can damage the engine internals.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lesson-section" id="section-10">
+                    <div class="lesson-header">
+                        <div>
+                            <div class="lesson-step-label">LESSON 11 OF 12</div>
+                            <div class="lesson-title">Knowledge Check</div>
+                            <div class="lesson-desc">Test your understanding of the air filter replacement procedure.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="steps-card">
+                        <div class="steps-card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                                <line x1="12" y1="17" x2="12.01" y2="17" />
+                            </svg>Quick Quiz</div>
+                        <div class="step-list">
+                            <div class="step-item">
+                                <div class="step-num">Q1</div>How can you tell if an air filter needs replacement
+                                without removing it?
+                            </div>
+                            <div class="step-item">
+                                <div class="step-num">Q2</div>Why should you cover the intake port while the housing is
+                                open?
+                            </div>
+                            <div class="step-item">
+                                <div class="step-num">Q3</div>What does a whistling sound after reassembly indicate?
+                            </div>
+                            <div class="step-item">
+                                <div class="step-num">Q4</div>Why must the rubber gasket of the new filter seat evenly?
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lesson-section" id="section-11">
+                    <div class="lesson-header">
+                        <div>
+                            <div class="lesson-step-label">LESSON 12 OF 12</div>
+                            <div class="lesson-title">Summary</div>
+                            <div class="lesson-desc">Review the key takeaways from the Air Filter Replacement module.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="steps-card">
+                        <div class="steps-card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M9 11l3 3L22 4" />
+                                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                            </svg>Key Takeaways</div>
+                        <div class="step-list">
+                            <div class="step-item">
+                                <div class="step-num">1</div>A clogged air filter reduces engine power and fuel
+                                efficiency — replace every 15,000–30,000 km.
+                            </div>
+                            <div class="step-item">
+                                <div class="step-num">2</div>Always cover the open intake port when the housing is
+                                removed.
+                            </div>
+                            <div class="step-item">
+                                <div class="step-num">3</div>Ensure the filter gasket seats evenly to prevent unfiltered
+                                air bypass.
+                            </div>
+                            <div class="step-item">
+                                <div class="step-num">4</div>Test the engine after reassembly and listen for air leaks.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="safety-card" style="background:#f0fdf4;border-color:#bbf7d0;"><svg viewBox="0 0 24 24"
+                            fill="none" stroke="#16a34a" stroke-width="2">
+                            <path d="M9 11l3 3L22 4" />
+                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                        </svg>
+                        <div>
+                            <div class="safety-title" style="color:#16a34a;">Module Complete!</div>
+                            <div class="safety-desc">You have completed all lessons. You are now ready for the practice
+                                simulation.</div>
+                        </div>
+                    </div>
+                    <a href="practicearea_air.html"
+                        style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:12px 20px;background:#2563eb;color:#fff;border-radius:10px;font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:800;text-decoration:none;margin-top:4px;transition:background 0.15s;"
+                        onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'"><svg
+                            width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="5 3 19 12 5 21 5 3" />
+                        </svg>Start Practice Simulation</a>
+                </div>
+
+            </div>
+
+            <!-- BOTTOM NAV BAR -->
+            <div class="bottom-bar">
+                <div class="bottom-step-info">Lesson <strong id="currentStepLabel">1</strong> of <strong>12</strong>
+                </div>
+                <div class="bottom-nav-btns">
+                    <button class="nav-btn" id="prevBtn" disabled>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="15 18 9 12 15 6" />
+                        </svg>
+                        Previous
+                    </button>
+                    <button class="nav-btn primary" id="nextBtn">
+                        Next
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="9 18 15 12 9 6" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDEBAR -->
+        <div class="right-sidebar">
+            <div>
+                <div class="rs-label">Your Progress</div>
+                <div class="progress-ring-wrap">
+                    <div class="progress-ring">
+                        <svg width="120" height="120" viewBox="0 0 120 120">
+                            <circle class="progress-ring-bg" cx="60" cy="60" r="52" />
+                            <circle class="progress-ring-fill" cx="60" cy="60" r="52" />
+                        </svg>
+                        <div class="progress-ring-text">
+                            <span class="progress-ring-pct">0%</span>
+                            <span class="progress-ring-sub">Completed</span>
+                        </div>
+                    </div>
+                    <div class="ring-caption">Lessons Completed<br><strong>0 of 12</strong></div>
+                </div>
+            </div>
+            <div>
+                <div class="rs-label">Resources</div>
+                <div class="res-list">
+                    <div class="res-item">
+                        <div class="res-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                <polyline points="14 2 14 8 20 8" />
+                            </svg></div>
+                        <div>
+                            <div class="res-name">Module Guide (PDF)</div>
+                            <div class="res-link">Download</div>
+                        </div>
+                    </div>
+                    <div class="res-item">
+                        <div class="res-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polygon points="10 8 16 12 10 16 10 8" />
+                            </svg></div>
+                        <div>
+                            <div class="res-name">Air Filter Change Video</div>
+                            <div class="res-link">Watch (5:12)</div>
+                        </div>
+                    </div>
+                    <div class="res-item">
+                        <div class="res-icon grey"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M9 11l3 3L22 4" />
+                                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                            </svg></div>
+                        <div>
+                            <div class="res-name">Air Filter Checklist</div>
+                            <div class="res-link">Download</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="rs-label">Notes</div>
+                <textarea class="notes-box" placeholder="Write your notes here..."></textarea>
+                <div class="notes-hint">Notes are saved automatically</div>
+            </div>
+            <div>
+                <div class="help-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg></div>
+                <div class="help-title">Need Help?</div>
+                <div class="help-desc">Check the guide or watch a tutorial before starting a module.</div>
+                <a class="help-link" href="#">View Guide <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                        <polyline points="12 5 19 12 12 19" />
+                    </svg></a>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/module-progress.js"></script>
+    <script>
+        const lessonArea = document.getElementById('lessonArea');
+        const sections = Array.from(document.querySelectorAll('.lesson-section'));
+        const sidebarItems = Array.from(document.querySelectorAll('.lesson-item[data-index]'));
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const currentStepLabel = document.getElementById('currentStepLabel');
+        const TOTAL = sections.length;
+        let currentIndex = 0;
+        let isScrolling = false;
+
+        const checkSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>`;
+        const playSvg = `<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>`;
+
+        const modProgFill = document.querySelector('.mod-prog-fill');
+        const modProgPct = document.querySelector('.mod-prog-label strong');
+        const ringFill = document.querySelector('.progress-ring-fill');
+        const ringPct = document.querySelector('.progress-ring-pct');
+        const ringCaption = document.querySelector('.ring-caption strong');
+        const lessonsLabel = document.querySelector('.lessons-label span:last-child');
+        const CIRC = 2 * Math.PI * 52;
+        if (ringFill) { ringFill.style.transition = 'stroke-dashoffset 0.6s ease'; ringFill.setAttribute('stroke-dasharray', CIRC); }
+        if (modProgFill) modProgFill.style.transition = 'width 0.6s ease';
+
+        let moduleProgress;
+        ModuleProgress.init({
+            storageKey: 'mod_progress_airmodule',
+            lessonArea,
+            total: TOTAL,
+            getActiveIndex: () => currentIndex,
+            render(pct, activeIdx) {
+                const completedLessons = pct >= 100 ? TOTAL : activeIdx;
+                if (modProgFill) modProgFill.style.width = pct + '%';
+                if (modProgPct) modProgPct.textContent = pct + '%';
+                if (ringFill) ringFill.setAttribute('stroke-dashoffset', CIRC - (CIRC * pct / 100));
+                if (ringPct) ringPct.textContent = pct + '%';
+                if (ringCaption) ringCaption.textContent = completedLessons + ' of ' + TOTAL;
+                if (lessonsLabel) lessonsLabel.textContent = completedLessons + ' / ' + TOTAL + ' completed';
+            }
+        }).then((instance) => {
+            moduleProgress = instance;
+            lessonArea.addEventListener('scroll', () => moduleProgress.onScroll(), { passive: true });
+            updateSidebar(0);
+            moduleProgress.restoreUI();
+        });
+
+        function updateProgress(activeIdx) {
+            if (!moduleProgress) return;
+            moduleProgress.update(activeIdx);
+        }
+
+        function updateSidebar(activeIdx) {
+            currentIndex = activeIdx;
+            currentStepLabel.textContent = activeIdx + 1;
+            prevBtn.disabled = activeIdx === 0;
+            updateProgress(activeIdx);
+            if (activeIdx === TOTAL - 1) {
+                nextBtn.innerHTML = 'Finish <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><polyline points="9 18 15 12 9 6"/></svg>';
+            } else {
+                nextBtn.innerHTML = 'Next <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><polyline points="9 18 15 12 9 6"/></svg>';
+            }
+            sidebarItems.forEach((item, i) => {
+                const icon = document.getElementById('icon-' + i);
+                item.classList.remove('active', 'locked');
+                icon.className = 'lesson-icon';
+                if (i < activeIdx) {
+                    icon.classList.add('done');
+                    icon.innerHTML = checkSvg;
+                } else if (i === activeIdx) {
+                    item.classList.add('active');
+                    icon.classList.add('active');
+                    icon.innerHTML = playSvg;
+                    item.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                } else {
+                    icon.classList.add('locked');
+                }
+            });
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            if (isScrolling) return;
+            let best = null, bestRatio = 0;
+            entries.forEach(e => {
+                if (e.intersectionRatio > bestRatio) { bestRatio = e.intersectionRatio; best = e.target; }
+            });
+            if (best) {
+                const idx = sections.indexOf(best);
+                if (idx !== -1 && idx !== currentIndex) updateSidebar(idx);
+            }
+        }, { root: lessonArea, threshold: [0.25, 0.5, 0.75] });
+
+        sections.forEach(s => observer.observe(s));
+
+        sidebarItems.forEach((item, i) => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                isScrolling = true;
+                updateSidebar(i);
+                sections[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
+                setTimeout(() => { isScrolling = false; }, 700);
+            });
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentIndex < TOTAL - 1) {
+                isScrolling = true;
+                updateSidebar(currentIndex + 1);
+                sections[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
+                setTimeout(() => { isScrolling = false; }, 700);
+            } else {
+                moduleProgress.complete();
+            }
+        });
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                isScrolling = true;
+                updateSidebar(currentIndex - 1);
+                sections[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
+                setTimeout(() => { isScrolling = false; }, 700);
+            }
+        });
+
+    </script>
+    <script src="js/notifications.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,2715 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment Simulation</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap"
+        rel="stylesheet" />
+</head>
+<style>
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: 'Nunito', sans-serif;
+        background: #eef1f8;
+        color: #1a1a2e;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    /* NAVBAR */
+    .navbar {
+        background: #fff;
+        display: flex;
+        align-items: center;
+        padding: 0 24px;
+        height: 60px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+        flex-shrink: 0;
+        z-index: 100;
+    }
+
+    .nav-back {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: 1.5px solid #e5e7eb;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        text-decoration: none;
+        color: #374151;
+        margin-right: 14px;
+        transition: border-color 0.2s;
+    }
+
+    .nav-back:hover {
+        border-color: #2563eb;
+        color: #2563eb;
+    }
+
+    .nav-back svg {
+        width: 15px;
+        height: 15px;
+    }
+
+    .nav-title-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .nav-title {
+        font-family: 'Rajdhani', sans-serif;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #1a1a2e;
+        line-height: 1.1;
+    }
+
+    .nav-breadcrumb {
+        font-size: 0.72rem;
+        color: #9ca3af;
+    }
+
+    .nav-breadcrumb span {
+        color: #6b7280;
+    }
+
+    .nav-breadcrumb a {
+        color: inherit;
+        text-decoration: none;
+        transition: color 0.15s;
+    }
+
+    .nav-breadcrumb a:hover {
+        color: #2563eb;
+        text-decoration: underline;
+    }
+
+    .card-nav-links {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 15px;
+        padding-top: 12px;
+        border-top: 1px solid #f3f4f6;
+        font-size: 0.76rem;
+        font-weight: 700;
+    }
+
+    .card-nav-links a {
+        color: #4b5563;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        transition: color 0.15s;
+    }
+
+    .card-nav-links a:hover {
+        color: #2563eb;
+    }
+
+    .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-left: auto;
+    }
+
+    .nav-bell {
+        width: 34px;
+        height: 34px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #f3f4f6;
+        color: #6b7280;
+        cursor: pointer;
+        border: none;
+    }
+
+    .nav-bell svg {
+        width: 17px;
+        height: 17px;
+    }
+
+    .nav-user-wrap {
+        position: relative;
+    }
+
+    .nav-user {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 4px 10px;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 10px;
+        cursor: pointer;
+        text-decoration: none;
+        background: none;
+        transition: border-color 0.2s;
+    }
+
+    .nav-user-wrap:hover .nav-user {
+        border-color: #2563eb;
+    }
+
+    .nav-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #2563eb;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+
+    .nav-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .nav-user-name {
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: #1a1a2e;
+        line-height: 1.2;
+    }
+
+    .nav-user-role {
+        font-size: 0.68rem;
+        color: #6b7280;
+    }
+
+    .nav-chevron svg {
+        width: 12px;
+        height: 12px;
+        color: #9ca3af;
+    }
+
+    .nav-dropdown {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
+        min-width: 170px;
+        padding: 6px;
+        padding-top: 14px;
+        margin-top: 2px;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-4px);
+        transition: opacity 0.18s, transform 0.18s;
+        z-index: 200;
+    }
+
+    .nav-user-wrap:hover .nav-dropdown {
+        opacity: 1;
+        pointer-events: all;
+        transform: translateY(0);
+    }
+
+    .nav-dropdown a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 12px;
+        border-radius: 8px;
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: #1a1a2e;
+        text-decoration: none;
+        transition: background 0.15s;
+    }
+
+    .nav-dropdown a:hover {
+        background: #f3f4f6;
+    }
+
+    .nav-dropdown a svg {
+        width: 15px;
+        height: 15px;
+        color: #6b7280;
+        flex-shrink: 0;
+    }
+
+    .nav-dropdown .logout-link {
+        color: #dc2626;
+    }
+
+    .nav-dropdown .logout-link svg {
+        color: #dc2626;
+    }
+
+    .nav-dropdown .logout-link:hover {
+        background: #fef2f2;
+    }
+
+    .nav-dropdown-sep {
+        height: 1px;
+        background: #f0f0f5;
+        margin: 4px 0;
+    }
+
+    /* MAIN LAYOUT */
+    .main-layout {
+        display: flex;
+        gap: 16px;
+        padding: 18px 22px;
+        flex: 1;
+        overflow: hidden;
+    }
+
+    .content-col {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        min-width: 0;
+        overflow-y: auto;
+        scrollbar-width: none;
+    }
+
+    .content-col::-webkit-scrollbar {
+        display: none;
+    }
+
+    .sidebar-col {
+        width: 260px;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        overflow-y: auto;
+        scrollbar-width: none;
+    }
+
+    .sidebar-col::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* HERO BANNER */
+    .hero-banner {
+        background: url('images/assessmentt.png') no-repeat center center / cover;
+        border-radius: 16px;
+        padding: 28px 36px;
+        position: relative;
+        overflow: hidden;
+        min-height: 180px;
+        display: flex;
+        align-items: flex-end;
+        flex-shrink: 0;
+    }
+
+    .hero-banner::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, rgba(10, 20, 60, 0.82) 0%, rgba(10, 20, 60, 0.55) 55%, rgba(10, 20, 60, 0.15) 100%);
+        border-radius: 16px;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-badge {
+        display: inline-block;
+        background: #2563eb;
+        color: #fff;
+        font-size: 0.65rem;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        padding: 4px 10px;
+        border-radius: 20px;
+        margin-bottom: 10px;
+    }
+
+    .hero-title {
+        font-family: 'Rajdhani', sans-serif;
+        font-size: 2rem;
+        font-weight: 700;
+        color: #fff;
+        line-height: 1.1;
+        margin-bottom: 6px;
+    }
+
+    .hero-desc {
+        font-size: 0.82rem;
+        color: rgba(255, 255, 255, 0.78);
+        margin-bottom: 14px;
+        line-height: 1.5;
+        max-width: 420px;
+    }
+
+    .hero-stats {
+        display: flex;
+        gap: 24px;
+    }
+
+    .hero-stat {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .hero-stat-icon {
+        width: 32px;
+        height: 32px;
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+    }
+
+    .hero-stat-icon svg {
+        width: 15px;
+        height: 15px;
+    }
+
+    .hero-stat-num {
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: #fff;
+        line-height: 1;
+    }
+
+    .hero-stat-label {
+        font-size: 0.65rem;
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    /* TABS */
+    .tabs-row {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        background: #fff;
+        border-radius: 12px;
+        padding: 6px 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        flex-shrink: 0;
+    }
+
+    .tab {
+        padding: 6px 14px;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #6b7280;
+        cursor: pointer;
+        border: none;
+        background: none;
+        transition: background 0.2s, color 0.2s;
+    }
+
+    .tab.active {
+        background: #2563eb;
+        color: #fff;
+    }
+
+    .tab-right {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.78rem;
+        color: #6b7280;
+        font-weight: 700;
+        cursor: pointer;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 5px 12px;
+        background: #fff;
+    }
+
+    .tab-right svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    /* ASSESSMENT CARDS */
+    .sim-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+
+    .sim-card {
+        background: #fff;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        transition: transform 0.2s, box-shadow 0.2s;
+        position: relative;
+    }
+
+    .sim-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.13);
+    }
+
+    .sim-card.locked-card {
+        cursor: default;
+    }
+
+    .sim-card.locked-card:hover {
+        transform: none;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .sim-card-img-wrap {
+        position: relative;
+    }
+
+    .sim-card-img {
+        width: 100%;
+        height: 130px;
+        object-fit: cover;
+        display: block;
+        border-radius: 14px 14px 0 0;
+    }
+
+    .sim-card.locked-card .sim-card-img {
+        filter: brightness(0.45) saturate(0.4);
+    }
+
+    .lock-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .lock-overlay svg {
+        width: 32px;
+        height: 32px;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .sim-card-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.68rem;
+        font-weight: 700;
+        z-index: 2;
+    }
+
+    .sim-card-badge.completed {
+        background: rgba(16, 185, 129, 0.92);
+        color: #fff;
+    }
+
+    .sim-card-badge.locked {
+        background: rgba(107, 114, 128, 0.85);
+        color: #fff;
+    }
+
+    .sim-card-badge.unlocked {
+        background: rgba(16, 185, 129, 0.92);
+        color: #fff;
+    }
+
+    .sim-card-badge svg {
+        width: 11px;
+        height: 11px;
+    }
+
+    .sim-card-icon {
+        position: absolute;
+        bottom: -14px;
+        left: 14px;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 3;
+        border: 2px solid #fff;
+    }
+
+    .sim-card-icon svg {
+        width: 14px;
+        height: 14px;
+        color: #fff;
+    }
+
+    .sim-card-body {
+        padding: 20px 14px 14px;
+    }
+
+    .sim-card-title {
+        font-family: 'Rajdhani', sans-serif;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #1a1a2e;
+        margin-bottom: 4px;
+    }
+
+    .sim-card-desc {
+        font-size: 0.75rem;
+        color: #6b7280;
+        line-height: 1.4;
+        margin-bottom: 6px;
+    }
+
+    .sim-card-meta {
+        font-size: 0.7rem;
+        color: #9ca3af;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .sim-card-score {
+        font-weight: 800;
+        color: #2563eb;
+    }
+
+    .sim-btn {
+        width: 100%;
+        padding: 9px;
+        background: #2563eb;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-family: 'Nunito', sans-serif;
+        font-size: 0.78rem;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: background 0.2s;
+        text-decoration: none;
+    }
+
+    .sim-btn:hover {
+        background: #1d4ed8;
+    }
+
+    .sim-btn.outline {
+        background: #fff;
+        color: #2563eb;
+        border: 1.5px solid #2563eb;
+    }
+
+    .sim-btn.outline:hover {
+        background: #eff6ff;
+    }
+
+    .sim-btn svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .sim-card-lock-info {
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+        font-size: 0.72rem;
+        color: #6b7280;
+        line-height: 1.4;
+        margin-bottom: 10px;
+    }
+
+    .sim-card-lock-info svg {
+        width: 13px;
+        height: 13px;
+        flex-shrink: 0;
+        margin-top: 1px;
+        color: #9ca3af;
+    }
+
+    .sim-btn.go-module {
+        background: #7c3aed;
+        color: #fff;
+        border-color: #7c3aed;
+    }
+
+    .sim-btn.go-module:hover {
+        background: #6d28d9;
+    }
+
+    .sim-btn.go-practice {
+        background: #0891b2;
+        color: #fff;
+        border-color: #0891b2;
+    }
+
+    .sim-btn.go-practice:hover {
+        background: #0e7490;
+    }
+
+    .sim-btn.start {
+        background: #16a34a;
+        color: #fff;
+        border-color: #16a34a;
+    }
+
+    .sim-btn.start:hover {
+        background: #15803d;
+    }
+
+    /* SIDEBAR */
+    .widget {
+        background: #fff;
+        border-radius: 14px;
+        padding: 14px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .widget-label {
+        font-size: 0.68rem;
+        font-weight: 800;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        margin-bottom: 10px;
+    }
+
+    .progress-ring-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .progress-ring {
+        position: relative;
+        width: 90px;
+        height: 90px;
+        margin-bottom: 6px;
+    }
+
+    .progress-ring svg {
+        transform: rotate(-90deg);
+    }
+
+    .progress-ring-bg {
+        fill: none;
+        stroke: #e5e7eb;
+        stroke-width: 8;
+    }
+
+    .progress-ring-fill {
+        fill: none;
+        stroke: #2563eb;
+        stroke-width: 8;
+        stroke-linecap: round;
+        stroke-dasharray: 245;
+        stroke-dashoffset: 93;
+    }
+
+    .progress-ring-text {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .progress-ring-pct {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: #1a1a2e;
+        line-height: 1;
+    }
+
+    .progress-ring-sub {
+        font-size: 0.6rem;
+        color: #6b7280;
+    }
+
+    .progress-caption {
+        font-size: 0.72rem;
+        color: #6b7280;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .progress-caption strong {
+        color: #1a1a2e;
+    }
+
+    .view-btn {
+        width: 100%;
+        padding: 9px;
+        background: #2563eb;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-family: 'Nunito', sans-serif;
+        font-size: 0.78rem;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+
+    .view-btn svg {
+        width: 13px;
+        height: 13px;
+    }
+
+    .req-list {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .req-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.78rem;
+        color: #374151;
+    }
+
+    .req-icon {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+    }
+
+    .req-check {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: #dcfce7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-left: auto;
+    }
+
+    .req-check svg {
+        width: 10px;
+        height: 10px;
+        color: #16a34a;
+    }
+
+    .req-note {
+        font-size: 0.72rem;
+        color: #6b7280;
+        margin-bottom: 10px;
+        line-height: 1.4;
+    }
+
+    .activity-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .activity-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .activity-dot {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .activity-dot.green {
+        background: #dcfce7;
+        color: #16a34a;
+    }
+
+    .activity-dot.blue {
+        background: #eff6ff;
+        color: #2563eb;
+    }
+
+    .activity-dot svg {
+        width: 12px;
+        height: 12px;
+    }
+
+    .activity-info {
+        flex: 1;
+    }
+
+    .activity-name {
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: #1a1a2e;
+    }
+
+    .activity-sub {
+        font-size: 0.68rem;
+        color: #6b7280;
+    }
+
+    .activity-time {
+        font-size: 0.65rem;
+        color: #9ca3af;
+        white-space: nowrap;
+    }
+
+    .view-all-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 8px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #2563eb;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .view-all-link svg {
+        width: 13px;
+        height: 13px;
+    }
+
+    .tip-bar {
+        background: #fff;
+        border-top: 1px solid #f3f4f6;
+        padding: 10px 22px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.75rem;
+        color: #6b7280;
+        flex-shrink: 0;
+    }
+
+    .tip-bar svg {
+        width: 16px;
+        height: 16px;
+        color: #2563eb;
+        flex-shrink: 0;
+    }
+
+    /* REVIEW MODAL */
+    .review-modal {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: rgba(14, 18, 35, 0.72);
+        backdrop-filter: blur(8px);
+        z-index: 1000;
+    }
+
+    .review-modal.open {
+        display: flex;
+    }
+
+    .review-panel {
+        width: min(860px, 100%);
+        max-height: calc(100vh - 48px);
+        overflow: auto;
+        background: #fff;
+        border-radius: 22px;
+        box-shadow: 0 30px 80px rgba(15, 23, 42, 0.35);
+        padding: 24px;
+    }
+
+    .review-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        margin-bottom: 18px;
+    }
+
+    .review-icon {
+        width: 54px;
+        height: 54px;
+        border-radius: 16px;
+        background: #eff6ff;
+        color: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .review-icon svg {
+        width: 28px;
+        height: 28px;
+    }
+
+    .review-title {
+        font-family: 'Rajdhani', sans-serif;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #0f172a;
+        line-height: 1;
+        margin-bottom: 4px;
+    }
+
+    .review-subtitle {
+        font-size: 0.9rem;
+        color: #64748b;
+    }
+
+    .review-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+
+    .review-stat {
+        background: #f8fafc;
+        border: 1px solid #dbeafe;
+        border-radius: 16px;
+        padding: 16px 14px;
+        text-align: center;
+    }
+
+    .review-stat-label {
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: #64748b;
+        margin-bottom: 8px;
+    }
+
+    .review-stat-value {
+        font-family: 'Rajdhani', sans-serif;
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2563eb;
+        line-height: 1;
+    }
+
+    .review-message {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        border-radius: 14px;
+        padding: 14px 16px;
+        color: #334155;
+        font-size: 0.92rem;
+        margin-bottom: 14px;
+    }
+
+    .review-section {
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        overflow: hidden;
+        margin-bottom: 12px;
+        background: #fff;
+    }
+
+    .review-section-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 16px 18px;
+    }
+
+    .review-section-title {
+        font-size: 1rem;
+        font-weight: 800;
+        color: #0f172a;
+    }
+
+    .review-section-hint {
+        font-size: 0.78rem;
+        color: #64748b;
+        margin-top: 4px;
+    }
+
+    .review-action-btn,
+    .review-close-btn {
+        border: none;
+        border-radius: 999px;
+        font-family: 'Nunito', sans-serif;
+        font-weight: 800;
+        cursor: pointer;
+        transition: transform 0.15s, background 0.15s, color 0.15s;
+    }
+
+    .review-action-btn {
+        background: #2563eb;
+        color: #fff;
+        padding: 10px 18px;
+    }
+
+    .review-action-btn:hover,
+    .review-close-btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .review-close-btn {
+        background: #f1f5f9;
+        color: #334155;
+        padding: 10px 16px;
+    }
+
+    .review-step-card {
+        border: 1px solid #e2e8f0;
+        border-radius: 18px;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+        overflow: hidden;
+        margin-bottom: 12px;
+        animation: reviewFlash 2.8s ease-in-out infinite;
+    }
+
+    .review-step-card:last-child {
+        margin-bottom: 0;
+    }
+
+    .review-step-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 16px 18px 12px;
+    }
+
+    .review-step-name {
+        font-size: 1rem;
+        font-weight: 900;
+        color: #0f172a;
+    }
+
+    .review-step-score {
+        padding: 5px 10px;
+        border-radius: 999px;
+        background: #eff6ff;
+        color: #2563eb;
+        font-size: 0.75rem;
+        font-weight: 900;
+        white-space: nowrap;
+    }
+
+    .review-step-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        padding: 0 18px 18px;
+    }
+
+    .review-flash {
+        animation: reviewPulse 1.8s ease-in-out infinite alternate;
+    }
+
+    @keyframes reviewFlash {
+        0% {
+            box-shadow: 0 0 0 rgba(37, 99, 235, 0);
+            transform: translateY(0);
+        }
+
+        100% {
+            box-shadow: 0 10px 24px rgba(37, 99, 235, 0.08);
+            transform: translateY(-1px);
+        }
+    }
+
+    .results-column {
+        background: #f8fafc;
+        border-radius: 14px;
+        padding: 14px;
+        min-width: 0;
+    }
+
+    .results-column.correct {
+        border: 1px solid #bbf7d0;
+    }
+
+    .results-column.mistakes {
+        border: 1px solid #fecaca;
+    }
+
+    .results-column-label {
+        font-size: 0.76rem;
+        font-weight: 900;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+    }
+
+    .results-column.correct .results-column-label {
+        color: #16a34a;
+    }
+
+    .results-column.mistakes .results-column-label {
+        color: #dc2626;
+    }
+
+    .results-item-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+    }
+
+    .results-item-list li {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        font-size: 0.86rem;
+        color: #334155;
+        line-height: 1.45;
+    }
+
+    .results-item-icon {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+
+    .results-item-list .ok .results-item-icon {
+        color: #16a34a;
+    }
+
+    .results-item-list .bad .results-item-icon {
+        color: #ef4444;
+    }
+
+    @keyframes reviewPulse {
+        0% {
+            background-color: #f8fbff;
+        }
+
+        100% {
+            background-color: #eef6ff;
+        }
+    }
+</style>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <a href="feature.html" class="nav-back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="15 18 9 12 15 6" />
+            </svg>
+        </a>
+        <div class="nav-title-group">
+            <div class="nav-title">Assessment Simulation</div>
+            <div class="nav-breadcrumb"><a href="feature.html">Home</a> <span>›</span> <a href="modules.html">Learning
+                    Modules</a> <span>›</span> <a href="practicetasks.html">Practice Hub</a> <span>›</span> Assessment
+                Hub</div>
+        </div>
+        <div class="nav-right">
+            <button class="nav-bell">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                </svg>
+            </button>
+            <div class="nav-user-wrap">
+                <div class="nav-user">
+                    <div class="nav-avatar"><img src="images/unknown-avatar.svg" alt="Unknown user"></div>
+                    <div>
+                        <div class="nav-user-name" id="studentFullName"></div>
+                        <div class="nav-user-role">Student</div>
+                    </div>
+                    <span class="nav-chevron">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                    </span>
+                </div>
+                <div class="nav-dropdown">
+                    <a href="editprofile.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>
+                        Edit Profile
+                    </a>
+                    <div class="nav-dropdown-sep"></div>
+                    <a href="index.html" class="logout-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                            <polyline points="16 17 21 12 16 7" />
+                            <line x1="21" y1="12" x2="9" y2="12" />
+                        </svg>
+                        Log Out
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN LAYOUT -->
+    <div class="main-layout">
+
+        <!-- CONTENT COLUMN -->
+        <div class="content-col">
+
+            <!-- HERO BANNER -->
+            <div class="hero-banner">
+                <div class="hero-content">
+                    <div class="hero-badge">Engine System</div>
+                    <div class="hero-title">Assessment Simulation</div>
+                    <div class="hero-desc">Test your knowledge and skills.<br>Complete the assessment to earn your score
+                        and certificate.</div>
+                    <div class="hero-stats">
+                        <div class="hero-stat">
+                            <div class="hero-stat-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                                    <line x1="16" y1="2" x2="16" y2="6" />
+                                    <line x1="8" y1="2" x2="8" y2="6" />
+                                    <line x1="3" y1="10" x2="21" y2="10" />
+                                </svg>
+                            </div>
+                            <div>
+
+                                <div class="hero-stat-num">6</div>
+                                <div class="hero-stat-label">Total Assessments</div>
+                            </div>
+                        </div>
+                        <div class="hero-stat">
+                            <div class="hero-stat-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" />
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                </svg>
+                            </div>
+                            <div>
+
+                                <script>
+                                    function applyStudentProfile() {
+                                        const stored = localStorage.getItem('motomasterStudent') || sessionStorage.getItem('motomasterStudent');
+                                        if (!stored) return;
+                                        try {
+                                            const student = JSON.parse(stored);
+                                            const fullName = [student.first_name, student.last_name].filter(Boolean).join(' ').trim();
+                                            const nameEl = document.getElementById('studentFullName');
+                                            if (nameEl && fullName) nameEl.textContent = fullName;
+                                        } catch (err) {
+                                            // Ignore malformed stored data.
+                                        }
+                                    }
+
+                                    document.addEventListener('DOMContentLoaded', applyStudentProfile);
+                                    window.addEventListener('pageshow', applyStudentProfile);
+                                </script>
+                                <div class="hero-stat-num">3</div>
+                                <div class="hero-stat-label">Locked Assessments</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABS -->
+            <div class="tabs-row">
+                <button class="tab active">All Assessments (6)</button>
+                <button class="tab">Completed (2)</button>
+                <button class="tab">Locked (4)</button>
+                <div class="tab-right">All Modules <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <polyline points="6 9 12 15 18 9" />
+                    </svg></div>
+            </div>
+
+            <!-- ASSESSMENT CARDS GRID -->
+            <div class="sim-grid">
+
+                <!-- Engine Oil Change — Completed -->
+                <div class="sim-card review-card" data-title="Engine Oil Change Assessment" data-score="92%">
+                    <div class="sim-card-img-wrap">
+                        <img class="sim-card-img" src="images/enginee.png" alt="Engine Oil Change">
+                        <div class="sim-card-badge completed">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            Completed
+                        </div>
+                        <div class="sim-card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="3" />
+                                <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="sim-card-body">
+                        <div class="sim-card-title">Engine Oil Change Assessment</div>
+                        <div class="sim-card-desc">Test your knowledge about the engine oil change procedure.</div>
+                        <div class="sim-card-meta">
+                            <span class="sim-card-score">Score: 92%</span>
+                            <span>Completed: Aug 17, 2026</span>
+                        </div>
+                        <button type="button" class="sim-btn outline review-assessment-btn">Review Assessment <svg
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                                <polyline points="12 5 19 12 12 19" />
+                            </svg></button>
+                    </div>
+                </div>
+
+                <!-- Brake Pad Replacement — Completed -->
+                <div class="sim-card review-card" data-title="Brake Pad Replacement Assessment" data-score="88%">
+                    <div class="sim-card-img-wrap">
+                        <img class="sim-card-img" src="images/brake.png" alt="Brake Pad Replacement">
+                        <div class="sim-card-badge completed">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            Completed
+                        </div>
+                        <div class="sim-card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="sim-card-body">
+                        <div class="sim-card-title">Brake Pad Replacement Assessment</div>
+                        <div class="sim-card-desc">Test your knowledge about replacing brake pads.</div>
+                        <div class="sim-card-meta">
+                            <span class="sim-card-score">Score: 88%</span>
+                            <span>Completed: Aug 17, 2026</span>
+                        </div>
+                        <button type="button" class="sim-btn outline review-assessment-btn">Review Assessment <svg
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                                <polyline points="12 5 19 12 12 19" />
+                            </svg></button>
+                    </div>
+                </div>
+
+                <!-- Air Filter Replacement — Completed -->
+                <div class="sim-card review-card" data-title="Air Filter Replacement Assessment" data-score="90%">
+                    <div class="sim-card-img-wrap">
+                        <img class="sim-card-img" src="images/air.png" alt="Air Filter Replacement">
+                        <div class="sim-card-badge completed">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            Completed
+                        </div>
+                        <div class="sim-card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+                                <line x1="4" y1="22" x2="4" y2="15" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="sim-card-body">
+                        <div class="sim-card-title">Air Filter Replacement Assessment</div>
+                        <div class="sim-card-desc">Test your knowledge about the air filter replacement procedure.</div>
+                        <div class="sim-card-meta">
+                            <span class="sim-card-score">Score: 90%</span>
+                            <span>Completed: Aug 17, 2026</span>
+                        </div>
+                        <button type="button" class="sim-btn outline review-assessment-btn">Review Assessment <svg
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                                <polyline points="12 5 19 12 12 19" />
+                            </svg></button>
+                    </div>
+                </div>
+
+                <!-- Fuel Filter Replacement — Locked: module not read -->
+                <div class="sim-card locked-card" data-title="Fuel Filter Replacement Assessment" data-state="no-module" data-href="fuelmodule.html">
+                    <div class="sim-card-img-wrap">
+                        <img class="sim-card-img" src="images/fuel.png" alt="Fuel Filter Replacement">
+                        <div class="lock-overlay">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="3" y="11" width="18" height="11" rx="2" />
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                            </svg>
+                        </div>
+                        <div class="sim-card-badge locked">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" />
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                            </svg>
+                            Locked
+                        </div>
+                        <div class="sim-card-icon" style="background:#6b7280;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" />
+                                <path d="M9 9h6M9 12h6M9 15h4" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="sim-card-body">
+                        <div class="sim-card-title">Fuel Filter Replacement Assessment</div>
+                        <div class="sim-card-lock-info">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" />
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                            </svg>
+                            Complete the learning module and practice simulation to unlock this assessment.
+                        </div>
+                        <a class="sim-btn locked-action-btn" href="fuelmodule.html"></a>
+                    </div>
+                </div>
+
+                <!-- Battery Maintenance — Unlocked (score loaded from database) -->
+                <div class="sim-card" data-title="Battery Maintenance Assessment" data-state="not-started">
+                    <div class="sim-card-img-wrap">
+                        <img class="sim-card-img" src="images/batteryy.png" alt="Battery Maintenance">
+                        <div class="sim-card-badge unlocked">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            Unlocked
+                        </div>
+                        <div class="sim-card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="1" y="6" width="18" height="12" rx="2" />
+                                <line x1="23" y1="13" x2="23" y2="11" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="sim-card-body">
+                        <div class="sim-card-title">Battery Maintenance Assessment</div>
+                        <div class="sim-card-desc">Test your knowledge about battery inspection, cleaning, and
+                            maintenance procedures.</div>
+                        <button type="button" class="sim-btn start" data-action="start-assessment">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="5 3 19 12 5 21 5 3" />
+                            </svg>
+                            Start Assessment
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                                <polyline points="12 5 19 12 12 19" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Spark Plug Replacement — Locked: unlocked but not started -->
+                <div class="sim-card locked-card" data-title="Spark Plug Replacement Assessment" data-state="no-practice" data-href="practicetasks.html">
+                    <div class="sim-card-img-wrap">
+                        <img class="sim-card-img" src="images/spark.png" alt="Spark Plug Replacement">
+                        <div class="lock-overlay">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="3" y="11" width="18" height="11" rx="2" />
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                            </svg>
+                        </div>
+                        <div class="sim-card-badge locked">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" />
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                            </svg>
+                            Locked
+                        </div>
+                        <div class="sim-card-icon" style="background:#6b7280;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="sim-card-body">
+                        <div class="sim-card-title">Spark Plug Replacement Assessment</div>
+                        <div class="sim-card-lock-info">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" />
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                            </svg>
+                            Complete the learning module and practice simulation to unlock this assessment.
+                        </div>
+                        <a class="sim-btn locked-action-btn" href="practicetasks.html"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SIDEBAR -->
+        <div class="sidebar-col">
+
+            <!-- Overall Progress -->
+            <div class="widget">
+                <div class="widget-label">Overall Progress</div>
+                <div class="progress-ring-wrap">
+                    <div class="progress-ring">
+                        <svg width="90" height="90" viewBox="0 0 90 90">
+                            <circle class="progress-ring-bg" cx="45" cy="45" r="39" />
+                            <circle class="progress-ring-fill" cx="45" cy="45" r="39" />
+                        </svg>
+                        <div class="progress-ring-text">
+                            <span class="progress-ring-pct">62%</span>
+                            <span class="progress-ring-sub">Completed</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="progress-caption"><strong>16 of 32</strong> assessments completed</div>
+                <button class="view-btn">View Progress <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                        <polyline points="12 5 19 12 12 19" />
+                    </svg></button>
+            </div>
+
+            <!-- Unlock Requirements -->
+            <div class="widget">
+                <div class="widget-label">Unlock Requirements</div>
+                <div class="req-note">Complete the following to unlock more assessments.</div>
+                <div class="req-list">
+                    <div class="req-item">
+                        <svg class="req-icon" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" />
+                            <path d="M9 9h6M9 12h6M9 15h4" />
+                        </svg>
+                        Read All Lessons
+                        <div class="req-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="3">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg></div>
+                    </div>
+                    <div class="req-item">
+                        <svg class="req-icon" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
+                        Complete Practice Simulation
+                        <div class="req-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="3">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg></div>
+                    </div>
+                    <div class="req-item">
+                        <svg class="req-icon" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2">
+                            <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                        Pass Practice Quiz
+                        <div class="req-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="3">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="widget">
+                <div class="widget-label">Recent Activity</div>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-dot green">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                        </div>
+                        <div class="activity-info">
+                            <div class="activity-name">Air Filter Replacement</div>
+                            <div class="activity-sub">Assessment Completed</div>
+                        </div>
+                        <div class="activity-time">2d ago</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-dot green">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                        </div>
+                        <div class="activity-info">
+                            <div class="activity-name">Brake Pad Replacement</div>
+                            <div class="activity-sub">Assessment Completed</div>
+                        </div>
+                        <div class="activity-time">4d ago</div>
+                    </div>
+                </div>
+                <a class="view-all-link" href="#">View All Activity <svg viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                        <polyline points="12 5 19 12 12 19" />
+                    </svg></a>
+            </div>
+
+            <!-- Need Help -->
+            <div class="widget">
+                <div
+                    style="width:32px;height:32px;border-radius:50%;background:#eff6ff;display:flex;align-items:center;justify-content:center;color:#2563eb;margin-bottom:8px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                </div>
+                <div style="font-size:0.78rem;font-weight:800;color:#1a1a2e;margin-bottom:3px;">Need Help?</div>
+                <div style="font-size:0.7rem;color:#6b7280;margin-bottom:8px;line-height:1.4;">Check the guide or watch
+                    a tutorial before starting.</div>
+                <a class="view-all-link" href="#">View Guide <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                        <polyline points="12 5 19 12 12 19" />
+                    </svg></a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- TIP BAR -->
+    <div class="tip-bar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+        <span><strong>Note:</strong> You must complete the Learning Module and Practice Simulation before taking the
+            Assessment.</span>
+    </div>
+
+    <!-- REVIEW MODAL -->
+    <div class="review-modal" id="reviewModal" aria-hidden="true">
+        <div class="review-panel" role="dialog" aria-modal="true" aria-labelledby="reviewTitle">
+            <div class="review-header">
+                <div class="review-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <polyline points="4 12 9 17 20 6" />
+                        <path d="M4 4h16v16H4z" opacity="0.15" />
+                    </svg>
+                </div>
+                <div>
+                    <div class="review-title" id="reviewTitle">Assessment Review</div>
+                    <div class="review-subtitle">Review every step, including the correct actions and mistakes.</div>
+                </div>
+            </div>
+
+            <div class="review-grid">
+                <div class="review-stat">
+                    <div class="review-stat-label">Overall Score</div>
+                    <div class="review-stat-value" id="reviewScoreValue">92%</div>
+                </div>
+                <div class="review-stat">
+                    <div class="review-stat-label">Steps Completed</div>
+                    <div class="review-stat-value" id="reviewStepsValue">5/5</div>
+                </div>
+                <div class="review-stat">
+                    <div class="review-stat-label">Performance</div>
+                    <div class="review-stat-value" id="reviewPerformanceValue"
+                        style="font-size:1.55rem; line-height:1.15;">Needs Work</div>
+                </div>
+            </div>
+
+            <div class="review-message" id="reviewMessage">
+                You finished the assessment, but each step needs review before attempting it again.
+            </div>
+
+            <div class="review-section">
+                <div class="review-section-head">
+                    <div>
+                        <div class="review-section-title">Full step review</div>
+                        <div class="review-section-hint">All steps are expanded so you can review every correct and
+                            incorrect action</div>
+                    </div>
+                    <button type="button" class="review-action-btn" id="attemptAgainBtn">Attempt Again</button>
+                </div>
+
+                <div id="reviewStepsContainer">
+                    <div class="review-step-card review-flash">
+                        <div class="review-step-head">
+                            <div class="review-step-name">Step 1: Inspect Battery Condition</div>
+                            <div class="review-step-score">60%</div>
+                        </div>
+                        <div class="review-step-grid">
+                            <div class="results-column correct">
+                                <div class="results-column-label">Correct</div>
+                                <ul class="results-item-list">
+                                    <li class="ok"><svg class="results-item-icon" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2.5">
+                                            <polyline points="20 6 9 17 4 12" />
+                                        </svg><span>Checked battery case for cracks, bulging, or acid leaks</span></li>
+                                    <li class="ok"><svg class="results-item-icon" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2.5">
+                                            <polyline points="20 6 9 17 4 12" />
+                                        </svg><span>Verified terminal connections were tight and clean</span></li>
+                                    <li class="ok"><svg class="results-item-icon" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2.5">
+                                            <polyline points="20 6 9 17 4 12" />
+                                        </svg><span>Confirmed battery age is within acceptable range</span></li>
+                                </ul>
+                            </div>
+                            <div class="results-column mistakes">
+                                <div class="results-column-label">Mistakes</div>
+                                <ul class="results-item-list">
+                                    <li class="bad"><svg class="results-item-icon" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2.5">
+                                            <line x1="6" y1="6" x2="18" y2="18" />
+                                            <line x1="18" y1="6" x2="6" y2="18" />
+                                        </svg><span>Did not turn off ignition before inspection</span></li>
+                                    <li class="bad"><svg class="results-item-icon" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2.5">
+                                            <line x1="6" y1="6" x2="18" y2="18" />
+                                            <line x1="18" y1="6" x2="6" y2="18" />
+                                        </svg><span>Missed visible corrosion on positive terminal</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="review-step-card review-flash" style="animation-delay: 0.15s;">
+                        <div class="review-step-head">
+                            <div class="review-step-name">Step 2: Clean Battery Terminals</div>
+                            <div class="review-step-score">62%</div>
+                        </div>
+                        <div class="review-step-grid">
+                            <div class="results-column correct">
+                                <div class="results-column-label">Correct</div>
+                                <ul class="results-item-list">
+                                    <li class="ok"><svg class="results-item-icon" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2.5">
+                                            <polyline points="20 6 9 17 4 12" />
+                                        </svg><span>Disconnected negative terminal first, then positive</span></li>
+                                    <li class="ok"><svg class="results-item-icon" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2.5">
+                                            <polyline points="20 6 9 17 4 12" />
+                                        </svg><span>Used baking soda solution and wire brush effectively</span></li>
+                                </ul>
+                            </div>
+                            <div class="results-column mistakes">
+                                <div class="results-column-label">Mistakes</div>
+                                <ul class="results-item-list">
+                                    <li class="bad"><svg class="results-item-icon" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2.5">
+                                            <line x1="6" y1="6" x2="18" y2="18" />
+                                            <line x1="18" y1="6" x2="6" y2="18" />
+                                        </svg><span>Disconnected positive terminal first - risk of short circuit</span>
+                                    </li>
+                                    <li class="bad"><svg class="results-item-icon" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2.5">
+                                            <line x1="6" y1="6" x2="18" y2="18" />
+                                            <line x1="18" y1="6" x2="6" y2="18" />
+                                        </svg><span>Did not clean cable clamps thoroughly</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="review-step-card review-flash" style="animation-delay: 0.3s;">
+                        <div class="review-step-head">
+                            <div class="review-step-name">Step 3: Remove Battery Caps</div>
+                            <div class="review-step-score">58%</div>
+                        </div>
+                        <div class="review-step-grid">
+                            <div class="results-column correct">
+                                <div class="results-column-label">Correct</div>
+                                <ul class="results-item-list">
+                                    <li class="ok"><svg class="results-item-icon" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2.5">
+                                            <polyline points="20 6 9 17 4 12" />
+                                        </svg><span>Handled caps carefully and kept them organized</span></li>
+                                    <li class="ok"><svg class="results-item-icon" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2.5">
+                                            <polyline points="20 6 9 17 4 12" />
+                                        </svg><span>Set removed parts in a safe storage area</span></li>
+                                </ul>
+                            </div>
+                            <div class="results-column mistakes">
+                                <div class="results-column-label">Mistakes</div>
+                                <ul class="results-item-list">
+                                    <li class="bad"><svg class="results-item-icon" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2.5">
+                                            <line x1="6" y1="6" x2="18" y2="18" />
+                                            <line x1="18" y1="6" x2="6" y2="18" />
+                                        </svg><span>Removed caps before the area was fully prepared</span></li>
+                                    <li class="bad"><svg class="results-item-icon" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2.5">
+                                            <line x1="6" y1="6" x2="18" y2="18" />
+                                            <line x1="18" y1="6" x2="6" y2="18" />
+                                        </svg><span>Lost track of one cap during storage</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="review-step-card review-flash" style="animation-delay: 0.45s;">
+                        <div class="review-step-head">
+                            <div class="review-step-name">Step 4: Reinstall Caps and Secure Connections</div>
+                            <div class="review-step-score">65%</div>
+                        </div>
+                        <div class="review-step-grid">
+                            <div class="results-column correct">
+                                <div class="results-column-label">Correct</div>
+                                <ul class="results-item-list">
+                                    <li class="ok"><svg class="results-item-icon" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2.5">
+                                            <polyline points="20 6 9 17 4 12" />
+                                        </svg><span>Reinstalled terminal caps in the proper order</span></li>
+                                    <li class="ok"><svg class="results-item-icon" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2.5">
+                                            <polyline points="20 6 9 17 4 12" />
+                                        </svg><span>Confirmed the connection was seated properly</span></li>
+                                </ul>
+                            </div>
+                            <div class="results-column mistakes">
+                                <div class="results-column-label">Mistakes</div>
+                                <ul class="results-item-list">
+                                    <li class="bad"><svg class="results-item-icon" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2.5">
+                                            <line x1="6" y1="6" x2="18" y2="18" />
+                                            <line x1="18" y1="6" x2="6" y2="18" />
+                                        </svg><span>Left a connection slightly loose</span></li>
+                                    <li class="bad"><svg class="results-item-icon" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2.5">
+                                            <line x1="6" y1="6" x2="18" y2="18" />
+                                            <line x1="18" y1="6" x2="6" y2="18" />
+                                        </svg><span>Did not verify both caps were fully locked</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="review-step-card review-flash" style="animation-delay: 0.6s;">
+                        <div class="review-step-head">
+                            <div class="review-step-name">Step 5: Final Inspection and Completion</div>
+                            <div class="review-step-score">67%</div>
+                        </div>
+                        <div class="review-step-grid">
+                            <div class="results-column correct">
+                                <div class="results-column-label">Correct</div>
+                                <ul class="results-item-list">
+                                    <li class="ok"><svg class="results-item-icon" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2.5">
+                                            <polyline points="20 6 9 17 4 12" />
+                                        </svg><span>Performed the final visual check of the battery area</span></li>
+                                    <li class="ok"><svg class="results-item-icon" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2.5">
+                                            <polyline points="20 6 9 17 4 12" />
+                                        </svg><span>Completed the assessment and logged the outcome</span></li>
+                                </ul>
+                            </div>
+                            <div class="results-column mistakes">
+                                <div class="results-column-label">Mistakes</div>
+                                <ul class="results-item-list">
+                                    <li class="bad"><svg class="results-item-icon" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2.5">
+                                            <line x1="6" y1="6" x2="18" y2="18" />
+                                            <line x1="18" y1="6" x2="6" y2="18" />
+                                        </svg><span>Skipped a final safety check before finishing</span></li>
+                                    <li class="bad"><svg class="results-item-icon" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2.5">
+                                            <line x1="6" y1="6" x2="18" y2="18" />
+                                            <line x1="18" y1="6" x2="6" y2="18" />
+                                        </svg><span>Missed one last verification of the terminals</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;">
+                <button type="button" class="review-close-btn" id="closeReviewBtn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const reviewModal = document.getElementById('reviewModal');
+        const reviewScoreValue = document.getElementById('reviewScoreValue');
+        const reviewStepsValue = document.getElementById('reviewStepsValue');
+        const reviewPerformanceValue = document.getElementById('reviewPerformanceValue');
+        const reviewMessage = document.getElementById('reviewMessage');
+        const reviewStepsContainer = document.getElementById('reviewStepsContainer');
+        const closeReviewBtn = document.getElementById('closeReviewBtn');
+        const attemptAgainBtn = document.getElementById('attemptAgainBtn');
+
+        const defaultReviewStepsHTML = reviewStepsContainer ? reviewStepsContainer.innerHTML : '';
+        let activeAssessmentTitle = null;
+        let activeAssessmentRecord = null;
+        const assessmentRecordsByTitle = {};
+
+        const BATTERY_ASSESSMENT_TITLE = 'Battery Maintenance Assessment';
+
+        function escapeHtml(text) {
+            return String(text)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function formatReviewItem(item) {
+            if (typeof item === 'string') return item;
+            if (item && typeof item === 'object') return item.message || item.text || String(item);
+            return String(item);
+        }
+
+        function getPerformanceLabel(score) {
+            if (score >= 90) return 'Excellent';
+            if (score >= 75) return 'Good';
+            if (score >= 60) return 'Needs Work';
+            return 'Review Again';
+        }
+
+        function getFeedbackText(score) {
+            if (score >= 90) return 'Strong work. You completed the assessment accurately and followed the sequence well.';
+            if (score >= 75) return 'Good job. Your sequence is mostly correct, with a few details to tighten up.';
+            if (score >= 60) return 'You finished the assessment, but several steps need review before attempting it again.';
+            return 'You completed the assessment, but the procedure needs more practice. Review the mistakes below and try again.';
+        }
+
+        function calcStepScore(step) {
+            if (typeof step.score === 'number' && step.score >= 0) return Math.round(step.score);
+            const correct = (step.correct_actions || step.correct || []).length;
+            const mistakes = (step.mistake_actions || step.mistakes || []).length;
+            const total = correct + mistakes;
+            if (total === 0) return 0;
+            return Math.round((correct / total) * 100);
+        }
+
+        function buildReviewStepsHtml(steps) {
+            if (!steps || steps.length === 0) {
+                return '<p style="font-size:0.8rem;color:#6b7280;padding:8px 0;">No step data recorded yet.</p>';
+            }
+            return steps.map((step, idx) => {
+                const stepScore = calcStepScore(step);
+                const corrects = (step.correct_actions || step.correct || []).map(formatReviewItem);
+                const mistakes = (step.mistake_actions || step.mistakes || []).map(formatReviewItem);
+                const title = step.title || ('Step ' + (idx + 1));
+
+                const correctHtml = corrects.length === 0
+                    ? '<li><span>None</span></li>'
+                    : corrects.map((item) => `
+                        <li class="ok"><svg class="results-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span>${escapeHtml(item)}</span></li>
+                    `).join('');
+
+                const mistakesHtml = mistakes.length === 0
+                    ? '<li><span>None</span></li>'
+                    : mistakes.map((item) => `
+                        <li class="bad"><svg class="results-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg><span>${escapeHtml(item)}</span></li>
+                    `).join('');
+
+                return `
+                    <div class="review-step-card review-flash" style="animation-delay:${idx * 0.15}s;">
+                        <div class="review-step-head">
+                            <div class="review-step-name">${escapeHtml(title)}</div>
+                            <div class="review-step-score">${stepScore}%</div>
+                        </div>
+                        <div class="review-step-grid">
+                            <div class="results-column correct">
+                                <div class="results-column-label">Correct</div>
+                                <ul class="results-item-list">${correctHtml}</ul>
+                            </div>
+                            <div class="results-column mistakes">
+                                <div class="results-column-label">Mistakes</div>
+                                <ul class="results-item-list">${mistakesHtml}</ul>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openAssessmentReviewModal(record, title) {
+            activeAssessmentTitle = title || (record && record.title) || null;
+            activeAssessmentRecord = record || null;
+
+            if (record && record.steps && record.steps.length > 0) {
+                const score = Math.round(Number(record.score) || 0);
+                const stepCount = record.steps.length;
+                const completedSteps = record.steps.filter((s) => {
+                    const c = (s.correct_actions || s.correct || []).length;
+                    const m = (s.mistake_actions || s.mistakes || []).length;
+                    return c + m > 0;
+                }).length;
+
+                if (reviewScoreValue) reviewScoreValue.textContent = score + '%';
+                if (reviewStepsValue) reviewStepsValue.textContent = completedSteps + '/' + stepCount;
+                if (reviewPerformanceValue) reviewPerformanceValue.textContent = getPerformanceLabel(score);
+                if (reviewMessage) reviewMessage.textContent = getFeedbackText(score);
+                if (reviewStepsContainer) reviewStepsContainer.innerHTML = buildReviewStepsHtml(record.steps);
+            } else {
+                const card = document.querySelector('.review-card:hover, .review-card');
+                const scoreText = card && card.dataset.score ? card.dataset.score : '—';
+                if (reviewScoreValue) reviewScoreValue.textContent = scoreText;
+                if (reviewStepsValue) reviewStepsValue.textContent = '5/5';
+                if (reviewPerformanceValue) reviewPerformanceValue.textContent = 'Needs Work';
+                if (reviewMessage) {
+                    reviewMessage.textContent = 'You finished the assessment, but each step needs review before attempting it again.';
+                }
+                if (reviewStepsContainer) reviewStepsContainer.innerHTML = defaultReviewStepsHTML;
+            }
+
+            reviewModal.classList.add('open');
+            reviewModal.setAttribute('aria-hidden', 'false');
+        }
+
+        function closeReviewModal() {
+            reviewModal.classList.remove('open');
+            reviewModal.setAttribute('aria-hidden', 'true');
+        }
+
+        function openReviewForCard(card) {
+            if (!card) return;
+            const title = card.dataset.title;
+            if (title && assessmentRecordsByTitle[title]) {
+                openAssessmentReviewModal(assessmentRecordsByTitle[title], title);
+                return;
+            }
+            const scoreText = card.dataset.score || '';
+            openAssessmentReviewModal(null, title || null);
+            if (reviewScoreValue && scoreText) reviewScoreValue.textContent = scoreText;
+        }
+
+        function wireReviewAssessmentButton(btn, card, record, title) {
+            if (!btn || !card) return;
+            btn.removeAttribute('onclick');
+            btn.type = 'button';
+            btn.onclick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (record && title) {
+                    openAssessmentReviewModal(record, title);
+                } else {
+                    openReviewForCard(card);
+                }
+            };
+        }
+
+        function wireStartAssessmentButton(btn) {
+            if (!btn) return;
+            btn.removeAttribute('onclick');
+            btn.type = 'button';
+            btn.onclick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const card = btn.closest('.sim-card');
+                const title = card ? card.dataset.title : 'Battery Maintenance Assessment';
+                window.location.href = 'assessmentarea.html?title=' + encodeURIComponent(title);
+            };
+        }
+
+        document.addEventListener('click', (event) => {
+            const btn = event.target.closest('.review-assessment-btn');
+            if (!btn) return;
+            event.preventDefault();
+            event.stopPropagation();
+            openReviewForCard(btn.closest('.sim-card'));
+        }, true);
+
+        document.addEventListener('click', (event) => {
+            const startBtn = event.target.closest('[data-action="start-assessment"]');
+            if (!startBtn) return;
+            event.preventDefault();
+            event.stopPropagation();
+            const card = startBtn.closest('.sim-card');
+            const title = card ? card.dataset.title : 'Battery Maintenance Assessment';
+            window.location.href = 'assessmentarea.html?title=' + encodeURIComponent(title);
+        }, true);
+
+        closeReviewBtn.addEventListener('click', closeReviewModal);
+        attemptAgainBtn.addEventListener('click', async () => {
+            const title = activeAssessmentTitle;
+            if (!title) return;
+
+            const student = getStudentInfo();
+            if (student) {
+                try {
+                    const res = await fetch('reset_assessment.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            title: title
+                        })
+                    });
+                    const data = await res.json();
+                    if (!data.success) {
+                        console.warn('Reset failed:', data.message);
+                    }
+                } catch (err) {
+                    console.warn('Reset request failed', err);
+                }
+            }
+
+            delete assessmentRecordsByTitle[title];
+
+            closeReviewModal();
+            window.location.href = 'assessmentarea.html?title=' + encodeURIComponent(title);
+        });
+
+        reviewModal.addEventListener('click', (event) => {
+            if (event.target === reviewModal) {
+                closeReviewModal();
+            }
+        });
+
+        const arrowSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`;
+        const bookSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>`;
+        const practiceSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`;
+        const playSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>`;
+
+        const stateMap = {
+            'no-module': { label: 'Go to Module', cls: 'go-module', icon: bookSvg },
+            'no-practice': { label: 'Go to Practice Simulation', cls: 'go-practice', icon: practiceSvg },
+            'not-started': { label: 'Start Assessment', cls: 'start', icon: playSvg }
+        };
+
+        document.querySelectorAll('.locked-action-btn').forEach(btn => {
+            const card = btn.closest('[data-state]');
+            if (!card) return;
+            const state = card.dataset.state;
+            const cfg = stateMap[state];
+            if (!cfg) return;
+            btn.className = `sim-btn ${cfg.cls} locked-action-btn`;
+            btn.innerHTML = cfg.icon + ' ' + cfg.label + ' ' + arrowSvg;
+        });
+
+        function getStudentInfo() {
+            try {
+                const raw = localStorage.getItem('motomasterStudent') || sessionStorage.getItem('motomasterStudent');
+                return raw ? JSON.parse(raw) : null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function formatAssessmentDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(String(dateString).replace(' ', 'T'));
+            if (Number.isNaN(date.getTime())) return '';
+            return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        function applyAssessmentProgress(card, record, title) {
+            if (!card || !record) return;
+
+            const score = Math.round(Number(record.score) || 0);
+            const status = record.completion_status || '';
+            const hasStepData = (record.steps || []).some((s) => {
+                const c = (s.correct_actions || s.correct || []).length;
+                const m = (s.mistake_actions || s.mistakes || []).length;
+                return c + m > 0;
+            });
+
+            if (status === 'Not Started' || (score === 0 && !hasStepData)) {
+                applyAssessmentStartState(card);
+                return;
+            }
+
+            assessmentRecordsByTitle[title] = record;
+
+            card.classList.add('review-card');
+            card.classList.remove('locked-card');
+            card.dataset.state = 'completed';
+            card.dataset.score = score + '%';
+            card.removeAttribute('onclick');
+            card.style.cursor = 'pointer';
+            card.onclick = (e) => {
+                if (e.target.closest('.sim-btn')) return;
+                openAssessmentReviewModal(record, title);
+            };
+
+            const badge = card.querySelector('.sim-card-badge');
+            if (badge) {
+                badge.className = 'sim-card-badge completed';
+                badge.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Completed';
+            }
+
+            // Remove lock overlay if present
+            const overlay = card.querySelector('.lock-overlay');
+            if (overlay) overlay.remove();
+
+            // Remove lock info element
+            const lockInfo = card.querySelector('.sim-card-lock-info');
+            if (lockInfo) lockInfo.remove();
+
+            // Add description if not already present
+            const cardBody = card.querySelector('.sim-card-body');
+            if (cardBody && !cardBody.querySelector('.sim-card-desc')) {
+                const descEl = document.createElement('div');
+                descEl.className = 'sim-card-desc';
+                if (title === 'Fuel Filter Replacement Assessment') {
+                    descEl.textContent = 'Test your knowledge about fuel filter inspection and replacement procedures.';
+                } else if (title === 'Spark Plug Replacement Assessment') {
+                    descEl.textContent = 'Test your knowledge about spark plug inspection and replacement procedures.';
+                } else {
+                    descEl.textContent = 'Test your knowledge about this assessment topic.';
+                }
+                const titleEl = cardBody.querySelector('.sim-card-title');
+                if (titleEl) {
+                    cardBody.insertBefore(descEl, titleEl.nextSibling);
+                } else {
+                    cardBody.prepend(descEl);
+                }
+            }
+
+            let metaEl = card.querySelector('.sim-card-meta');
+            if (!metaEl) {
+                metaEl = document.createElement('div');
+                metaEl.className = 'sim-card-meta';
+                const descEl = card.querySelector('.sim-card-desc');
+                if (descEl) {
+                    descEl.parentNode.insertBefore(metaEl, descEl.nextSibling);
+                } else {
+                    const titleEl = card.querySelector('.sim-card-title');
+                    if (titleEl) titleEl.parentNode.insertBefore(metaEl, titleEl.nextSibling);
+                }
+            }
+            const dateLabel = formatAssessmentDate(record.date_taken);
+            metaEl.innerHTML = `
+                <span class="sim-card-score">Score: ${score}%</span>
+                <span>${dateLabel ? 'Completed: ' + dateLabel : 'Completed'}</span>
+            `;
+
+            const btn = card.querySelector('.sim-btn');
+            if (btn) {
+                if (btn.tagName === 'A') {
+                    btn.outerHTML = `
+                        <button type="button" class="sim-btn outline review-assessment-btn">
+                            Review Assessment <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                                <polyline points="12 5 19 12 12 19" />
+                            </svg>
+                        </button>
+                    `;
+                } else {
+                    btn.className = 'sim-btn outline review-assessment-btn';
+                    btn.removeAttribute('data-action');
+                    btn.removeAttribute('onclick');
+                    btn.innerHTML = 'Review Assessment <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+                }
+                const newBtn = card.querySelector('.review-assessment-btn');
+                if (newBtn) {
+                    wireReviewAssessmentButton(newBtn, card, record, title);
+                }
+            }
+        }
+
+        function applyAssessmentStartState(card) {
+            if (!card) return;
+            card.classList.remove('locked-card', 'review-card');
+            card.dataset.state = 'not-started';
+            delete card.dataset.score;
+            
+            // Remove overlay
+            const overlay = card.querySelector('.lock-overlay');
+            if (overlay) overlay.remove();
+
+            // Remove lock info element
+            const lockInfo = card.querySelector('.sim-card-lock-info');
+            if (lockInfo) lockInfo.remove();
+            
+            // Set badge to unlocked
+            const badge = card.querySelector('.sim-card-badge');
+            if (badge) {
+                badge.className = 'sim-card-badge unlocked';
+                badge.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Unlocked';
+            }
+            
+            // Remove meta if any
+            const meta = card.querySelector('.sim-card-meta');
+            if (meta) meta.remove();
+
+            // Add description if not already present
+            const cardTitle = card.dataset.title || card.querySelector('.sim-card-title').textContent.trim();
+            const cardBody = card.querySelector('.sim-card-body');
+            if (cardBody && !cardBody.querySelector('.sim-card-desc')) {
+                const descEl = document.createElement('div');
+                descEl.className = 'sim-card-desc';
+                if (cardTitle === 'Fuel Filter Replacement Assessment') {
+                    descEl.textContent = 'Test your knowledge about fuel filter inspection and replacement procedures.';
+                } else if (cardTitle === 'Spark Plug Replacement Assessment') {
+                    descEl.textContent = 'Test your knowledge about spark plug inspection and replacement procedures.';
+                } else {
+                    descEl.textContent = 'Test your knowledge about this assessment topic.';
+                }
+                const titleEl = cardBody.querySelector('.sim-card-title');
+                if (titleEl) {
+                    cardBody.insertBefore(descEl, titleEl.nextSibling);
+                } else {
+                    cardBody.prepend(descEl);
+                }
+            }
+            
+            // Add Start Button
+            let btn = card.querySelector('.sim-btn');
+            if (btn) {
+                if (btn.tagName === 'A' || btn.classList.contains('locked-action-btn')) {
+                    btn.outerHTML = `
+                        <button type="button" class="sim-btn start" data-action="start-assessment">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="5 3 19 12 5 21 5 3"/>
+                            </svg>
+                            Start Assessment
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                                <polyline points="12 5 19 12 12 19"/>
+                            </svg>
+                        </button>
+                    `;
+                }
+            }
+            
+            card.removeAttribute('onclick');
+            card.onclick = null;
+            card.style.cursor = 'default';
+        }
+
+        function applyAssessmentLockedState(card, state, href) {
+            if (!card) return;
+            card.classList.add('locked-card');
+            card.classList.remove('review-card');
+            card.dataset.state = state;
+            card.dataset.href = href;
+            
+            // Ensure lock overlay exists
+            let imgWrap = card.querySelector('.sim-card-img-wrap');
+            if (imgWrap && !imgWrap.querySelector('.lock-overlay')) {
+                const overlay = document.createElement('div');
+                overlay.className = 'lock-overlay';
+                overlay.innerHTML = `
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="3" y="11" width="18" height="11" rx="2" />
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                `;
+                imgWrap.appendChild(overlay);
+            }
+            
+            // Set badge to locked
+            const badge = card.querySelector('.sim-card-badge');
+            if (badge) {
+                badge.className = 'sim-card-badge locked';
+                badge.innerHTML = `
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2" />
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                    Locked
+                `;
+            }
+            
+            // Remove meta if any
+            const meta = card.querySelector('.sim-card-meta');
+            if (meta) meta.remove();
+            
+            // Add locked button
+            let btn = card.querySelector('.sim-btn');
+            if (btn) {
+                if (btn.tagName === 'BUTTON' || !btn.classList.contains('locked-action-btn')) {
+                    btn.outerHTML = `<a class="sim-btn locked-action-btn" href="${href}"></a>`;
+                } else {
+                    btn.setAttribute('href', href);
+                }
+            }
+            
+            card.removeAttribute('onclick');
+            card.onclick = null;
+            card.style.cursor = 'default';
+        }
+
+        function formatLockedButtons() {
+            const arrowSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`;
+            const bookSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>`;
+            const practiceSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`;
+            const playSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>`;
+
+            const stateMap = {
+                'no-module': { label: 'Go to Module', cls: 'go-module', icon: bookSvg },
+                'no-practice': { label: 'Go to Practice Simulation', cls: 'go-practice', icon: practiceSvg },
+                'not-started': { label: 'Start Assessment', cls: 'start', icon: playSvg }
+            };
+
+            document.querySelectorAll('.locked-action-btn').forEach(btn => {
+                const card = btn.closest('[data-state]');
+                if (!card) return;
+                const state = card.dataset.state;
+                const cfg = stateMap[state];
+                if (!cfg) return;
+                btn.className = `sim-btn ${cfg.cls} locked-action-btn`;
+                btn.innerHTML = cfg.icon + ' ' + cfg.label + ' ' + arrowSvg;
+            });
+        }
+
+        function wireStaticReviewCards() {
+            document.querySelectorAll('.sim-card.review-card').forEach((card) => {
+                const title = card.dataset.title;
+                card.removeAttribute('onclick');
+                card.style.cursor = 'pointer';
+                card.onclick = (e) => {
+                    if (e.target.closest('.sim-btn')) return;
+                    openReviewForCard(card);
+                };
+                const btn = card.querySelector('.review-assessment-btn');
+                if (btn) wireReviewAssessmentButton(btn, card, null, null);
+            });
+        }
+
+        async function loadAndRenderAssessmentProgress() {
+            const student = getStudentInfo();
+            if (!student) return;
+
+            const studentId = student.student_id;
+            const email = student.email;
+
+            // 1. Fetch Module reading progress
+            let moduleProgress = {};
+            try {
+                const modRes = await fetch('student_progress.php');
+                const modData = await modRes.json();
+                if (modData.success && modData.progress) {
+                    moduleProgress = modData.progress;
+                }
+            } catch (e) {
+                console.error('Error fetching module progress:', e);
+            }
+
+            // 2. Fetch Practice simulation progress
+            let practiceProgressMap = {};
+            try {
+                const practiceParams = new URLSearchParams({
+                    title: 'all',
+                    ...(studentId && { student_id: studentId }),
+                    ...(email && { email: email })
+                });
+                const practiceRes = await fetch(`get_practice_progress.php?${practiceParams}`);
+                const practiceData = await practiceRes.json();
+                if (practiceData.success && practiceData.progress) {
+                    practiceData.progress.forEach(record => {
+                        practiceProgressMap[record.title] = record;
+                    });
+                }
+            } catch (e) {
+                console.error('Error fetching practice progress:', e);
+            }
+
+            // 3. Fetch Assessment progress
+            let assessmentProgressMap = {};
+            try {
+                const assessParams = new URLSearchParams({
+                    title: 'all'
+                });
+                const assessRes = await fetch(`get_assessment_progress.php?${assessParams}`);
+                const assessData = await assessRes.json();
+                if (assessData.success && assessData.progress) {
+                    assessData.progress.forEach(record => {
+                        assessmentProgressMap[record.title] = record;
+                    });
+                }
+            } catch (e) {
+                console.error('Error fetching assessment progress:', e);
+            }
+
+            // 4. Update each assessment card
+            const titleToModuleKey = {
+                'Engine Oil Change Assessment': 'mod_progress_enginemodule',
+                'Brake Pad Replacement Assessment': 'mod_progress_brakemodule',
+                'Air Filter Replacement Assessment': 'mod_progress_airmodule',
+                'Fuel Filter Replacement Assessment': 'mod_progress_fuelmodule',
+                'Battery Maintenance Assessment': 'mod_progress_batterymodule',
+                'Spark Plug Replacement Assessment': 'mod_progress_sparkmodule'
+            };
+            const titleToPracticeTitle = {
+                'Engine Oil Change Assessment': 'Engine Oil Change',
+                'Brake Pad Replacement Assessment': 'Brake Pad Replacement',
+                'Air Filter Replacement Assessment': 'Air Filter Replacement',
+                'Fuel Filter Replacement Assessment': 'Fuel Filter Replacement',
+                'Battery Maintenance Assessment': 'Battery Maintenance',
+                'Spark Plug Replacement Assessment': 'Spark Plug Replacement'
+            };
+            const titleToModuleFile = {
+                'Engine Oil Change Assessment': 'enginemodule.html',
+                'Brake Pad Replacement Assessment': 'brakemodule.html',
+                'Air Filter Replacement Assessment': 'airmodule.html',
+                'Fuel Filter Replacement Assessment': 'fuelmodule.html',
+                'Battery Maintenance Assessment': 'batterymodule.html',
+                'Spark Plug Replacement Assessment': 'sparkmodule.html'
+            };
+
+            const cards = document.querySelectorAll('.sim-card');
+            cards.forEach(card => {
+                const cardTitle = card.dataset.title;
+                if (!cardTitle) return;
+
+                const mKey = titleToModuleKey[cardTitle];
+                const pTitle = titleToPracticeTitle[cardTitle];
+                const mFile = titleToModuleFile[cardTitle];
+
+                const moduleCompleted = mKey ? ((moduleProgress[mKey] || 0) >= 100) : false;
+                const practiceRecord = pTitle ? practiceProgressMap[pTitle] : null;
+                const practiceCompleted = practiceRecord ? (practiceRecord.completion_status === 'Completed') : false;
+
+                if (!moduleCompleted) {
+                    // Locked: no-module
+                    applyAssessmentLockedState(card, 'no-module', mFile);
+                } else if (!practiceCompleted) {
+                    // Locked: no-practice
+                    applyAssessmentLockedState(card, 'no-practice', 'practicetasks.html');
+                } else {
+                    // Unlocked!
+                    const assessmentRecord = assessmentProgressMap[cardTitle];
+                    if (assessmentRecord && assessmentRecord.completion_status === 'Completed') {
+                        applyAssessmentProgress(card, assessmentRecord, cardTitle);
+                    } else {
+                        applyAssessmentStartState(card);
+                    }
+                }
+            });
+
+            // Format all locked action buttons
+            formatLockedButtons();
+
+            // Re-wire start assessment buttons
+            document.querySelectorAll('[data-action="start-assessment"]').forEach(btn => {
+                wireStartAssessmentButton(btn);
+            });
+
+            // Update dynamic overall progress ring and caption
+            updateAssessmentProgressRing(assessmentProgressMap);
+            wireViewProgressButton();
+
+            // Update stats and tabs dynamically based on real card states
+            updateAssessmentStatsAndTabs();
+            wireTabFiltering();
+        }
+
+        function updateAssessmentProgressRing(assessmentProgressMap) {
+            const cards = document.querySelectorAll('.sim-card');
+            const totalCount = cards.length;
+            
+            let completedCount = 0;
+            
+            cards.forEach(card => {
+                if (card.classList.contains('locked-card')) return;
+
+                const title = card.dataset.title;
+                const record = assessmentProgressMap[title];
+                
+                if (record) {
+                    if (record.completion_status === 'Completed') {
+                        completedCount++;
+                    }
+                }
+            });
+            
+            const completionPct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+            
+            // Update Ring elements
+            const ringFill = document.querySelector('.progress-ring-fill');
+            const ringPct = document.querySelector('.progress-ring-pct');
+            const caption = document.querySelector('.progress-caption');
+            
+            if (ringPct) ringPct.textContent = `${completionPct}%`;
+            if (ringFill) {
+                const ringCirc = 245; // 2 * Math.PI * 39 (r=39)
+                const offset = ringCirc - (ringCirc * completionPct / 100);
+                ringFill.style.strokeDasharray = `${ringCirc}`;
+                ringFill.style.strokeDashoffset = `${offset}`;
+            }
+            
+            if (caption) {
+                caption.innerHTML = `<strong>${completedCount} of ${totalCount}</strong> assessments completed`;
+            }
+        }
+
+        function wireViewProgressButton() {
+            const btn = document.querySelector('.view-btn');
+            if (btn) {
+                btn.type = 'button';
+                btn.onclick = () => {
+                    window.location.href = 'trackperf.html';
+                };
+            }
+        }
+
+        function updateAssessmentStatsAndTabs() {
+            const cards = document.querySelectorAll('.sim-card');
+            const totalCount = cards.length;
+            const lockedCount = document.querySelectorAll('.sim-card.locked-card').length;
+            const completedCount = document.querySelectorAll('.sim-card.review-card').length;
+
+            // 1. Update Hero stats
+            document.querySelectorAll('.hero-stat').forEach(stat => {
+                const labelEl = stat.querySelector('.hero-stat-label');
+                const numEl = stat.querySelector('.hero-stat-num');
+                if (labelEl && numEl) {
+                    const label = labelEl.textContent.trim().toLowerCase();
+                    if (label.includes('total')) {
+                        numEl.textContent = totalCount;
+                    } else if (label.includes('locked')) {
+                        numEl.textContent = lockedCount;
+                    }
+                }
+            });
+
+            // 2. Update Tab buttons
+            document.querySelectorAll('.tabs-row .tab').forEach(tab => {
+                const tabText = tab.textContent.trim();
+                if (tabText.startsWith('All')) {
+                    tab.textContent = `All Assessments (${totalCount})`;
+                } else if (tabText.startsWith('Completed')) {
+                    tab.textContent = `Completed (${completedCount})`;
+                } else if (tabText.startsWith('Locked')) {
+                    tab.textContent = `Locked (${lockedCount})`;
+                }
+            });
+        }
+
+        function wireTabFiltering() {
+            const tabs = document.querySelectorAll('.tabs-row .tab');
+            const cards = document.querySelectorAll('.sim-card');
+            
+            tabs.forEach(tab => {
+                tab.onclick = () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    const tabText = tab.textContent.trim().toLowerCase();
+                    cards.forEach(card => {
+                        if (tabText.includes('all')) {
+                            card.style.display = '';
+                        } else if (tabText.includes('completed')) {
+                            card.style.display = card.classList.contains('review-card') ? '' : 'none';
+                        } else if (tabText.includes('locked')) {
+                            card.style.display = card.classList.contains('locked-card') ? '' : 'none';
+                        }
+                    });
+                };
+            });
+        }
+
+        window.addEventListener('load', () => {
+            wireStaticReviewCards();
+            loadAndRenderAssessmentProgress();
+        });
+    </script>
+    <script src="js/notifications.js"></script>
+</body>
+
+
+</html>

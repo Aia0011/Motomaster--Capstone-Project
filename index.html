@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MotoMaster — Automotive Training Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            height: 100%;
+            font-family: 'Nunito', sans-serif;
+            background: #ffffff;
+            color: #1a1a2e;
+            overflow-x: hidden;
+        }
+
+        /* ── NAVBAR ── */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            padding: 0 48px;
+            z-index: 100;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .nav-logo img { height: 30px; }
+        .nav-logo-name { font-family: 'Rajdhani', sans-serif; font-size: 1.25rem; font-weight: 700; color: #1a1a2e; letter-spacing: 0.5px; }
+        .nav-links { display: flex; align-items: center; gap: 32px; margin-left: auto; }
+        .nav-link { font-size: 0.82rem; font-weight: 700; color: #6b7280; text-decoration: none; letter-spacing: 0.3px; transition: color 0.2s; }
+        .nav-link:hover { color: #2563eb; }
+        .nav-cta { padding: 9px 22px; background: #2563eb; color: #fff; border-radius: 8px; font-size: 0.82rem; font-weight: 800; text-decoration: none; letter-spacing: 0.3px; transition: background 0.2s; }
+        .nav-cta:hover { background: #1d4ed8; }
+        .login-wrap { position: relative; }
+        .login-btn { padding: 9px 18px; background: #fff; color: #1a1a2e; border: 1.5px solid #e5e7eb; border-radius: 8px; font-size: 0.82rem; font-weight: 800; text-decoration: none; letter-spacing: 0.3px; display: flex; align-items: center; gap: 7px; cursor: pointer; transition: border-color 0.2s, color 0.2s; white-space: nowrap; }
+        .login-btn:hover { border-color: #2563eb; color: #2563eb; }
+        .login-btn svg { width: 13px; height: 13px; transition: transform 0.2s; }
+        .login-wrap.open .login-btn svg { transform: rotate(180deg); }
+        .login-dropdown { position: absolute; top: calc(100% + 6px); right: 0; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.10); min-width: 160px; padding: 6px; opacity: 0; pointer-events: none; transform: translateY(-6px); transition: opacity 0.18s, transform 0.18s; z-index: 200; }
+        .login-wrap.open .login-dropdown { opacity: 1; pointer-events: all; transform: translateY(0); }
+        .login-dropdown a { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; color: #1a1a2e; text-decoration: none; transition: background 0.15s; }
+        .login-dropdown a:hover { background: #f0f4ff; color: #2563eb; }
+        .login-dropdown a svg { width: 15px; height: 15px; color: #6b7280; flex-shrink: 0; }
+        .login-dropdown a:hover svg { color: #2563eb; }
+        .login-dropdown-sep { height: 1px; background: #f0f0f5; margin: 4px 0; }
+
+        /* ── HERO ── */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 48px 80px;
+            position: relative;
+            overflow: hidden;
+            background: #f8faff;
+        }
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 55% 50% at 15% 85%, rgba(37, 99, 235, 0.1) 0%, transparent 60%),
+                radial-gradient(ellipse 45% 45% at 85% 10%, rgba(37, 99, 235, 0.07) 0%, transparent 55%);
+            pointer-events: none;
+        }
+        .hero-grid-lines {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(37,99,235,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(37,99,235,0.05) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 100%);
+        }
+        .hero-inner {
+            position: relative;
+            max-width: 960px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 28px;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 6px 14px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: #2563eb;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+        .hero-badge span {
+            width: 6px; height: 6px;
+            background: #2563eb;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.8); }
+        }
+        .hero-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: clamp(2.8rem, 6vw, 5rem);
+            font-weight: 700;
+            line-height: 1.05;
+            color: #1a1a2e;
+            letter-spacing: -0.5px;
+        }
+        .hero-title em {
+            font-style: normal;
+            color: #2563eb;
+        }
+        .hero-sub {
+            font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+            color: #6b7280;
+            max-width: 560px;
+            line-height: 1.65;
+            font-weight: 600;
+        }
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .btn-primary {
+            padding: 13px 32px;
+            background: #2563eb;
+            color: #fff;
+            border-radius: 10px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 800;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s, transform 0.15s;
+            letter-spacing: 0.2px;
+        }
+        .btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); }
+        .btn-primary svg { width: 16px; height: 16px; }
+        .btn-ghost {
+            padding: 13px 28px;
+            background: #fff;
+            color: #374151;
+            border-radius: 10px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-decoration: none;
+            border: 1.5px solid #e5e7eb;
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .btn-ghost:hover { border-color: #2563eb; color: #2563eb; }
+
+        /* ── STATS ROW ── */
+        .stats-row {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            margin-top: 8px;
+            padding-top: 28px;
+            border-top: 1px solid #e5e7eb;
+            width: 100%;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .stat { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+        .stat-val { font-family: 'Rajdhani', sans-serif; font-size: 1.7rem; font-weight: 700; color: #1a1a2e; line-height: 1; }
+        .stat-lbl { font-size: 0.7rem; color: #9ca3af; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; }
+        .stat-div { width: 1px; height: 36px; background: #e5e7eb; }
+
+        /* ── FEATURES ── */
+        .section {
+            padding: 80px 48px;
+            max-width: 1080px;
+            margin: 0 auto;
+        }
+        .section-label {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: #2563eb;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 10px;
+        }
+        .section-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: clamp(1.8rem, 3vw, 2.6rem);
+            font-weight: 700;
+            color: #1a1a2e;
+            line-height: 1.15;
+            margin-bottom: 48px;
+        }
+        .section-title span { color: #9ca3af; }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        @media (max-width: 700px) { .features-grid { grid-template-columns: 1fr; } }
+        .feat-card {
+            background: #fff;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 24px 22px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .feat-card:hover { border-color: #2563eb; box-shadow: 0 4px 20px rgba(37,99,235,0.1); }
+        .feat-icon {
+            width: 40px; height: 40px;
+            border-radius: 10px;
+            background: #eff6ff;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 14px;
+            color: #2563eb;
+        }
+        .feat-icon svg { width: 18px; height: 18px; }
+        .feat-title { font-size: 0.92rem; font-weight: 800; color: #1a1a2e; margin-bottom: 6px; }
+        .feat-desc { font-size: 0.78rem; color: #6b7280; line-height: 1.55; margin-bottom: 12px; }
+        .mod-link { text-decoration: none; display: flex; flex-direction: column; }
+        .mod-link:hover .feat-title { color: #2563eb; }
+        .mod-tag { display: inline-flex; align-items: center; gap: 5px; margin-top: auto; font-size: 0.7rem; font-weight: 800; color: #2563eb; background: #eff6ff; border-radius: 20px; padding: 3px 10px; width: fit-content; }
+
+        /* ── CTA BANNER ── */
+        .cta-section {
+            padding: 0 48px 100px;
+            max-width: 1080px;
+            margin: 0 auto;
+        }
+        .cta-banner {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            border-radius: 18px;
+            padding: 52px 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 32px;
+            flex-wrap: wrap;
+            position: relative;
+            overflow: hidden;
+        }
+        .cta-banner::before {
+            content: '';
+            position: absolute;
+            width: 300px; height: 300px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.07);
+            right: -60px; top: -80px;
+            pointer-events: none;
+        }
+        .cta-title { font-family: 'Rajdhani', sans-serif; font-size: 1.9rem; font-weight: 700; color: #fff; margin-bottom: 6px; }
+        .cta-sub { font-size: 0.85rem; color: rgba(255,255,255,0.75); font-weight: 600; }
+        .btn-white {
+            padding: 13px 30px;
+            background: #fff;
+            color: #2563eb;
+            border-radius: 10px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 800;
+            text-decoration: none;
+            white-space: nowrap;
+            flex-shrink: 0;
+            transition: background 0.2s;
+        }
+        .btn-white:hover { background: #f0f4ff; }
+
+        /* ── FOOTER ── */
+        .footer {
+            border-top: 1px solid #e5e7eb;
+            background: #fff;
+            padding: 28px 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .footer-brand { display: flex; align-items: center; gap: 8px; }
+        .footer-brand img { height: 24px; }
+        .footer-brand-name { font-family: 'Rajdhani', sans-serif; font-size: 0.95rem; font-weight: 700; color: #9ca3af; }
+        .footer-copy { font-size: 0.72rem; color: #d1d5db; }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo">
+            <img src="images/finalogo.png" alt="MotoMaster">
+            <span class="nav-logo-name">MotoMaster</span>
+        </a>
+        <div class="nav-links">
+            <a href="#features" class="nav-link">Features</a>
+            <a href="#modules" class="nav-link">Modules</a>
+            <div class="login-wrap" id="loginWrap">
+                <button class="login-btn" id="loginBtn">
+                    Login As
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="login-dropdown" id="loginDropdown">
+                    <a href="teacherlogin.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        Teacher
+                    </a>
+                    <div class="login-dropdown-sep"></div>
+                    <a href="adminlogin.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        Admin
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <script>
+        (function() {
+            const wrap = document.getElementById('loginWrap');
+            const dropdown = document.getElementById('loginDropdown');
+            let closeTimer = null;
+
+            function openMenu() {
+                clearTimeout(closeTimer);
+                wrap.classList.add('open');
+            }
+            function scheduleClose() {
+                closeTimer = setTimeout(() => wrap.classList.remove('open'), 150);
+            }
+
+            wrap.addEventListener('mouseenter', openMenu);
+            wrap.addEventListener('mouseleave', scheduleClose);
+            dropdown.addEventListener('mouseenter', openMenu);
+            dropdown.addEventListener('mouseleave', scheduleClose);
+
+            document.addEventListener('click', (e) => {
+                if (!wrap.contains(e.target)) wrap.classList.remove('open');
+            });
+        })();
+    </script>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-grid-lines"></div>
+        <div class="hero-inner">
+            <div class="hero-badge">
+                <span></span>
+                Automotive Training Platform
+            </div>
+            <h1 class="hero-title">
+                Master Every<br><em>Engine, Brake &amp; System</em>
+            </h1>
+            <p class="hero-sub">
+                Step-by-step interactive modules, 3D simulations, and performance tracking — built for aspiring automotive technicians.
+            </p>
+            <div class="hero-actions">
+                <a href="signin.html" class="btn-primary">
+                    Start Learning
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </a>
+            </div>
+            <div class="stats-row">
+                <div class="stat"><div class="stat-val">3+</div><div class="stat-lbl">Modules</div></div>
+                <div class="stat-div"></div>
+                <div class="stat"><div class="stat-val">18</div><div class="stat-lbl">Lessons</div></div>
+                <div class="stat-div"></div>
+                <div class="stat"><div class="stat-val">3D</div><div class="stat-lbl">Simulations</div></div>
+                <div class="stat-div"></div>
+                <div class="stat"><div class="stat-val">100%</div><div class="stat-lbl">Hands-On</div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="section" id="features">
+        <div class="section-label">Why MotoMaster</div>
+        <div class="section-title">Everything you need<br><span>to become a certified technician</span></div>
+        <div class="features-grid">
+            <div class="feat-card">
+                <div class="feat-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                </div>
+                <div class="feat-title">Structured Modules</div>
+                <div class="feat-desc">Guided lessons with step-by-step instructions, safety reminders, and knowledge checks for each procedure.</div>
+            </div>
+            <div class="feat-card">
+                <div class="feat-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+                </div>
+                <div class="feat-title">3D Simulations</div>
+                <div class="feat-desc">Practice real procedures in an interactive 3D environment before touching an actual vehicle.</div>
+            </div>
+            <div class="feat-card">
+                <div class="feat-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                </div>
+                <div class="feat-title">Performance Tracking</div>
+                <div class="feat-desc">Monitor your progress across all modules with detailed scores, completion rates, and improvement insights.</div>
+            </div>
+            <div class="feat-card">
+                <div class="feat-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <div class="feat-title">Safety First</div>
+                <div class="feat-desc">Every lesson includes safety reminders and best practices to ensure correct and safe procedure execution.</div>
+            </div>
+            <div class="feat-card">
+                <div class="feat-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                </div>
+                <div class="feat-title">Assessments</div>
+                <div class="feat-desc">Test your knowledge with module-specific assessments and receive instant feedback on your performance.</div>
+            </div>
+            <div class="feat-card">
+                <div class="feat-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                </div>
+                <div class="feat-title">Learn Anywhere</div>
+                <div class="feat-desc">Access all modules from any device with a clean, responsive interface designed for focused learning.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MODULES -->
+    <section class="section" id="modules" style="padding-top:0;">
+        <div class="section-label">Available Modules</div>
+        <div class="section-title">Hands-on training for<br><span>every essential procedure</span></div>
+        <div class="features-grid">
+            <div class="feat-card mod-link">
+                <div class="feat-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+                </div>
+                <div class="feat-title">Engine Oil Change</div>
+                <div class="feat-desc">Learn the correct 14-step procedure for safely changing engine oil from drain to disposal.</div>
+                <div class="mod-tag">18 Lessons</div>
+            </div>
+            <div class="feat-card mod-link">
+                <div class="feat-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+                </div>
+                <div class="feat-title">Brake Pad Replacement</div>
+                <div class="feat-desc">Step-by-step guide to safely removing and replacing worn brake pads on a vehicle.</div>
+                <div class="mod-tag">14 Lessons</div>
+            </div>
+            <div class="feat-card mod-link">
+                <div class="feat-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg>
+                </div>
+                <div class="feat-title">Air Filter Replacement</div>
+                <div class="feat-desc">Identify, remove, and replace the air filter to maintain optimal engine airflow and performance.</div>
+                <div class="mod-tag">12 Lessons</div>
+            </div>
+            <div class="feat-card mod-link">
+                <div class="feat-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3l1.5 1.5M21 3l-1.5 1.5M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                </div>
+                <div class="feat-title">Fuel Filter Replacement</div>
+                <div class="feat-desc">Safely replace the fuel filter to prevent contaminants from reaching the engine fuel system.</div>
+                <div class="mod-tag">10 Lessons</div>
+            </div>
+            <div class="feat-card mod-link">
+                <div class="feat-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-4 0v2"/><line x1="12" y1="12" x2="12" y2="16"/></svg>
+                </div>
+                <div class="feat-title">Battery Maintenance</div>
+                <div class="feat-desc">Inspect, clean, and maintain vehicle batteries to ensure reliable starting and electrical performance.</div>
+                <div class="mod-tag">8 Lessons</div>
+            </div>
+            <div class="feat-card mod-link">
+                <div class="feat-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+                <div class="feat-title">Spark Plug Replacement</div>
+                <div class="feat-desc">Correctly remove and install spark plugs to maintain ignition efficiency and fuel economy.</div>
+                <div class="mod-tag">10 Lessons</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA BANNER -->
+    <div class="cta-section">
+        <div class="cta-banner">
+            <div class="cta-text">
+                <div class="cta-title">Ready to start your training?</div>
+                <div class="cta-sub">Create your free account and begin the Engine Oil Change module today.</div>
+            </div>
+            <a href="signin.html" class="btn-white">Get Started Free</a>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-brand">
+            <img src="images/finalogo.png" alt="MotoMaster">
+            <span class="footer-brand-name">MotoMaster</span>
+        </div>
+        <div class="footer-copy">&copy; 2026 MotoMaster. All rights reserved.</div>
+    </footer>
+
+</body>
+</html>

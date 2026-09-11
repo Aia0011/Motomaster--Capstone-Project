@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MotoMaster – Admin Login</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Nunito:wght@400;600;700&display=swap"
+        rel="stylesheet" />
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+            background: #e8edf4;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .signin-page {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .signin-card {
+            position: relative;
+            width: 100%;
+            max-width: 860px;
+            height: min(520px, 92vh);
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.18);
+            display: flex;
+        }
+
+        /* ── Left form panel ── */
+        .sc-form-panel {
+            width: 52%;
+            background: #fff;
+            padding: 44px 48px 36px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        /* ── Right branding panel ── */
+        .sc-right {
+            flex: 1;
+            background: #1e293b;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 32px 32px 36px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .sc-right::before {
+            content: '';
+            position: absolute;
+            width: 360px;
+            height: 360px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .sc-right::after {
+            content: '';
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.04);
+            top: 10%;
+            left: 5%;
+            pointer-events: none;
+        }
+
+        /* ── Brand ── */
+        .sc-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+
+        .sc-brand-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .sc-brand-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .sc-brand-name {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+
+        /* ── Admin badge ── */
+        .admin-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #f1f5f9;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 14px;
+        }
+
+        .admin-badge svg {
+            width: 12px;
+            height: 12px;
+            color: #64748b;
+        }
+
+        .sc-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.85rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 4px;
+        }
+
+        .sc-subtitle {
+            font-size: 0.82rem;
+            color: #6b7280;
+            margin-bottom: 24px;
+        }
+
+        /* ── Fields ── */
+        .sc-field {
+            margin-bottom: 14px;
+            position: relative;
+        }
+
+        .sc-field label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 5px;
+        }
+
+        .sc-field input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 10px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.92rem;
+            color: #1a1a2e;
+            background: #fff;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .sc-field input::placeholder {
+            color: #9ca3af;
+        }
+
+        .sc-field input:focus {
+            border-color: #1e293b;
+            box-shadow: 0 0 0 3px rgba(30, 41, 59, 0.1);
+        }
+
+        /* ── Options row ── */
+        .sc-options {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 22px;
+            font-size: 0.82rem;
+        }
+
+        .sc-options label {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: #374151;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .sc-options input[type="checkbox"] {
+            width: 15px;
+            height: 15px;
+            accent-color: #1e293b;
+            cursor: pointer;
+        }
+
+        .sc-options a {
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .sc-options a:hover {
+            text-decoration: underline;
+        }
+
+        /* ── Login button ── */
+        .sc-btn-login {
+            width: 100%;
+            padding: 12px;
+            background: #1e293b;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+        }
+
+        .sc-btn-login:hover {
+            background: #0f172a;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.30);
+        }
+
+        .sc-btn-login svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Sign up button (secondary) */
+        .sc-btn-signup {
+            width: 100%;
+            padding: 12px;
+            background: #fff;
+            color: #1e293b;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 10px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        /* ── Error message ── */
+        .sc-error {
+            display: none;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            font-size: 0.78rem;
+            font-weight: 700;
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin-bottom: 14px;
+        }
+
+        .sc-error.show {
+            display: block;
+        }
+
+        /* ── Right panel internals ── */
+        .sc-logo-wrap {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+        }
+
+        .sc-logo-wrap img {
+            width: 260px;
+            height: 260px;
+            object-fit: contain;
+            filter: drop-shadow(0 8px 32px rgba(0, 0, 0, 0.4)) brightness(1.1);
+            animation: scPulse 3.5s ease-in-out infinite;
+        }
+
+        @keyframes scPulse {
+
+            0%,
+            100% {
+                filter: drop-shadow(0 8px 32px rgba(0, 0, 0, 0.35)) brightness(1.1);
+            }
+
+            50% {
+                filter: drop-shadow(0 8px 48px rgba(255, 255, 255, 0.15)) brightness(1.2);
+            }
+        }
+
+        .sc-bottom {
+            z-index: 2;
+            align-self: flex-start;
+            width: 100%;
+        }
+
+        .sc-tagline h2 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 3px;
+        }
+
+        .sc-tagline p {
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .sc-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 14px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.55);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .sc-back:hover {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .sc-back svg {
+            width: 13px;
+            height: 13px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="signin-page">
+        <div class="signin-card">
+
+            <!-- LEFT: Login form -->
+            <div class="sc-form-panel">
+                <div class="sc-brand">
+                    <div class="sc-brand-icon">
+                        <img src="images/tesdalogo.png" alt="MotoMaster" />
+                    </div>
+                    <span class="sc-brand-name">Tesda</span>
+                </div>
+
+                <div class="admin-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    </svg>
+                    Admin Access
+                </div>
+
+                <h1 class="sc-title">Admin Login</h1>
+                <p class="sc-subtitle">Restricted area — authorised personnel only.</p>
+
+                <div class="sc-error" id="loginError">Invalid email or password.</div>
+
+                <div class="sc-field">
+                    <label for="adminEmail">Email</label>
+                    <input type="email" id="adminEmail" placeholder="Enter admin email" autocomplete="email" />
+                </div>
+
+                <div class="sc-field">
+                    <label for="adminPass">Password</label>
+                    <input type="password" id="adminPass" placeholder="Enter password"
+                        autocomplete="current-password" />
+                </div>
+
+                <div class="sc-options">
+                    <label>
+                        <input type="checkbox" id="showPwd" onchange="togglePwd()" />
+                        Show Password
+                    </label>
+                    <a href="#">Forgot Password?</a>
+                </div>
+
+                <button class="sc-btn-login" onclick="adminLogin()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                        <polyline points="10 17 15 12 10 7" />
+                        <line x1="15" y1="12" x2="3" y2="12" />
+                    </svg>
+                    Login as Admin
+                </button>
+                <button class="sc-btn-signup" onclick="window.location.href='adminsignup.html'">Sign Up</button>
+            </div>
+
+            <!-- RIGHT: Branding -->
+            <div class="sc-right">
+                <div class="sc-logo-wrap">
+                    <img src="images/finalogo.png" alt="MotoMaster Logo" />
+                </div>
+
+                <div class="sc-bottom">
+                    <div class="sc-tagline">
+                        <h2>MotoMaster Admin.</h2>
+                        <p>Manage users, modules, and platform settings.</p>
+                    </div>
+                    <a href="index.html" class="sc-back">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="15 18 9 12 15 6" />
+                        </svg>
+                        Back to Home
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function togglePwd() {
+            const p = document.getElementById('adminPass');
+            p.type = document.getElementById('showPwd').checked ? 'text' : 'password';
+        }
+
+        async function adminLogin() {
+            const email = document.getElementById('adminEmail').value.trim();
+            const pass = document.getElementById('adminPass').value;
+            const errEl = document.getElementById('loginError');
+
+            if (!email || !pass) {
+                errEl.textContent = 'Please enter both email and password.';
+                errEl.classList.add('show');
+                return;
+            }
+
+            try {
+                const res = await fetch('login_admin.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password: pass })
+                });
+                const data = await res.json();
+
+                if (res.ok && data.success) {
+                    errEl.classList.remove('show');
+                    window.location.href = 'admindash.html';
+                    return;
+                }
+
+                errEl.textContent = data.message || 'Invalid email or password.';
+                errEl.classList.add('show');
+                if (data.message && data.message.toLowerCase().includes('not registered')) {
+                    document.getElementById('adminEmail').focus();
+                } else {
+                    document.getElementById('adminPass').focus();
+                }
+            } catch (error) {
+                errEl.textContent = 'Network or server error.';
+                errEl.classList.add('show');
+            }
+        }
+
+        // Allow Enter key to submit
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') adminLogin();
+        });
+    </script>
+
+</body>
+
+</html>

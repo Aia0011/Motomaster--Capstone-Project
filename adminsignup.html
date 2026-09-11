@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MotoMaster – Admin Sign Up</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Nunito:wght@400;600;700&display=swap"
+        rel="stylesheet" />
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+            background: #e8edf4;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .signup-page {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .signup-card {
+            position: relative;
+            width: 100%;
+            max-width: 860px;
+            height: min(580px, 92vh);
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.18);
+            display: flex;
+            flex-direction: row-reverse;
+            /* form on the right */
+        }
+
+        .sc-form-panel {
+            width: 52%;
+            background: #fff;
+            padding: 44px 48px 36px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            flex-shrink: 0;
+            animation: slideInRight 0.7s cubic-bezier(.23, 1, .32, 1) both;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .sc-right {
+            flex: 1;
+            background: #111827;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 32px 32px 36px;
+            overflow: hidden;
+            position: relative;
+            color: #fff;
+        }
+
+        .sc-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .sc-brand-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .sc-brand-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .sc-brand-name {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .admin-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #fee2e2;
+            border: 1.5px solid #fca5a5;
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: #b91c1c;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 12px;
+        }
+
+        .sc-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.85rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 4px;
+        }
+
+        .sc-subtitle {
+            font-size: 0.82rem;
+            color: #6b7280;
+            margin-bottom: 24px;
+        }
+
+        .sc-field {
+            margin-bottom: 14px;
+        }
+
+        .sc-field label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 5px;
+        }
+
+        .sc-field input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 10px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.92rem;
+            color: #1a1a2e;
+            background: #fff;
+            outline: none;
+        }
+
+        .sc-field input:focus {
+            border-color: #111827;
+            box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.08);
+        }
+
+        .sc-options {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 22px;
+            font-size: 0.82rem;
+        }
+
+        .sc-options label {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: #374151;
+            cursor: pointer;
+        }
+
+        .sc-options input[type="checkbox"] {
+            width: 15px;
+            height: 15px;
+            accent-color: #111827;
+        }
+
+        .sc-btn-signup {
+            width: 100%;
+            padding: 12px;
+            background: #111827;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 12px;
+        }
+
+        .sc-btn-google {
+            width: 100%;
+            padding: 12px;
+            background: #fff;
+            color: #374151;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 10px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .sc-signin-link {
+            text-align: center;
+            font-size: 0.82rem;
+            color: #6b7280;
+            margin-top: 12px;
+        }
+
+        .sc-signin-link a {
+            color: #111827;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .sc-error {
+            display: none;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-bottom: 14px;
+            font-weight: 700;
+        }
+
+        .sc-error.show {
+            display: block;
+        }
+
+        .sc-logo-wrap img {
+            width: 260px;
+            height: 260px;
+            object-fit: contain;
+            filter: drop-shadow(0 8px 32px rgba(0, 0, 0, 0.3));
+        }
+
+        .sc-tagline h2 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 3px;
+        }
+
+        .sc-tagline p {
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(17, 24, 39, 0.55);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 99999;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+            border-radius: 22px;
+            padding: 36px 32px;
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            transform: scale(0.85);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            color: #1a1a2e;
+        }
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+        }
+        .modal-icon-wrap {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .modal-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981, #059669);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+            animation: scaleInCheck 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+        .modal-icon svg {
+            width: 36px;
+            height: 36px;
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: drawCheck 0.6s ease-in-out 0.3s forwards;
+        }
+        .modal-card h2 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+            color: #111827;
+        }
+        .modal-card p {
+            font-size: 0.92rem;
+            color: #6b7280;
+            margin-bottom: 28px;
+            line-height: 1.5;
+        }
+        .modal-btn {
+            width: 100%;
+            padding: 14px;
+            background: #111827;
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 14px rgba(17, 24, 39, 0.25);
+        }
+        .modal-btn:hover {
+            transform: translateY(-1px);
+            background: #1f2937;
+            box-shadow: 0 6px 20px rgba(17, 24, 39, 0.35);
+        }
+        .modal-btn:active {
+            transform: translateY(0);
+        }
+        @keyframes scaleInCheck {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+        @keyframes drawCheck {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-icon-wrap">
+                <div class="modal-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </div>
+            </div>
+            <h2>Success!</h2>
+            <p id="successMessage">Your administrative account has been created successfully.</p>
+            <button class="modal-btn" id="modalConfirmBtn">Continue</button>
+        </div>
+    </div>
+
+    <div class="signup-page">
+        <div class="signup-card">
+
+            <!-- RIGHT: Signup form (rendered right via row-reverse) -->
+            <div class="sc-form-panel">
+                <div class="sc-brand">
+                    <div class="sc-brand-icon"><img src="images/tesdalogo.png" alt="MotoMaster" /></div>
+                    <span class="sc-brand-name">MotoMaster Admin</span>
+                </div>
+
+                <div class="admin-badge">Admin Access</div>
+
+                <h1 class="sc-title">Create Admin</h1>
+                <p class="sc-subtitle">Create an administrative account to manage the system.</p>
+
+                <div class="sc-error" id="signupError">Please fill in all fields.</div>
+
+                <div class="sc-field">
+                    <label for="adminFirst">First Name</label>
+                    <input type="text" id="adminFirst" placeholder="First name" autocomplete="given-name" />
+                </div>
+
+                <div class="sc-field">
+                    <label for="adminLast">Last Name</label>
+                    <input type="text" id="adminLast" placeholder="Last name" autocomplete="family-name" />
+                </div>
+
+                <div class="sc-field">
+                    <label for="adminEmail">Email</label>
+                    <input type="email" id="adminEmail" placeholder="you@example.com" autocomplete="email" />
+                </div>
+
+                <div class="sc-field">
+                    <label for="adminPass">Password</label>
+                    <input type="password" id="adminPass" placeholder="Create a password" />
+                </div>
+
+                <div class="sc-field">
+                    <label for="adminConfirm">Confirm Password</label>
+                    <input type="password" id="adminConfirm" placeholder="Repeat your password" />
+                </div>
+
+                <div class="sc-options">
+                    <label>
+                        <input type="checkbox" id="showPwdAdmin" onchange="togglePwd()" />
+                        Show Password
+                    </label>
+                    <a href="#">Forgot Password?</a>
+                </div>
+
+                <button class="sc-btn-signup" onclick="adminSignup()">Sign Up as Admin</button>
+
+                <button class="sc-btn-google" id="googleBtn">
+                    <svg class="google-icon" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"
+                        style="width:18px;height:18px;">
+                        <path fill="#EA4335"
+                            d="M24 9.5c3.14 0 5.95 1.08 8.17 2.86l6.09-6.09C34.46 3.19 29.5 1 24 1 14.82 1 7.07 6.48 3.64 14.22l7.09 5.51C12.4 13.59 17.73 9.5 24 9.5z" />
+                        <path fill="#4285F4"
+                            d="M46.14 24.55c0-1.64-.15-3.22-.42-4.75H24v9h12.44c-.54 2.9-2.18 5.36-4.65 7.01l7.19 5.59C43.09 37.19 46.14 31.34 46.14 24.55z" />
+                        <path fill="#FBBC05"
+                            d="M10.73 28.27A14.6 14.6 0 0 1 9.5 24c0-1.48.26-2.91.73-4.27l-7.09-5.51A23.93 23.93 0 0 0 0 24c0 3.87.93 7.53 2.57 10.76l8.16-6.49z" />
+                        <path fill="#34A853"
+                            d="M24 47c5.5 0 10.12-1.82 13.49-4.95l-7.19-5.59c-1.82 1.22-4.15 1.94-6.3 1.94-6.27 0-11.6-4.09-13.27-9.73l-8.16 6.49C7.07 41.52 14.82 47 24 47z" />
+                    </svg>
+                    Continue with Google
+                </button>
+
+                <p class="sc-signin-link">Already have an account? <a href="adminlogin.html">Sign in</a></p>
+            </div>
+
+            <!-- LEFT: Branding -->
+            <div class="sc-right">
+                <div class="sc-logo-wrap">
+                    <img src="images/finalogo.png" alt="MotoMaster Logo" />
+                </div>
+
+                <div class="sc-bottom">
+                    <div class="sc-tagline">
+                        <h2>MotoMaster Admin.</h2>
+                        <p>Manage modules, users and system settings.</p>
+                    </div>
+                    <a href="index.html" class="sc-back"
+                        style="color:rgba(255,255,255,0.85); text-decoration:none; font-weight:700;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                            style="width:13px;height:13px;color:rgba(255,255,255,0.85)">
+                            <polyline points="15 18 9 12 15 6" />
+                        </svg>
+                        Back to Home
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function togglePwd() {
+            const checked = document.getElementById('showPwdAdmin').checked;
+            document.getElementById('adminPass').type = checked ? 'text' : 'password';
+            document.getElementById('adminConfirm').type = checked ? 'text' : 'password';
+        }
+
+        async function adminSignup() {
+            const first = document.getElementById('adminFirst').value.trim();
+            const last = document.getElementById('adminLast').value.trim();
+            const email = document.getElementById('adminEmail').value.trim();
+            const pass = document.getElementById('adminPass').value;
+            const confirm = document.getElementById('adminConfirm').value;
+            const errEl = document.getElementById('signupError');
+
+            if (!first || !last || !email || !pass || !confirm) {
+                errEl.textContent = 'Please fill in all fields.';
+                errEl.classList.add('show');
+                return;
+            }
+
+            if (pass !== confirm) {
+                errEl.textContent = 'Passwords do not match.';
+                errEl.classList.add('show');
+                return;
+            }
+
+            if (pass.length < 6) {
+                errEl.textContent = 'Password must be at least 6 characters.';
+                errEl.classList.add('show');
+                return;
+            }
+
+            try {
+                const res = await fetch('register_admin.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ first_name: first, last_name: last, email: email, password: pass })
+                });
+                
+                const responseText = await res.text();
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                } catch (parseErr) {
+                    console.error('Server returned non-JSON:', responseText);
+                    errEl.textContent = 'Server error: ' + (responseText.substring(0, 100) || 'Invalid response');
+                    errEl.classList.add('show');
+                    return;
+                }
+                
+                if (res.ok && data.success) {
+                    errEl.classList.remove('show');
+                    showSuccessModal('Your administrative account has been created successfully. Welcome to MotoMaster Admin Panel!', () => {
+                        window.location.href = 'admindash.html';
+                    });
+                } else {
+                    errEl.textContent = data.message || 'Signup failed';
+                    errEl.classList.add('show');
+                }
+            } catch (err) {
+                console.error('Network/Server error:', err);
+                errEl.textContent = 'Network or server error: ' + err.message;
+                errEl.classList.add('show');
+            }
+        }
+
+        function showSuccessModal(message, onConfirm) {
+            document.getElementById('successMessage').textContent = message;
+            const modal = document.getElementById('successModal');
+            const confirmBtn = document.getElementById('modalConfirmBtn');
+            modal.classList.add('active');
+            confirmBtn.onclick = function() {
+                modal.classList.remove('active');
+                if (onConfirm) onConfirm();
+            };
+        }
+
+        document.addEventListener('keydown', (e) => { if (e.key === 'Enter') adminSignup(); });
+    </script>
+
+</body>
+
+</html>

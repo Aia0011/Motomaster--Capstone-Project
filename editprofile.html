@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile — MotoMaster</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap"
+        rel="stylesheet" />
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: #eef1f8;
+            color: #1a1a2e;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: #fff;
+            display: flex;
+            align-items: center;
+            padding: 0 28px;
+            height: 62px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-brand img {
+            height: 38px;
+            object-fit: contain;
+        }
+
+        .nav-brand span {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            letter-spacing: 1px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-left: auto;
+        }
+
+        .nav-bell {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #f3f4f6;
+            color: #6b7280;
+            cursor: pointer;
+            border: none;
+            transition: background 0.2s;
+        }
+
+        .nav-bell:hover {
+            background: #e5e7eb;
+        }
+
+        .nav-bell svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .nav-user-wrap {
+            position: relative;
+        }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 5px 11px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 10px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: border-color 0.2s;
+            background: none;
+        }
+
+        .nav-user:hover,
+        .nav-user-wrap:hover .nav-user {
+            border-color: #2563eb;
+        }
+
+        .nav-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #2563eb;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .nav-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .nav-user-name {
+            font-size: 0.83rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            line-height: 1.2;
+        }
+
+        .nav-user-role {
+            font-size: 0.7rem;
+            color: #6b7280;
+        }
+
+        .nav-chevron svg {
+            width: 13px;
+            height: 13px;
+            color: #9ca3af;
+        }
+
+        .nav-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
+            min-width: 170px;
+            padding: 6px;
+            padding-top: 14px;
+            margin-top: 2px;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(-4px);
+            transition: opacity 0.18s, transform 0.18s;
+            z-index: 200;
+        }
+
+        .nav-user-wrap:hover .nav-dropdown {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0);
+        }
+
+        .nav-dropdown a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 12px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            text-decoration: none;
+            transition: background 0.15s;
+        }
+
+        .nav-dropdown a:hover {
+            background: #f3f4f6;
+        }
+
+        .nav-dropdown a svg {
+            width: 15px;
+            height: 15px;
+            color: #6b7280;
+            flex-shrink: 0;
+        }
+
+        .nav-dropdown .logout-link {
+            color: #dc2626;
+        }
+
+        .nav-dropdown .logout-link svg {
+            color: #dc2626;
+        }
+
+        .nav-dropdown .logout-link:hover {
+            background: #fef2f2;
+        }
+
+        .nav-dropdown-sep {
+            height: 1px;
+            background: #f0f0f5;
+            margin: 4px 0;
+        }
+
+        /* PAGE */
+        .page-wrap {
+            flex: 1;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 40px 24px;
+        }
+
+        .profile-card {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+            width: 100%;
+            max-width: 520px;
+            padding: 36px 36px 32px;
+        }
+
+        .profile-card-header {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        .profile-avatar-wrap {
+            position: relative;
+            width: 76px;
+            height: 76px;
+            flex-shrink: 0;
+        }
+
+        .profile-avatar-wrap img {
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #e5e7eb;
+        }
+
+        .avatar-edit-btn {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 26px;
+            height: 26px;
+            background: #2563eb;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .avatar-edit-btn svg {
+            width: 12px;
+            height: 12px;
+            color: #fff;
+        }
+
+        .profile-card-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+
+        .profile-card-sub {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 10px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.88rem;
+            color: #1a1a2e;
+            background: #f9fafb;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: #2563eb;
+            background: #fff;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .form-divider {
+            height: 1px;
+            background: #f0f0f5;
+            margin: 22px 0;
+        }
+
+        .form-section-title {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 14px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 26px;
+        }
+
+        .btn {
+            padding: 10px 22px;
+            border-radius: 10px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 800;
+            cursor: pointer;
+            border: none;
+            transition: background 0.15s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .btn-outline {
+            background: #fff;
+            border: 1.5px solid #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-outline:hover {
+            border-color: #9ca3af;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        /* SAVE SUCCESS MODAL */
+        #saveOverlay {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background: rgba(10, 15, 40, 0.65);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        #saveOverlay.show {
+            display: flex;
+        }
+
+        #saveCard {
+            background: #fff;
+            border-radius: 20px;
+            padding: 36px 40px 30px;
+            width: 380px;
+            max-width: 92vw;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            text-align: center;
+            animation: scPop 0.3s ease;
+        }
+
+        @keyframes scPop {
+            from {
+                opacity: 0;
+                transform: translateY(20px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        #saveCard .sc-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #f0fdf4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #saveCard .sc-icon svg {
+            width: 28px;
+            height: 28px;
+            color: #16a34a;
+        }
+
+        #saveCard .sc-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+
+        #saveCard .sc-desc {
+            font-size: 0.8rem;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        #saveCard .sc-btn {
+            margin-top: 6px;
+            padding: 11px 32px;
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        #saveCard .sc-btn:hover {
+            background: #1d4ed8;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <a class="nav-brand" href="feature.html">
+            <img src="images/finalogo.png" alt="MotoMaster Logo">
+            <span>MOTOMASTER</span>
+        </a>
+        <div class="nav-right">
+            <button class="nav-bell">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                </svg>
+            </button>
+            <div class="nav-user-wrap">
+                <div class="nav-user">
+                    <div class="nav-avatar"><img src="images/unknown-avatar.svg" alt="User"></div>
+                    <div>
+                        <div class="nav-user-name" id="studentFullName"></div>
+                        <div class="nav-user-role">Student</div>
+                    </div>
+                    <span class="nav-chevron">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                    </span>
+                </div>
+                <div class="nav-dropdown">
+                    <a href="editprofile.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>
+                        Edit Profile
+                    </a>
+                    <div class="nav-dropdown-sep"></div>
+                    <a href="index.html" class="logout-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                            <polyline points="16 17 21 12 16 7" />
+                            <line x1="21" y1="12" x2="9" y2="12" />
+                        </svg>
+                        Log Out
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- PAGE CONTENT -->
+    <div class="page-wrap">
+        <div class="profile-card">
+            <div class="profile-card-header">
+                <div class="profile-avatar-wrap">
+                    <img src="images/unknown-avatar.svg" alt="Profile Photo">
+                    <div class="avatar-edit-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M12 20h9" />
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                        </svg>
+                    </div>
+                </div>
+                <div>
+                    <div class="profile-card-title">Edit Profile</div>
+                    <div class="profile-card-sub">Update your personal information and password</div>
+                </div>
+            </div>
+
+            <div class="form-section-title">Personal Information</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">First Name</label>
+                    <input class="form-input" type="text" id="profileFirstName" value="" placeholder="First name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Last Name</label>
+                    <input class="form-input" type="text" id="profileLastName" value="" placeholder="Last name">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input class="form-input" type="email" id="profileEmail" value="" placeholder="Email address">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Role</label>
+                <input class="form-input" type="text" id="profileRole" value="Student" disabled>
+            </div>
+
+            <div class="form-divider"></div>
+
+            <div class="form-section-title">Change Password</div>
+            <div class="form-group">
+                <label class="form-label">Current Password</label>
+                <input class="form-input" type="password" placeholder="Enter current password">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">New Password</label>
+                    <input class="form-input" type="password" placeholder="New password">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Confirm Password</label>
+                    <input class="form-input" type="password" placeholder="Confirm new password">
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a href="feature.html" class="btn btn-outline">Cancel</a>
+                <button class="btn btn-primary" onclick="showSaveSuccess()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14"
+                        height="14">
+                        <path d="M20 6L9 17l-5-5" />
+                    </svg>
+                    Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SAVE SUCCESS MODAL -->
+    <div id="saveOverlay">
+        <div id="saveCard">
+            <div class="sc-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="20 6 9 17 4 12" />
+                </svg>
+            </div>
+            <div class="sc-title">Profile Updated!</div>
+            <div class="sc-desc">Your profile changes have been saved successfully.</div>
+            <button class="sc-btn" onclick="goBack()">Back to Dashboard</button>
+        </div>
+    </div>
+
+    <script>
+        function showSaveSuccess() {
+            document.getElementById('saveOverlay').classList.add('show');
+        }
+        function goBack() {
+            window.location.href = 'feature.html';
+        }
+
+        function applyStudentProfile() {
+            const stored = localStorage.getItem('motomasterStudent') || sessionStorage.getItem('motomasterStudent');
+            if (!stored) return;
+            try {
+                const student = JSON.parse(stored);
+                const fullName = [student.first_name, student.last_name].filter(Boolean).join(' ').trim();
+                const nameEl = document.getElementById('studentFullName');
+                if (nameEl && fullName) nameEl.textContent = fullName;
+
+                const firstNameEl = document.getElementById('profileFirstName');
+                const lastNameEl = document.getElementById('profileLastName');
+                const emailEl = document.getElementById('profileEmail');
+                const roleEl = document.getElementById('profileRole');
+
+                if (firstNameEl && student.first_name) firstNameEl.value = student.first_name;
+                if (lastNameEl && student.last_name) lastNameEl.value = student.last_name;
+                if (emailEl && student.email) emailEl.value = student.email;
+                if (roleEl && student.role) roleEl.value = student.role;
+            } catch (err) {
+                // Ignore malformed stored data.
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', applyStudentProfile);
+        window.addEventListener('pageshow', applyStudentProfile);
+    </script>
+
+</body>
+
+</html>

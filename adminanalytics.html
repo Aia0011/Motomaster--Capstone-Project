@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotoMaster Admin – Analytics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #f3f4f6;
+            --panel-bg: #fff;
+            --border-color: #e5e7eb;
+            --text-primary: #1a1a2e;
+            --text-secondary: #6b7280;
+            --accent: #2563eb;
+            --accent-dark: #1d4ed8;
+            --accent-light: #eff6ff;
+            --green: #16a34a;
+            --red: #dc2626;
+            --orange: #d97706;
+            --purple: #9333ea;
+            --sidebar-w: 240px;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; font-family: 'Nunito', sans-serif; background: var(--bg-color); color: var(--text-primary); font-size: 14px; }
+        body { display: flex; height: 100vh; overflow: hidden; }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+
+        /* ── SIDEBAR ── */
+        .sidebar { width: var(--sidebar-w); background: #fff; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; flex-shrink: 0; box-shadow: 2px 0 8px rgba(0,0,0,0.04); }
+        .logo-container { padding: 18px 20px 14px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; }
+        .logo-container img { width: 32px; height: 32px; object-fit: contain; }
+        .logo-text { font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--text-primary); }
+        .logo-sub { font-size: 0.62rem; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; display: block; }
+        .nav-section-label { font-size: 0.6rem; font-weight: 800; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.8px; padding: 14px 18px 4px; }
+        .nav-menu { list-style: none; flex-grow: 1; overflow-y: auto; padding: 8px 0; }
+        .nav-menu::-webkit-scrollbar { width: 0; }
+        .nav-item { padding: 9px 16px; margin: 2px 10px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; color: var(--text-secondary); font-size: 0.82rem; font-weight: 700; transition: all 0.2s; text-decoration: none; }
+        .nav-item i { width: 16px; font-size: 13px; flex-shrink: 0; }
+        .nav-item:hover { background: var(--accent-light); color: var(--accent); }
+        .nav-item.active { background: var(--accent-light); color: var(--accent); }
+        .nav-item.active i { color: var(--accent); }
+        .sidebar-bottom { padding: 12px 0 16px; border-top: 1px solid var(--border-color); }
+
+        /* ── MAIN ── */
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; background: var(--bg-color); }
+
+        /* ── TOPBAR ── */
+        .topbar { background: #fff; border-bottom: 1px solid var(--border-color); padding: 0 28px; height: 58px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+        .topbar-left h1 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text-primary); }
+        .topbar-left p { font-size: 0.72rem; color: var(--text-secondary); font-weight: 600; }
+        .topbar-right { display: flex; align-items: center; gap: 12px; }
+
+        .period-select { display: flex; align-items: center; gap: 7px; background: var(--bg-color); border: 1.5px solid var(--border-color); border-radius: 8px; padding: 6px 12px; font-family: 'Nunito', sans-serif; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); cursor: pointer; outline: none; }
+        .notif-btn { position: relative; width: 36px; height: 36px; border-radius: 8px; background: var(--bg-color); border: 1.5px solid var(--border-color); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary); }
+        .notif-badge { position: absolute; top: -4px; right: -4px; background: var(--red); color: #fff; font-size: 0.58rem; font-weight: 800; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; }
+        .profile-pill { display: flex; align-items: center; gap: 9px; padding: 5px 12px 5px 5px; border-radius: 30px; border: 1.5px solid var(--border-color); background: #fff; cursor: pointer; }
+        .profile-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--accent-light); display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 12px; }
+        .profile-name { font-size: 0.78rem; font-weight: 800; color: var(--text-primary); }
+        .profile-role { font-size: 0.62rem; color: var(--text-secondary); font-weight: 600; }
+
+        /* ── DASHBOARD ── */
+        .dashboard-container { padding: 22px 28px 28px; display: flex; flex-direction: column; gap: 18px; }
+
+        /* ── KPI ── */
+        .kpi-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+        .kpi-card { background: #fff; border-radius: 12px; padding: 16px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); transition: box-shadow 0.2s, border-color 0.2s; }
+        .kpi-card:hover { box-shadow: 0 4px 16px rgba(37,99,235,0.10); border-color: #bfdbfe; }
+        .kpi-header { display: flex; align-items: center; gap: 10px; }
+        .kpi-icon { width: 36px; height: 36px; border-radius: 9px; background: var(--accent-light); display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 16px; flex-shrink: 0; }
+        .kpi-title { font-size: 0.68rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.4px; }
+        .kpi-value { font-family: 'Rajdhani', sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--text-primary); line-height: 1; }
+        .kpi-foot { display: flex; justify-content: space-between; font-size: 0.68rem; font-weight: 700; color: var(--text-secondary); border-top: 1px solid var(--border-color); padding-top: 8px; }
+        .kpi-trend { display: flex; align-items: center; gap: 4px; font-size: 0.7rem; font-weight: 800; }
+        .trend-up { color: var(--green); }
+        .trend-down { color: var(--red); }
+
+        /* ── PANEL ── */
+        .panel { background: #fff; border-radius: 12px; border: 1px solid var(--border-color); display: flex; flex-direction: column; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+        .panel-top { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px 14px; border-bottom: 1px solid var(--border-color); }
+        .panel-title { font-size: 0.88rem; font-weight: 800; color: var(--text-primary); }
+        .panel-subtitle { font-size: 0.72rem; color: var(--text-secondary); font-weight: 600; margin-top: 2px; }
+        .panel-body { padding: 18px 20px; }
+
+        /* ── CHARTS GRID ── */
+        .charts-row { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; }
+        .charts-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; }
+        .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+        .chart-wrap { position: relative; }
+        .chart-wrap canvas { display: block; }
+
+        /* ── SEGMENT TABS ── */
+        .seg-tabs { display: flex; gap: 4px; }
+        .seg-tab { padding: 4px 12px; border-radius: 6px; font-size: 0.68rem; font-weight: 800; cursor: pointer; border: 1.5px solid var(--border-color); background: #fff; color: var(--text-secondary); transition: all 0.15s; }
+        .seg-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+        /* ── MODULE HEALTH TABLE ── */
+        .mod-table { width: 100%; border-collapse: collapse; }
+        .mod-table thead th { padding: 9px 14px; text-align: left; font-size: 0.62rem; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; background: var(--bg-color); border-bottom: 1px solid var(--border-color); }
+        .mod-table tbody tr { border-bottom: 1px solid var(--border-color); transition: background 0.15s; }
+        .mod-table tbody tr:last-child { border-bottom: none; }
+        .mod-table tbody tr:hover { background: #f8f9ff; }
+        .mod-table td { padding: 11px 14px; font-size: 0.78rem; font-weight: 700; color: var(--text-primary); vertical-align: middle; }
+        .mod-table td.muted { color: var(--text-secondary); font-weight: 600; }
+
+        .mod-icon-cell { display: flex; align-items: center; gap: 10px; }
+        .mod-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+        .mini-bar-wrap { display: flex; align-items: center; gap: 8px; }
+        .mini-bar { flex: 1; height: 5px; background: #e5e7eb; border-radius: 3px; overflow: hidden; min-width: 60px; }
+        .mini-bar-fill { height: 100%; border-radius: 3px; }
+        .mini-pct { font-size: 0.7rem; font-weight: 800; white-space: nowrap; }
+
+        .star-val { display: flex; align-items: center; gap: 4px; font-size: 0.78rem; font-weight: 800; color: var(--orange); }
+
+        /* ── TOP PERFORMERS ── */
+        .performer-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border-color); }
+        .performer-item:last-child { border-bottom: none; }
+        .rank-badge { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 800; flex-shrink: 0; }
+        .rank-1 { background: #fef9c3; color: #a16207; border: 1px solid #fde047; }
+        .rank-2 { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; }
+        .rank-3 { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+        .rank-n { background: var(--bg-color); color: var(--text-secondary); border: 1px solid var(--border-color); }
+        .p-avatar { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; color: #fff; flex-shrink: 0; }
+        .p-name { font-size: 0.78rem; font-weight: 800; color: var(--text-primary); }
+        .p-meta { font-size: 0.62rem; font-weight: 600; color: var(--text-secondary); margin-top: 1px; }
+        .p-score { font-family: 'Rajdhani', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--accent); margin-left: auto; }
+
+        /* ── ACTIVITY FEED ── */
+        .activity-item { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border-color); }
+        .activity-item:last-child { border-bottom: none; }
+        .act-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+        .act-text { font-size: 0.75rem; font-weight: 700; color: var(--text-primary); line-height: 1.4; }
+        .act-time { font-size: 0.62rem; font-weight: 600; color: var(--text-secondary); margin-top: 2px; }
+
+        /* ── ASSESSMENT PASS RATE PANEL ── */
+        .assess-row { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border-color); }
+        .assess-row:last-child { border-bottom: none; }
+        .assess-row-name { font-size: 0.75rem; font-weight: 700; color: var(--text-primary); min-width: 200px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .assess-row-bar { flex: 1; height: 7px; background: #e5e7eb; border-radius: 4px; overflow: hidden; min-width: 80px; }
+        .assess-row-fill { height: 100%; border-radius: 4px; }
+        .assess-row-pct { font-size: 0.72rem; font-weight: 800; min-width: 36px; text-align: right; }
+
+        /* ── BADGE ── */
+        .badge { display: inline-flex; align-items: center; padding: 2px 9px; border-radius: 20px; font-size: 0.6rem; font-weight: 800; }
+        .badge-up { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+        .badge-down { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+        .badge-neutral { background: #f3f4f6; color: #6b7280; border: 1px solid #e5e7eb; }
+
+        /* ── FOOTER ── */
+        footer { display: flex; justify-content: space-between; align-items: center; padding: 12px 28px; font-size: 0.7rem; color: var(--text-secondary); border-top: 1px solid var(--border-color); background: #fff; margin-top: auto; font-weight: 700; flex-shrink: 0; }
+        footer span { color: var(--accent); font-weight: 800; }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="sidebar">
+        <div class="logo-container">
+            <img src="images/finalogo.png" alt="MotoMaster" />
+            <div>
+                <span class="logo-text">MotoMaster</span>
+                <span class="logo-sub">Admin Panel</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-section-label">Main</li>
+            <li class="nav-item" onclick="window.location.href='admindash.html'"><i class="fa-solid fa-house"></i> Dashboard</li>
+            <li class="nav-item" onclick="window.location.href='admintech.html'"><i class="fa-solid fa-chalkboard-user"></i> Teachers</li>
+            <li class="nav-item" onclick="window.location.href='adminstud.html'"><i class="fa-solid fa-users"></i> Students</li>
+            <li class="nav-item" onclick="window.location.href='adminmod.html'"><i class="fa-solid fa-book-open"></i> Modules</li>
+            <li class="nav-item" onclick="window.location.href='adminassess.html'"><i class="fa-solid fa-clipboard-check"></i> Assessments</li>
+            <li class="nav-item" onclick="window.location.href='adminpractice.html'"><i class="fa-solid fa-gamepad"></i> Practice Sessions</li>
+            <li class="nav-section-label">Insights</li>
+            <li class="nav-item active"><i class="fa-solid fa-chart-simple"></i> Analytics</li>
+            <li class="nav-item" onclick="window.location.href='adminreports.html'"><i class="fa-solid fa-file-invoice"></i> Reports</li>
+            <li class="nav-section-label">System</li>
+            <li class="nav-item" onclick="window.location.href='adminsettings.html'"><i class="fa-solid fa-gear"></i> Settings</li>
+            <li class="nav-item" onclick="window.location.href='adminactivitylogs.html'"><i class="fa-solid fa-list-check"></i> Activity Logs</li>
+            <li class="nav-item" onclick="window.location.href='adminsystembackup.html'"><i class="fa-solid fa-server"></i> System Backup</li>
+            <li class="nav-item" onclick="window.location.href='adminnotif.html'"><i class="fa-regular fa-bell"></i> Notifications</li>
+        </ul>
+        <div class="sidebar-bottom">
+            <a class="nav-item" href="index.html"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+        </div>
+    </aside>
+
+    <!-- ── MAIN ── -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <h1>Analytics Overview</h1>
+                <p>Platform-wide learning performance, engagement, and assessment insights.</p>
+            </div>
+            <div class="topbar-right">
+                <select class="period-select">
+                    <option>Last 30 Days</option>
+                    <option>Last 7 Days</option>
+                    <option>Last 90 Days</option>
+                    <option>This Year</option>
+                </select>
+                <div class="notif-btn">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="notif-badge">8</span>
+                </div>
+                <div class="profile-pill">
+                    <div class="profile-avatar"><i class="fa-solid fa-user"></i></div>
+                    <div>
+                        <div class="profile-name">Administrator</div>
+                        <div class="profile-role">Super Admin</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-container">
+
+            <!-- ── KPI ROW ── -->
+            <div class="kpi-row">
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon"><i class="fa-solid fa-users"></i></div>
+                        <div class="kpi-title">Active Learners</div>
+                    </div>
+                    <div class="kpi-value">876</div>
+                    <div class="kpi-foot">
+                        <span class="kpi-trend trend-up"><i class="fa-solid fa-arrow-trend-up"></i> +4.2%</span>
+                        <span>vs last period</span>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon"><i class="fa-solid fa-circle-check"></i></div>
+                        <div class="kpi-title">Avg. Completion</div>
+                    </div>
+                    <div class="kpi-value">68%</div>
+                    <div class="kpi-foot">
+                        <span class="kpi-trend trend-up"><i class="fa-solid fa-arrow-trend-up"></i> +1.5%</span>
+                        <span>Fully Done: 594</span>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+                        <div class="kpi-title">Assessments Taken</div>
+                    </div>
+                    <div class="kpi-value">2,841</div>
+                    <div class="kpi-foot">
+                        <span class="kpi-trend trend-up"><i class="fa-solid fa-arrow-trend-up"></i> +8.1%</span>
+                        <span>Pass Rate: 74%</span>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon" style="background:#fdf4ff;color:var(--purple)"><i class="fa-solid fa-clock"></i></div>
+                        <div class="kpi-title">Avg. Time on Module</div>
+                    </div>
+                    <div class="kpi-value">18m 42s</div>
+                    <div class="kpi-foot">
+                        <span class="kpi-trend trend-down"><i class="fa-solid fa-arrow-trend-down"></i> -2.3%</span>
+                        <span>Median: 16m 12s</span>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon" style="background:#f0fdf4;color:var(--green)"><i class="fa-solid fa-star"></i></div>
+                        <div class="kpi-title">Avg. Module Rating</div>
+                    </div>
+                    <div class="kpi-value">4.3</div>
+                    <div class="kpi-foot">
+                        <span class="kpi-trend trend-up"><i class="fa-solid fa-arrow-trend-up"></i> +0.2</span>
+                        <span>312 Reviews</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── ROW 1: Engagement Line + Enrollment Doughnut ── -->
+            <div class="charts-row">
+                <div class="panel">
+                    <div class="panel-top">
+                        <div>
+                            <div class="panel-title">Student Engagement Over Time</div>
+                            <div class="panel-subtitle">Daily active learners — last 30 days</div>
+                        </div>
+                        <div class="seg-tabs">
+                            <div class="seg-tab active">Daily</div>
+                            <div class="seg-tab">Weekly</div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="chart-wrap" style="height:220px">
+                            <canvas id="engagementChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-top">
+                        <div>
+                            <div class="panel-title">Enrollment by Module</div>
+                            <div class="panel-subtitle">Distribution of 1,032 enrollments</div>
+                        </div>
+                    </div>
+                    <div class="panel-body" style="display:flex;flex-direction:column;align-items:center;gap:12px">
+                        <div class="chart-wrap" style="height:160px;width:160px">
+                            <canvas id="enrollChart"></canvas>
+                        </div>
+                        <div style="width:100%;display:flex;flex-direction:column;gap:5px" id="enrollLegend"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── ROW 2: 3-column mini charts ── -->
+            <div class="charts-row-3">
+                <div class="panel">
+                    <div class="panel-top">
+                        <div>
+                            <div class="panel-title">Module Completion Rates</div>
+                            <div class="panel-subtitle">% of enrolled students who finished</div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="chart-wrap" style="height:170px">
+                            <canvas id="completionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-top">
+                        <div>
+                            <div class="panel-title">Assessment Pass Rates</div>
+                            <div class="panel-subtitle">Knowledge Checks vs Final Exams</div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="chart-wrap" style="height:170px">
+                            <canvas id="passRateChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-top">
+                        <div>
+                            <div class="panel-title">Monthly Submissions</div>
+                            <div class="panel-subtitle">Total assessments submitted per month</div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="chart-wrap" style="height:170px">
+                            <canvas id="submissionsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── ROW 3: Module Health Table ── -->
+            <div class="panel">
+                <div class="panel-top">
+                    <div>
+                        <div class="panel-title">Module Health Overview</div>
+                        <div class="panel-subtitle">Enrollment, completion, avg. score, and rating for all 6 modules</div>
+                    </div>
+                </div>
+                <div style="overflow-x:auto">
+                    <table class="mod-table">
+                        <thead>
+                            <tr>
+                                <th>Module</th>
+                                <th>Category</th>
+                                <th>Enrolled</th>
+                                <th>Completion Rate</th>
+                                <th>Avg. Assessment Score</th>
+                                <th>Pass Rate</th>
+                                <th>Rating</th>
+                                <th>Trend</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><div class="mod-icon-cell"><div class="mod-dot" style="background:#2563eb"></div>Engine Oil Change & Maintenance</div></td>
+                                <td class="muted">Engine System</td>
+                                <td>214</td>
+                                <td><div class="mini-bar-wrap"><div class="mini-bar"><div class="mini-bar-fill" style="width:78%;background:#2563eb"></div></div><span class="mini-pct" style="color:#2563eb">78%</span></div></td>
+                                <td>82.5</td>
+                                <td><div class="mini-bar-wrap"><div class="mini-bar"><div class="mini-bar-fill" style="width:80%;background:#16a34a"></div></div><span class="mini-pct" style="color:#16a34a">80%</span></div></td>
+                                <td><div class="star-val"><i class="fa-solid fa-star" style="font-size:10px"></i> 4.4</div></td>
+                                <td><span class="badge badge-up"><i class="fa-solid fa-arrow-up" style="font-size:8px;margin-right:3px"></i> Rising</span></td>
+                            </tr>
+                            <tr>
+                                <td><div class="mod-icon-cell"><div class="mod-dot" style="background:#7c3aed"></div>Brake Pad Replacement</div></td>
+                                <td class="muted">Brake System</td>
+                                <td>201</td>
+                                <td><div class="mini-bar-wrap"><div class="mini-bar"><div class="mini-bar-fill" style="width:81%;background:#7c3aed"></div></div><span class="mini-pct" style="color:#7c3aed">81%</span></div></td>
+                                <td>77.3</td>
+                                <td><div class="mini-bar-wrap"><div class="mini-bar"><div class="mini-bar-fill" style="width:70%;background:#d97706"></div></div><span class="mini-pct" style="color:#d97706">70%</span></div></td>
+                                <td><div class="star-val"><i class="fa-solid fa-star" style="font-size:10px"></i> 4.2</div></td>
+                                <td><span class="badge badge-neutral">Stable</span></td>
+                            </tr>
+                            <tr>
+                                <td><div class="mod-icon-cell"><div class="mod-dot" style="background:#6b7280"></div>Battery Maintenance</div></td>
+                                <td class="muted">Electrical</td>
+                                <td>176</td>
+                                <td><div class="mini-bar-wrap"><div class="mini-bar"><div class="mini-bar-fill" style="width:72%;background:#6b7280"></div></div><span class="mini-pct" style="color:#6b7280">72%</span></div></td>
+                                <td>80.8</td>
+                                <td><div class="mini-bar-wrap"><div class="mini-bar"><div class="mini-bar-fill" style="width:77%;background:#16a34a"></div></div><span class="mini-pct" style="color:#16a34a">77%</span></div></td>
+                                <td><div class="star-val"><i class="fa-solid fa-star" style="font-size:10px"></i> 4.1</div></td>
+                                <td><span class="badge badge-up"><i class="fa-solid fa-arrow-up" style="font-size:8px;margin-right:3px"></i> Rising</span></td>
+                            </tr>
+                            <tr>
+                                <td><div class="mod-icon-cell"><div class="mod-dot" style="background:#d97706"></div>Fuel Filter Replacement</div></td>
+                                <td class="muted">Fuel System</td>
+                                <td>189</td>
+                                <td><div class="mini-bar-wrap"><div class="mini-bar"><div class="mini-bar-fill" style="width:65%;background:#d97706"></div></div><span class="mini-pct" style="color:#d97706">65%</span></div></td>
+                                <td>80.0</td>
+                                <td><div class="mini-bar-wrap"><div class="mini-bar"><div class="mini-bar-fill" style="width:75%;background:#16a34a"></div></div><span class="mini-pct" style="color:#16a34a">75%</span></div></td>
+                                <td><div class="star-val"><i class="fa-solid fa-star" style="font-size:10px"></i> 4.0</div></td>
+                                <td><span class="badge badge-down"><i class="fa-solid fa-arrow-down" style="font-size:8px;margin-right:3px"></i> Dropping</span></td>
+                            </tr>
+                            <tr>
+                                <td><div class="mod-icon-cell"><div class="mod-dot" style="background:#16a34a"></div>Air Filter Replacement</div></td>
+                                <td class="muted">Air System</td>
+                                <td>148</td>
+                                <td><div class="mini-bar-wrap"><div class="mini-bar"><div class="mini-bar-fill" style="width:70%;background:#16a34a"></div></div><span class="mini-pct" style="color:#16a34a">70%</span></div></td>
+                                <td>85.2</td>
+                                <td><div class="mini-bar-wrap"><div class="mini-bar"><div class="mini-bar-fill" style="width:83%;background:#16a34a"></div></div><span class="mini-pct" style="color:#16a34a">83%</span></div></td>
+                                <td><div class="star-val"><i class="fa-solid fa-star" style="font-size:10px"></i> 4.5</div></td>
+                                <td><span class="badge badge-up"><i class="fa-solid fa-arrow-up" style="font-size:8px;margin-right:3px"></i> Rising</span></td>
+                            </tr>
+                            <tr>
+                                <td><div class="mod-icon-cell"><div class="mod-dot" style="background:#e11d48"></div>Spark Plug Replacement</div></td>
+                                <td class="muted">Ignition</td>
+                                <td>104</td>
+                                <td><div class="mini-bar-wrap"><div class="mini-bar"><div class="mini-bar-fill" style="width:58%;background:#e11d48"></div></div><span class="mini-pct" style="color:#e11d48">58%</span></div></td>
+                                <td>76.3</td>
+                                <td><div class="mini-bar-wrap"><div class="mini-bar"><div class="mini-bar-fill" style="width:68%;background:#d97706"></div></div><span class="mini-pct" style="color:#d97706">68%</span></div></td>
+                                <td><div class="star-val"><i class="fa-solid fa-star" style="font-size:10px"></i> 3.9</div></td>
+                                <td><span class="badge badge-down"><i class="fa-solid fa-arrow-down" style="font-size:8px;margin-right:3px"></i> Dropping</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ── ROW 4: Assessment Pass Rates + Top Performers + Activity Feed ── -->
+            <div class="bottom-grid">
+
+                <!-- Assessment Pass Rates Detail -->
+                <div class="panel">
+                    <div class="panel-top">
+                        <div>
+                            <div class="panel-title">Assessment Pass Rates by Quiz</div>
+                            <div class="panel-subtitle">Per-assessment breakdown — all modules</div>
+                        </div>
+                    </div>
+                    <div class="panel-body" style="display:flex;flex-direction:column;gap:0">
+                        <div class="assess-row">
+                            <div class="assess-row-name">Engine Oil Change – Knowledge Check</div>
+                            <div class="assess-row-bar"><div class="assess-row-fill" style="width:82%;background:#16a34a"></div></div>
+                            <div class="assess-row-pct" style="color:#16a34a">82%</div>
+                        </div>
+                        <div class="assess-row">
+                            <div class="assess-row-name">Engine Oil Change – Final Exam</div>
+                            <div class="assess-row-bar"><div class="assess-row-fill" style="width:78%;background:#16a34a"></div></div>
+                            <div class="assess-row-pct" style="color:#16a34a">78%</div>
+                        </div>
+                        <div class="assess-row">
+                            <div class="assess-row-name">Brake Pad Replacement – Knowledge Check</div>
+                            <div class="assess-row-bar"><div class="assess-row-fill" style="width:71%;background:#d97706"></div></div>
+                            <div class="assess-row-pct" style="color:#d97706">71%</div>
+                        </div>
+                        <div class="assess-row">
+                            <div class="assess-row-name">Brake Pad Replacement – Final Exam</div>
+                            <div class="assess-row-bar"><div class="assess-row-fill" style="width:68%;background:#d97706"></div></div>
+                            <div class="assess-row-pct" style="color:#d97706">68%</div>
+                        </div>
+                        <div class="assess-row">
+                            <div class="assess-row-name">Battery Maintenance – Knowledge Check</div>
+                            <div class="assess-row-bar"><div class="assess-row-fill" style="width:79%;background:#16a34a"></div></div>
+                            <div class="assess-row-pct" style="color:#16a34a">79%</div>
+                        </div>
+                        <div class="assess-row">
+                            <div class="assess-row-name">Fuel Filter Replacement – Knowledge Check</div>
+                            <div class="assess-row-bar"><div class="assess-row-fill" style="width:77%;background:#16a34a"></div></div>
+                            <div class="assess-row-pct" style="color:#16a34a">77%</div>
+                        </div>
+                        <div class="assess-row">
+                            <div class="assess-row-name">Air Filter Replacement – Knowledge Check</div>
+                            <div class="assess-row-bar"><div class="assess-row-fill" style="width:85%;background:#16a34a"></div></div>
+                            <div class="assess-row-pct" style="color:#16a34a">85%</div>
+                        </div>
+                        <div class="assess-row">
+                            <div class="assess-row-name">Spark Plug Replacement – Knowledge Check</div>
+                            <div class="assess-row-bar"><div class="assess-row-fill" style="width:70%;background:#d97706"></div></div>
+                            <div class="assess-row-pct" style="color:#d97706">70%</div>
+                        </div>
+                        <div class="assess-row">
+                            <div class="assess-row-name">Spark Plug Replacement – Final Exam</div>
+                            <div class="assess-row-bar"><div class="assess-row-fill" style="width:66%;background:#dc2626"></div></div>
+                            <div class="assess-row-pct" style="color:#dc2626">66%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right column: Top Performers + Activity Feed -->
+                <div style="display:flex;flex-direction:column;gap:18px">
+
+                    <!-- Top Performers -->
+                    <div class="panel">
+                        <div class="panel-top">
+                            <div>
+                                <div class="panel-title">Top Performers</div>
+                                <div class="panel-subtitle">Highest avg. assessment score this period</div>
+                            </div>
+                        </div>
+                        <div class="panel-body" style="display:flex;flex-direction:column;gap:0">
+                            <div class="performer-item">
+                                <div class="rank-badge rank-1">1</div>
+                                <div class="p-avatar" style="background:#2563eb">JD</div>
+                                <div style="flex:1;min-width:0"><div class="p-name">Juan Dela Cruz</div><div class="p-meta">6 assessments &bull; All modules</div></div>
+                                <div class="p-score">97.2</div>
+                            </div>
+                            <div class="performer-item">
+                                <div class="rank-badge rank-2">2</div>
+                                <div class="p-avatar" style="background:#9333ea">CP</div>
+                                <div style="flex:1;min-width:0"><div class="p-name">Carla Perez</div><div class="p-meta">5 assessments &bull; Engine, Brakes, Air</div></div>
+                                <div class="p-score">95.4</div>
+                            </div>
+                            <div class="performer-item">
+                                <div class="rank-badge rank-3">3</div>
+                                <div class="p-avatar" style="background:#16a34a">RG</div>
+                                <div style="flex:1;min-width:0"><div class="p-name">Ramon Garcia</div><div class="p-meta">6 assessments &bull; All modules</div></div>
+                                <div class="p-score">93.8</div>
+                            </div>
+                            <div class="performer-item">
+                                <div class="rank-badge rank-n">4</div>
+                                <div class="p-avatar" style="background:#d97706">BT</div>
+                                <div style="flex:1;min-width:0"><div class="p-name">Bianca Torres</div><div class="p-meta">5 assessments &bull; Engine, Battery, Fuel</div></div>
+                                <div class="p-score">91.6</div>
+                            </div>
+                            <div class="performer-item">
+                                <div class="rank-badge rank-n">5</div>
+                                <div class="p-avatar" style="background:#e11d48">MR</div>
+                                <div style="flex:1;min-width:0"><div class="p-name">Miguel Reyes</div><div class="p-meta">4 assessments &bull; Engine, Brakes</div></div>
+                                <div class="p-score">90.0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity Feed -->
+                    <div class="panel">
+                        <div class="panel-top">
+                            <div>
+                                <div class="panel-title">Recent Activity</div>
+                                <div class="panel-subtitle">Latest platform events</div>
+                            </div>
+                        </div>
+                        <div class="panel-body" style="display:flex;flex-direction:column;gap:0">
+                            <div class="activity-item">
+                                <div class="act-dot" style="background:#16a34a"></div>
+                                <div><div class="act-text"><strong>Miguel Reyes</strong> passed Engine Oil Change – Knowledge Check with 92%</div><div class="act-time">2 minutes ago</div></div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="act-dot" style="background:#dc2626"></div>
+                                <div><div class="act-text"><strong>Ana Santos</strong> failed Brake Pad Replacement – Final Exam (68%)</div><div class="act-time">14 minutes ago</div></div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="act-dot" style="background:#2563eb"></div>
+                                <div><div class="act-text"><strong>Luis Cruz</strong> enrolled in Air Filter Replacement</div><div class="act-time">27 minutes ago</div></div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="act-dot" style="background:#16a34a"></div>
+                                <div><div class="act-text"><strong>Jana Mendoza</strong> completed Fuel Filter Replacement module</div><div class="act-time">1 hour ago</div></div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="act-dot" style="background:#d97706"></div>
+                                <div><div class="act-text"><strong>Spark Plug Replacement</strong> module completion rate dropped below 60%</div><div class="act-time">2 hours ago</div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <footer>
+            <span>MotoMaster</span> Admin Panel &mdash; Analytics &copy; 2025
+            <span>v2.1.0</span>
+        </footer>
+
+    </main>
+
+    <script>
+        Chart.defaults.font.family = "'Nunito', sans-serif";
+        Chart.defaults.font.size = 11;
+        Chart.defaults.color = '#6b7280';
+
+        const accent = '#2563eb';
+        const accentLight = 'rgba(37,99,235,0.12)';
+        const green = '#16a34a';
+        const orange = '#d97706';
+        const red = '#dc2626';
+        const purple = '#9333ea';
+
+        /* ── 1. Engagement Line Chart ── */
+        const days = ['May 1','2','3','4','5','6','7','8','9','10','11','12','13','14','15',
+                      '16','17','18','19','20','21','22','23','24','25','26','27','28','29','30'];
+        const engData = [42,55,48,62,71,68,80,78,85,90,88,82,76,80,84,88,86,78,72,68,74,80,86,92,89,84,80,76,82,88];
+
+        new Chart(document.getElementById('engagementChart'), {
+            type: 'line',
+            data: {
+                labels: days,
+                datasets: [{
+                    label: 'Active Learners',
+                    data: engData,
+                    borderColor: accent,
+                    backgroundColor: accentLight,
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    pointHoverRadius: 4,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
+                scales: {
+                    x: { grid: { display: false }, ticks: { maxTicksLimit: 8 } },
+                    y: { grid: { color: '#f3f4f6' }, beginAtZero: false, min: 30 }
+                }
+            }
+        });
+
+        /* ── 2. Enrollment Doughnut ── */
+        const modLabels = ['Engine Oil Change', 'Brake Pad Replacement', 'Battery Maintenance', 'Fuel Filter Replacement', 'Air Filter Replacement', 'Spark Plug Replacement'];
+        const modColors = ['#2563eb', '#7c3aed', '#6b7280', '#d97706', '#16a34a', '#e11d48'];
+        const enrollData = [214, 201, 176, 189, 148, 104];
+
+        new Chart(document.getElementById('enrollChart'), {
+            type: 'doughnut',
+            data: {
+                labels: modLabels,
+                datasets: [{ data: enrollData, backgroundColor: modColors, borderWidth: 2, borderColor: '#fff', hoverOffset: 6 }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false, cutout: '68%',
+                plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw} students` } } }
+            }
+        });
+
+        /* Legend for doughnut */
+        const legendEl = document.getElementById('enrollLegend');
+        modLabels.forEach((lbl, i) => {
+            const d = document.createElement('div');
+            d.style.cssText = 'display:flex;align-items:center;gap:7px;font-size:0.65rem;font-weight:700;color:#374151';
+            d.innerHTML = `<div style="width:9px;height:9px;border-radius:50%;background:${modColors[i]};flex-shrink:0"></div><span style="flex:1">${lbl}</span><span style="font-weight:800;color:#1a1a2e">${enrollData[i]}</span>`;
+            legendEl.appendChild(d);
+        });
+
+        /* ── 3. Completion Bar Chart ── */
+        const completionData = [78, 81, 72, 65, 70, 58];
+        new Chart(document.getElementById('completionChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Engine', 'Brakes', 'Battery', 'Fuel', 'Air', 'Spark'],
+                datasets: [{
+                    label: 'Completion %',
+                    data: completionData,
+                    backgroundColor: modColors,
+                    borderRadius: 6,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { display: false } },
+                    y: { grid: { color: '#f3f4f6' }, max: 100, ticks: { callback: v => v + '%' } }
+                }
+            }
+        });
+
+        /* ── 4. Pass Rate Grouped Bar ── */
+        new Chart(document.getElementById('passRateChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Engine', 'Brakes', 'Battery', 'Fuel', 'Air', 'Spark'],
+                datasets: [
+                    { label: 'Knowledge Check', data: [82, 71, 79, 77, 85, 70], backgroundColor: accent, borderRadius: 4, borderSkipped: false },
+                    { label: 'Final Exam',      data: [78, 68, 75, 72, 80, 66], backgroundColor: 'rgba(37,99,235,0.3)', borderRadius: 4, borderSkipped: false }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, padding: 10 } } },
+                scales: {
+                    x: { grid: { display: false } },
+                    y: { grid: { color: '#f3f4f6' }, max: 100, ticks: { callback: v => v + '%' } }
+                }
+            }
+        });
+
+        /* ── 5. Submissions Bar Chart ── */
+        new Chart(document.getElementById('submissionsChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                datasets: [{
+                    label: 'Submissions',
+                    data: [312, 388, 420, 476, 510, 318],
+                    backgroundColor: [
+                        'rgba(37,99,235,0.25)','rgba(37,99,235,0.25)','rgba(37,99,235,0.25)',
+                        'rgba(37,99,235,0.25)','rgba(37,99,235,0.25)', accent
+                    ],
+                    borderColor: [
+                        'rgba(37,99,235,0.5)','rgba(37,99,235,0.5)','rgba(37,99,235,0.5)',
+                        'rgba(37,99,235,0.5)','rgba(37,99,235,0.5)', accent
+                    ],
+                    borderWidth: 1.5,
+                    borderRadius: 6,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { display: false } },
+                    y: { grid: { color: '#f3f4f6' } }
+                }
+            }
+        });
+
+        /* ── Segment tab toggle (UI only) ── */
+        document.querySelectorAll('.seg-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                tab.closest('.seg-tabs').querySelectorAll('.seg-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+            });
+        });
+    </script>
+
+</body>
+
+</html>

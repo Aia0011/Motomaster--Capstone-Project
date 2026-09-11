@@ -1,0 +1,1816 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotoMaster Admin – Activity Logs</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #f3f4f6;
+            --border-color: #e5e7eb;
+            --text-primary: #1a1a2e;
+            --text-secondary: #6b7280;
+            --accent: #2563eb;
+            --accent-dark: #1d4ed8;
+            --accent-light: #eff6ff;
+            --green: #16a34a;
+            --red: #dc2626;
+            --orange: #d97706;
+            --purple: #9333ea;
+            --sidebar-w: 240px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+            font-family: 'Nunito', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        body {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 10px;
+        }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: #fff;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .logo-container {
+            padding: 18px 20px 14px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-container img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .logo-sub {
+            font-size: 0.62rem;
+            font-weight: 800;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+        }
+
+        .nav-section-label {
+            font-size: 0.6rem;
+            font-weight: 800;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 14px 18px 4px;
+        }
+
+        .nav-menu {
+            list-style: none;
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 8px 0;
+        }
+
+        .nav-menu::-webkit-scrollbar {
+            width: 0;
+        }
+
+        .nav-item {
+            padding: 9px 16px;
+            margin: 2px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            font-weight: 700;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .nav-item i {
+            width: 16px;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+
+        .nav-item:hover {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .nav-item.active {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .sidebar-bottom {
+            padding: 12px 0 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* ── MAIN ── */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background: var(--bg-color);
+        }
+
+        /* ── TOPBAR ── */
+        .topbar {
+            background: #fff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 28px;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+        }
+
+        .topbar-left h1 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .topbar-left p {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .notif-btn {
+            position: relative;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: var(--bg-color);
+            border: 1.5px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .notif-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: var(--red);
+            color: #fff;
+            font-size: 0.58rem;
+            font-weight: 800;
+            border-radius: 50%;
+            width: 14px;
+            height: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-pill {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 5px 12px 5px 5px;
+            border-radius: 30px;
+            border: 1.5px solid var(--border-color);
+            background: #fff;
+            cursor: pointer;
+        }
+
+        .profile-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--accent-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 12px;
+        }
+
+        .profile-name {
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .profile-role {
+            font-size: 0.62rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        /* ── BUTTONS ── */
+        .btn-primary {
+            background: var(--accent);
+            border: none;
+            color: #fff;
+            padding: 7px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 800;
+            transition: background 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-dark);
+        }
+
+        .btn-outline {
+            background: #fff;
+            border: 1.5px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 7px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            transition: border-color 0.2s;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-danger {
+            background: #fef2f2;
+            border: 1.5px solid #fecaca;
+            color: var(--red);
+            padding: 7px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            transition: background 0.2s;
+        }
+
+        .btn-danger:hover {
+            background: #fee2e2;
+        }
+
+        /* ── LAYOUT ── */
+        .page-container {
+            padding: 22px 28px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* ── KPI ROW ── */
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .kpi-card {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 16px 18px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+        }
+
+        .kpi-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .kpi-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .kpi-title {
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .kpi-value {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .kpi-foot {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        /* ── FILTER BAR ── */
+        .filter-bar {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+        }
+
+        .filter-bar input,
+        .filter-bar select {
+            padding: 7px 12px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 8px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.78rem;
+            color: var(--text-primary);
+            outline: none;
+            background: var(--bg-color);
+            transition: border-color 0.2s;
+            font-weight: 700;
+        }
+
+        .filter-bar input:focus,
+        .filter-bar select:focus {
+            border-color: var(--accent);
+            background: #fff;
+        }
+
+        .filter-bar input[type="search"] {
+            min-width: 220px;
+        }
+
+        .filter-sep {
+            height: 24px;
+            width: 1px;
+            background: var(--border-color);
+            flex-shrink: 0;
+        }
+
+        .filter-label {
+            font-size: 0.68rem;
+            font-weight: 800;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+
+        .filter-bar .ml-auto {
+            margin-left: auto;
+        }
+
+        /* ── MAIN CONTENT GRID ── */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 20px;
+            align-items: start;
+        }
+
+        /* ── PANEL ── */
+        .panel {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+        }
+
+        .panel-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 18px 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .panel-title {
+            font-size: 0.88rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .panel-subtitle {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        /* ── LOG TABLE ── */
+        .log-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .log-table thead th {
+            padding: 9px 14px;
+            text-align: left;
+            font-size: 0.6rem;
+            font-weight: 800;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: var(--bg-color);
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        .log-table tbody tr {
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.15s;
+            cursor: pointer;
+        }
+
+        .log-table tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .log-table tbody tr:hover {
+            background: #f8f9ff;
+        }
+
+        .log-table td {
+            padding: 10px 14px;
+            font-size: 0.76rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            vertical-align: middle;
+        }
+
+        .log-table td.muted {
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.7rem;
+        }
+
+        /* ── LOG ENTRY CELL ── */
+        .entry-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .entry-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .entry-action {
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .entry-detail {
+            font-size: 0.64rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-top: 1px;
+        }
+
+        /* ── USER CELL ── */
+        .user-cell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-dot {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            flex-shrink: 0;
+        }
+
+        /* ── BADGE ── */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 9px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .badge-green {
+            background: #f0fdf4;
+            color: var(--green);
+            border: 1px solid #bbf7d0;
+        }
+
+        .badge-orange {
+            background: #fff7ed;
+            color: var(--orange);
+            border: 1px solid #fed7aa;
+        }
+
+        .badge-red {
+            background: #fef2f2;
+            color: var(--red);
+            border: 1px solid #fecaca;
+        }
+
+        .badge-blue {
+            background: var(--accent-light);
+            color: var(--accent);
+            border: 1px solid #bfdbfe;
+        }
+
+        .badge-purple {
+            background: #fdf4ff;
+            color: var(--purple);
+            border: 1px solid #e9d5ff;
+        }
+
+        .badge-gray {
+            background: #f3f4f6;
+            color: #6b7280;
+            border: 1px solid #e5e7eb;
+        }
+
+        /* ── PAGINATION ── */
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 18px;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        .page-btns {
+            display: flex;
+            gap: 4px;
+        }
+
+        .page-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            border: 1.5px solid var(--border-color);
+            background: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: var(--text-secondary);
+            font-family: 'Nunito', sans-serif;
+            transition: all 0.15s;
+        }
+
+        .page-btn:hover,
+        .page-btn.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        /* ── SIDEBAR PANELS ── */
+        .side-panel {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+        }
+
+        .side-panel-title {
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            padding: 13px 16px 11px;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-color);
+        }
+
+        /* ── ACTIVITY BREAKDOWN ── */
+        .breakdown-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .breakdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .breakdown-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .breakdown-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .breakdown-label {
+            font-size: 0.76rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .breakdown-sub {
+            font-size: 0.62rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .breakdown-count {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* ── HEATMAP-STYLE BAR ── */
+        .bar-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .bar-row:last-child {
+            border-bottom: none;
+        }
+
+        .bar-day {
+            font-size: 0.68rem;
+            font-weight: 800;
+            color: var(--text-secondary);
+            width: 32px;
+            flex-shrink: 0;
+        }
+
+        .bar-track {
+            flex: 1;
+            height: 8px;
+            background: #f3f4f6;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 10px;
+            background: var(--accent);
+        }
+
+        .bar-val {
+            font-size: 0.68rem;
+            font-weight: 800;
+            color: var(--text-secondary);
+            width: 26px;
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        /* ── RECENT USERS ── */
+        .recent-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .recent-user:last-child {
+            border-bottom: none;
+        }
+
+        .ru-info .ru-name {
+            font-size: 0.76rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .ru-info .ru-count {
+            font-size: 0.64rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .ru-badge {
+            margin-left: auto;
+        }
+
+        /* ── DETAIL MODAL ── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
+            width: 100%;
+            max-width: 540px;
+            overflow: hidden;
+            animation: slideUp 0.22s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(24px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 22px 14px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-header h3 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            padding: 4px;
+            border-radius: 6px;
+        }
+
+        .modal-close:hover {
+            background: var(--bg-color);
+        }
+
+        .modal-body {
+            padding: 20px 22px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .detail-label {
+            font-size: 0.62rem;
+            font-weight: 800;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .detail-value {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .detail-full {
+            grid-column: 1 / -1;
+        }
+
+        .detail-desc {
+            background: var(--bg-color);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-top: 4px;
+        }
+
+        .modal-footer-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            padding: 14px 22px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn-cancel {
+            background: #fff;
+            border: 1.5px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 8px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .btn-cancel:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 28px;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            background: #fff;
+            margin-top: auto;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        footer span {
+            color: var(--accent);
+            font-weight: 800;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="sidebar">
+        <div class="logo-container">
+            <img src="images/finalogo.png" alt="MotoMaster" />
+            <div>
+                <span class="logo-text">MotoMaster</span>
+                <span class="logo-sub">Admin Panel</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-section-label">Main</li>
+            <li class="nav-item" onclick="window.location.href='admindash.html'"><i class="fa-solid fa-house"></i>
+                Dashboard</li>
+            <li class="nav-item" onclick="window.location.href='admintech.html'"><i
+                    class="fa-solid fa-chalkboard-user"></i> Teachers</li>
+            <li class="nav-item" onclick="window.location.href='adminstud.html'"><i class="fa-solid fa-users"></i>
+                Students</li>
+            <li class="nav-item" onclick="window.location.href='adminmod.html'"><i class="fa-solid fa-book-open"></i>
+                Modules</li>
+            <li class="nav-item" onclick="window.location.href='adminassess.html'"><i
+                    class="fa-solid fa-clipboard-check"></i> Assessments</li>
+            <li class="nav-item" onclick="window.location.href='adminpractice.html'"><i class="fa-solid fa-gamepad"></i>
+                Practice Sessions</li>
+            <li class="nav-section-label">Insights</li>
+            <li class="nav-item" onclick="window.location.href='adminanalytics.html'"><i
+                    class="fa-solid fa-chart-simple"></i> Analytics</li>
+            <li class="nav-item" onclick="window.location.href='adminreports.html'"><i
+                    class="fa-solid fa-file-invoice"></i> Reports</li>
+            <li class="nav-section-label">System</li>
+            <li class="nav-item" onclick="window.location.href='adminsettings.html'"><i class="fa-solid fa-gear"></i>
+                Settings</li>
+            <li class="nav-item active"><i class="fa-solid fa-list-check"></i> Activity Logs</li>
+            <li class="nav-item" onclick="window.location.href='adminsystembackup.html'"><i
+                    class="fa-solid fa-server"></i> System Backup</li>
+            <li class="nav-item" onclick="window.location.href='adminnotif.html'"><i class="fa-regular fa-bell"></i>
+                Notifications</li>
+        </ul>
+        <div class="sidebar-bottom">
+            <a class="nav-item" href="index.html"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+        </div>
+    </aside>
+
+    <!-- ── MAIN ── -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <h1>Activity Logs</h1>
+                <p>Track all admin, teacher, and system actions across the platform.</p>
+            </div>
+            <div class="topbar-right">
+                <button class="btn-outline" onclick="exportLogs()"><i class="fa-solid fa-file-arrow-down"></i> Export
+                    Logs</button>
+                <button class="btn-danger" onclick="openClearModal()"><i class="fa-solid fa-trash-can"></i> Clear Old
+                    Logs</button>
+                <div class="notif-btn">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="notif-badge">8</span>
+                </div>
+                <div class="profile-pill">
+                    <div class="profile-avatar"><i class="fa-solid fa-user"></i></div>
+                    <div>
+                        <div class="profile-name">Administrator</div>
+                        <div class="profile-role">Super Admin</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-container">
+
+            <!-- ── KPI ROW ── -->
+            <div class="kpi-row">
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon" style="background:#eff6ff;color:#2563eb"><i
+                                class="fa-solid fa-list-check"></i></div>
+                        <div class="kpi-title">Total Logs</div>
+                    </div>
+                    <div class="kpi-value">4,821</div>
+                    <div class="kpi-foot"><span>All time</span><span style="color:var(--accent)">+138 today</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon" style="background:#fef2f2;color:#dc2626"><i
+                                class="fa-solid fa-triangle-exclamation"></i></div>
+                        <div class="kpi-title">Critical Events</div>
+                    </div>
+                    <div class="kpi-value">14</div>
+                    <div class="kpi-foot"><span>This month</span><span style="color:#dc2626">3 unresolved</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon" style="background:#f0fdf4;color:#16a34a"><i
+                                class="fa-solid fa-user-shield"></i></div>
+                        <div class="kpi-title">Admin Actions</div>
+                    </div>
+                    <div class="kpi-value">309</div>
+                    <div class="kpi-foot"><span>This month</span><span style="color:var(--green)">By 3 admins</span>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon" style="background:#fff7ed;color:#d97706"><i
+                                class="fa-solid fa-clock-rotate-left"></i></div>
+                        <div class="kpi-title">Retention Period</div>
+                    </div>
+                    <div class="kpi-value">90d</div>
+                    <div class="kpi-foot"><span>Auto-purge enabled</span><span style="color:var(--orange)">Next: Jun
+                            28</span></div>
+                </div>
+            </div>
+
+            <!-- ── FILTER BAR ── -->
+            <div class="filter-bar">
+                <span class="filter-label">Filter:</span>
+                <input type="search" placeholder="Search by user, action, or IP…" id="searchInput"
+                    oninput="filterLogs()">
+                <select id="filterType" onchange="filterLogs()">
+                    <option value="">All Categories</option>
+                    <option value="auth">Authentication</option>
+                    <option value="content">Content</option>
+                    <option value="user">User Mgmt</option>
+                    <option value="system">System</option>
+                    <option value="report">Reports</option>
+                    <option value="assessment">Assessment</option>
+                </select>
+                <select id="filterSeverity" onchange="filterLogs()">
+                    <option value="">All Severity</option>
+                    <option value="info">Info</option>
+                    <option value="warning">Warning</option>
+                    <option value="critical">Critical</option>
+                </select>
+                <select id="filterPeriod" onchange="filterLogs()">
+                    <option value="">All Time</option>
+                    <option value="today">Today</option>
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                </select>
+                <div class="filter-sep"></div>
+                <span class="filter-label" id="logCount" style="color:var(--accent)">Showing 20 entries</span>
+                <div class="ml-auto">
+                    <button class="btn-outline" onclick="resetFilters()"><i class="fa-solid fa-arrows-rotate"></i>
+                        Reset</button>
+                </div>
+            </div>
+
+            <!-- ── CONTENT GRID ── -->
+            <div class="content-grid">
+
+                <!-- ── LOG TABLE ── -->
+                <div class="panel">
+                    <div class="panel-top">
+                        <div>
+                            <div class="panel-title">System Event Log</div>
+                            <div class="panel-subtitle">Click any row to view full details</div>
+                        </div>
+                    </div>
+                    <div style="overflow-x:auto">
+                        <table class="log-table" id="logTable">
+                            <thead>
+                                <tr>
+                                    <th>Event</th>
+                                    <th>User</th>
+                                    <th>Category</th>
+                                    <th>Severity</th>
+                                    <th>IP Address</th>
+                                    <th>Timestamp</th>
+                                </tr>
+                            </thead>
+                            <tbody id="logBody">
+                                <tr
+                                    onclick="openDetail('Admin login successful','admin@motomaster.edu','Authentication','Info','192.168.1.100','May 28, 2025 – 08:42 AM','The administrator successfully authenticated via username/password from a Windows desktop browser.')">
+                                    <td>
+                                        <div class="entry-cell">
+                                            <div class="entry-icon" style="background:#eff6ff;color:#2563eb"><i
+                                                    class="fa-solid fa-right-to-bracket"></i></div>
+                                            <div>
+                                                <div class="entry-action">Admin Login</div>
+                                                <div class="entry-detail">Successful authentication</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-dot" style="background:#eff6ff;color:#2563eb"><i
+                                                    class="fa-solid fa-user"></i></div>Administrator
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-blue">Auth</span></td>
+                                    <td><span class="badge badge-green">Info</span></td>
+                                    <td class="muted">192.168.1.100</td>
+                                    <td class="muted">Today, 08:42 AM</td>
+                                </tr>
+                                <tr
+                                    onclick="openDetail('Module published','teacher1@motomaster.edu','Content','Info','192.168.1.55','May 28, 2025 – 08:30 AM','Teacher published Module 3: Electrical Systems. 87 enrolled students are now able to access the content.')">
+                                    <td>
+                                        <div class="entry-cell">
+                                            <div class="entry-icon" style="background:#f0fdf4;color:#16a34a"><i
+                                                    class="fa-solid fa-book-open"></i></div>
+                                            <div>
+                                                <div class="entry-action">Module Published</div>
+                                                <div class="entry-detail">Module 3: Electrical Systems</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-dot" style="background:#f0fdf4;color:#16a34a"><i
+                                                    class="fa-solid fa-chalkboard-user"></i></div>R. Garcia
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-green">Content</span></td>
+                                    <td><span class="badge badge-green">Info</span></td>
+                                    <td class="muted">192.168.1.55</td>
+                                    <td class="muted">Today, 08:30 AM</td>
+                                </tr>
+                                <tr
+                                    onclick="openDetail('Failed login attempt','unknown','Authentication','Warning','58.32.101.22','May 28, 2025 – 08:17 AM','3 consecutive failed login attempts from an unrecognized IP address. Account temporarily flagged.')">
+                                    <td>
+                                        <div class="entry-cell">
+                                            <div class="entry-icon" style="background:#fff7ed;color:#d97706"><i
+                                                    class="fa-solid fa-key"></i></div>
+                                            <div>
+                                                <div class="entry-action">Failed Login</div>
+                                                <div class="entry-detail">3 attempts from unknown IP</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-dot" style="background:#fff7ed;color:#d97706"><i
+                                                    class="fa-solid fa-user-xmark"></i></div>Unknown
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-blue">Auth</span></td>
+                                    <td><span class="badge badge-orange">Warning</span></td>
+                                    <td class="muted">58.32.101.22</td>
+                                    <td class="muted">Today, 08:17 AM</td>
+                                </tr>
+                                <tr
+                                    onclick="openDetail('Student account created','admin@motomaster.edu','User Mgmt','Info','192.168.1.100','May 28, 2025 – 07:55 AM','New student account created for Ana Reyes (areyes@student.edu). Enrolled in 2 modules.')">
+                                    <td>
+                                        <div class="entry-cell">
+                                            <div class="entry-icon" style="background:#eff6ff;color:#2563eb"><i
+                                                    class="fa-solid fa-user-plus"></i></div>
+                                            <div>
+                                                <div class="entry-action">Student Created</div>
+                                                <div class="entry-detail">Ana Reyes – areyes@student.edu</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-dot" style="background:#eff6ff;color:#2563eb"><i
+                                                    class="fa-solid fa-user"></i></div>Administrator
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-purple">User Mgmt</span></td>
+                                    <td><span class="badge badge-green">Info</span></td>
+                                    <td class="muted">192.168.1.100</td>
+                                    <td class="muted">Today, 07:55 AM</td>
+                                </tr>
+                                <tr
+                                    onclick="openDetail('Assessment submitted','student22@student.edu','Assessment','Info','112.200.45.88','May 28, 2025 – 07:40 AM','Student submitted Final Exam for Module 2: Engine Systems. Score: 82/100.')">
+                                    <td>
+                                        <div class="entry-cell">
+                                            <div class="entry-icon" style="background:#fdf4ff;color:#9333ea"><i
+                                                    class="fa-solid fa-clipboard-check"></i></div>
+                                            <div>
+                                                <div class="entry-action">Assessment Submitted</div>
+                                                <div class="entry-detail">Final Exam – Module 2</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-dot" style="background:#fdf4ff;color:#9333ea"><i
+                                                    class="fa-solid fa-graduation-cap"></i></div>M. Santos
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-purple">Assessment</span></td>
+                                    <td><span class="badge badge-green">Info</span></td>
+                                    <td class="muted">112.200.45.88</td>
+                                    <td class="muted">Today, 07:40 AM</td>
+                                </tr>
+                                <tr
+                                    onclick="openDetail('System backup completed','system','System','Info','localhost','May 27, 2025 – 11:59 PM','Scheduled nightly backup completed successfully. Backup file: motomaster_backup_20250527.zip (48 MB).')">
+                                    <td>
+                                        <div class="entry-cell">
+                                            <div class="entry-icon" style="background:#f0fdf4;color:#16a34a"><i
+                                                    class="fa-solid fa-server"></i></div>
+                                            <div>
+                                                <div class="entry-action">Backup Completed</div>
+                                                <div class="entry-detail">Nightly auto-backup – 48 MB</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-dot" style="background:#f3f4f6;color:#6b7280"><i
+                                                    class="fa-solid fa-robot"></i></div>System
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-gray">System</span></td>
+                                    <td><span class="badge badge-green">Info</span></td>
+                                    <td class="muted">localhost</td>
+                                    <td class="muted">Yesterday, 11:59 PM</td>
+                                </tr>
+                                <tr
+                                    onclick="openDetail('Report exported','admin@motomaster.edu','Reports','Info','192.168.1.100','May 27, 2025 – 06:15 PM','Admin exported Student Progress Report for May 2025 in PDF format.')">
+                                    <td>
+                                        <div class="entry-cell">
+                                            <div class="entry-icon" style="background:#eff6ff;color:#2563eb"><i
+                                                    class="fa-solid fa-file-export"></i></div>
+                                            <div>
+                                                <div class="entry-action">Report Exported</div>
+                                                <div class="entry-detail">Student Progress – May 2025</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-dot" style="background:#eff6ff;color:#2563eb"><i
+                                                    class="fa-solid fa-user"></i></div>Administrator
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-blue">Reports</span></td>
+                                    <td><span class="badge badge-green">Info</span></td>
+                                    <td class="muted">192.168.1.100</td>
+                                    <td class="muted">Yesterday, 06:15 PM</td>
+                                </tr>
+                                <tr
+                                    onclick="openDetail('Module content deleted','teacher2@motomaster.edu','Content','Warning','192.168.1.88','May 27, 2025 – 03:42 PM','Teacher deleted a video resource from Module 4: Transmission Systems. Action is reversible within 30 days.')">
+                                    <td>
+                                        <div class="entry-cell">
+                                            <div class="entry-icon" style="background:#fef2f2;color:#dc2626"><i
+                                                    class="fa-solid fa-trash-can"></i></div>
+                                            <div>
+                                                <div class="entry-action">Content Deleted</div>
+                                                <div class="entry-detail">Video from Module 4: Transmission</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-dot" style="background:#f0fdf4;color:#16a34a"><i
+                                                    class="fa-solid fa-chalkboard-user"></i></div>L. Mendoza
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-green">Content</span></td>
+                                    <td><span class="badge badge-orange">Warning</span></td>
+                                    <td class="muted">192.168.1.88</td>
+                                    <td class="muted">Yesterday, 03:42 PM</td>
+                                </tr>
+                                <tr
+                                    onclick="openDetail('Password reset requested','jdelacruz@motomaster.edu','Authentication','Info','192.168.1.75','May 27, 2025 – 01:20 PM','Admin user Juan Dela Cruz requested a password reset. Reset link sent to registered email.')">
+                                    <td>
+                                        <div class="entry-cell">
+                                            <div class="entry-icon" style="background:#fff7ed;color:#d97706"><i
+                                                    class="fa-solid fa-lock-open"></i></div>
+                                            <div>
+                                                <div class="entry-action">Password Reset</div>
+                                                <div class="entry-detail">Reset link sent to email</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-dot" style="background:#f0fdf4;color:#16a34a"><i
+                                                    class="fa-solid fa-user"></i></div>J. Dela Cruz
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-blue">Auth</span></td>
+                                    <td><span class="badge badge-green">Info</span></td>
+                                    <td class="muted">192.168.1.75</td>
+                                    <td class="muted">Yesterday, 01:20 PM</td>
+                                </tr>
+                                <tr
+                                    onclick="openDetail('Unauthorized access attempt','unknown','System','Critical','203.45.67.89','May 26, 2025 – 09:05 AM','Attempted access to restricted admin endpoint /api/admin/users/delete from an external IP. Request blocked.')">
+                                    <td>
+                                        <div class="entry-cell">
+                                            <div class="entry-icon" style="background:#fef2f2;color:#dc2626"><i
+                                                    class="fa-solid fa-shield-halved"></i></div>
+                                            <div>
+                                                <div class="entry-action">Unauthorized Access</div>
+                                                <div class="entry-detail">Blocked: /api/admin/users/delete</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-dot" style="background:#fef2f2;color:#dc2626"><i
+                                                    class="fa-solid fa-user-xmark"></i></div>Unknown
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-gray">System</span></td>
+                                    <td><span class="badge badge-red">Critical</span></td>
+                                    <td class="muted">203.45.67.89</td>
+                                    <td class="muted">May 26, 09:05 AM</td>
+                                </tr>
+                                <tr
+                                    onclick="openDetail('Settings updated','admin@motomaster.edu','System','Info','192.168.1.100','May 26, 2025 – 08:50 AM','Platform settings updated: session timeout changed from 30 to 60 minutes.')">
+                                    <td>
+                                        <div class="entry-cell">
+                                            <div class="entry-icon" style="background:#eff6ff;color:#2563eb"><i
+                                                    class="fa-solid fa-gear"></i></div>
+                                            <div>
+                                                <div class="entry-action">Settings Updated</div>
+                                                <div class="entry-detail">Session timeout → 60 min</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-dot" style="background:#eff6ff;color:#2563eb"><i
+                                                    class="fa-solid fa-user"></i></div>Administrator
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-gray">System</span></td>
+                                    <td><span class="badge badge-green">Info</span></td>
+                                    <td class="muted">192.168.1.100</td>
+                                    <td class="muted">May 26, 08:50 AM</td>
+                                </tr>
+                                <tr
+                                    onclick="openDetail('Teacher account deactivated','admin@motomaster.edu','User Mgmt','Warning','192.168.1.100','May 25, 2025 – 04:30 PM','Teacher account for C. Reyes was deactivated by the administrator. 3 active modules affected.')">
+                                    <td>
+                                        <div class="entry-cell">
+                                            <div class="entry-icon" style="background:#fff7ed;color:#d97706"><i
+                                                    class="fa-solid fa-user-slash"></i></div>
+                                            <div>
+                                                <div class="entry-action">Account Deactivated</div>
+                                                <div class="entry-detail">Teacher: C. Reyes</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-dot" style="background:#eff6ff;color:#2563eb"><i
+                                                    class="fa-solid fa-user"></i></div>Administrator
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-purple">User Mgmt</span></td>
+                                    <td><span class="badge badge-orange">Warning</span></td>
+                                    <td class="muted">192.168.1.100</td>
+                                    <td class="muted">May 25, 04:30 PM</td>
+                                </tr>
+                                <tr
+                                    onclick="openDetail('Scheduled report generated','system','Reports','Info','localhost','May 25, 2025 – 12:00 PM','Weekly Module Performance Report auto-generated and delivered to admin@motomaster.edu.')">
+                                    <td>
+                                        <div class="entry-cell">
+                                            <div class="entry-icon" style="background:#eff6ff;color:#2563eb"><i
+                                                    class="fa-solid fa-file-invoice"></i></div>
+                                            <div>
+                                                <div class="entry-action">Report Generated</div>
+                                                <div class="entry-detail">Weekly Module Performance</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-dot" style="background:#f3f4f6;color:#6b7280"><i
+                                                    class="fa-solid fa-robot"></i></div>System
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-blue">Reports</span></td>
+                                    <td><span class="badge badge-green">Info</span></td>
+                                    <td class="muted">localhost</td>
+                                    <td class="muted">May 25, 12:00 PM</td>
+                                </tr>
+                                <tr
+                                    onclick="openDetail('New module created','teacher3@motomaster.edu','Content','Info','192.168.1.66','May 24, 2025 – 10:15 AM','New module created: Module 6 – Road Safety Regulations. Status: Draft. 0 students enrolled.')">
+                                    <td>
+                                        <div class="entry-cell">
+                                            <div class="entry-icon" style="background:#f0fdf4;color:#16a34a"><i
+                                                    class="fa-solid fa-circle-plus"></i></div>
+                                            <div>
+                                                <div class="entry-action">Module Created</div>
+                                                <div class="entry-detail">Module 6: Road Safety Regulations</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-dot" style="background:#f0fdf4;color:#16a34a"><i
+                                                    class="fa-solid fa-chalkboard-user"></i></div>P. Torres
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-green">Content</span></td>
+                                    <td><span class="badge badge-green">Info</span></td>
+                                    <td class="muted">192.168.1.66</td>
+                                    <td class="muted">May 24, 10:15 AM</td>
+                                </tr>
+                                <tr
+                                    onclick="openDetail('Student bulk imported','admin@motomaster.edu','User Mgmt','Info','192.168.1.100','May 23, 2025 – 09:00 AM','24 student accounts imported via CSV upload. 23 successful, 1 skipped (duplicate email).')">
+                                    <td>
+                                        <div class="entry-cell">
+                                            <div class="entry-icon" style="background:#eff6ff;color:#2563eb"><i
+                                                    class="fa-solid fa-users-line"></i></div>
+                                            <div>
+                                                <div class="entry-action">Bulk Import</div>
+                                                <div class="entry-detail">24 students – 23 created, 1 skipped</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="user-dot" style="background:#eff6ff;color:#2563eb"><i
+                                                    class="fa-solid fa-user"></i></div>Administrator
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-purple">User Mgmt</span></td>
+                                    <td><span class="badge badge-green">Info</span></td>
+                                    <td class="muted">192.168.1.100</td>
+                                    <td class="muted">May 23, 09:00 AM</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pagination">
+                        <span>Showing 1–15 of 4,821 entries</span>
+                        <div class="page-btns">
+                            <button class="page-btn"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button class="page-btn active">1</button>
+                            <button class="page-btn">2</button>
+                            <button class="page-btn">3</button>
+                            <button class="page-btn">…</button>
+                            <button class="page-btn">322</button>
+                            <button class="page-btn"><i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── RIGHT COLUMN ── -->
+                <div style="display:flex;flex-direction:column;gap:16px">
+
+                    <!-- Activity Breakdown -->
+                    <div class="side-panel">
+                        <div class="side-panel-title"><i class="fa-solid fa-chart-pie"
+                                style="color:var(--accent);margin-right:6px"></i>Event Breakdown</div>
+                        <div class="breakdown-item">
+                            <div class="breakdown-left">
+                                <div class="breakdown-dot" style="background:#2563eb"></div>
+                                <div>
+                                    <div class="breakdown-label">Authentication</div>
+                                    <div class="breakdown-sub">Logins, logouts, resets</div>
+                                </div>
+                            </div>
+                            <div class="breakdown-count">1,284</div>
+                        </div>
+                        <div class="breakdown-item">
+                            <div class="breakdown-left">
+                                <div class="breakdown-dot" style="background:#16a34a"></div>
+                                <div>
+                                    <div class="breakdown-label">Content</div>
+                                    <div class="breakdown-sub">Modules, media</div>
+                                </div>
+                            </div>
+                            <div class="breakdown-count">892</div>
+                        </div>
+                        <div class="breakdown-item">
+                            <div class="breakdown-left">
+                                <div class="breakdown-dot" style="background:#9333ea"></div>
+                                <div>
+                                    <div class="breakdown-label">User Management</div>
+                                    <div class="breakdown-sub">Creates, edits, deletes</div>
+                                </div>
+                            </div>
+                            <div class="breakdown-count">751</div>
+                        </div>
+                        <div class="breakdown-item">
+                            <div class="breakdown-left">
+                                <div class="breakdown-dot" style="background:#6b7280"></div>
+                                <div>
+                                    <div class="breakdown-label">System</div>
+                                    <div class="breakdown-sub">Backups, settings</div>
+                                </div>
+                            </div>
+                            <div class="breakdown-count">643</div>
+                        </div>
+                        <div class="breakdown-item">
+                            <div class="breakdown-left">
+                                <div class="breakdown-dot" style="background:#2563eb" style="opacity:0.5"></div>
+                                <div>
+                                    <div class="breakdown-label">Reports</div>
+                                    <div class="breakdown-sub">Exports, schedules</div>
+                                </div>
+                            </div>
+                            <div class="breakdown-count">418</div>
+                        </div>
+                        <div class="breakdown-item">
+                            <div class="breakdown-left">
+                                <div class="breakdown-dot" style="background:#9333ea" style="opacity:0.5"></div>
+                                <div>
+                                    <div class="breakdown-label">Assessments</div>
+                                    <div class="breakdown-sub">Submissions, grades</div>
+                                </div>
+                            </div>
+                            <div class="breakdown-count">833</div>
+                        </div>
+                    </div>
+
+                    <!-- Daily Volume -->
+                    <div class="side-panel">
+                        <div class="side-panel-title"><i class="fa-solid fa-calendar-days"
+                                style="color:var(--accent);margin-right:6px"></i>Daily Volume (Last 7 Days)</div>
+                        <div class="bar-row"><span class="bar-day">Mon</span>
+                            <div class="bar-track">
+                                <div class="bar-fill" style="width:78%"></div>
+                            </div><span class="bar-val">312</span>
+                        </div>
+                        <div class="bar-row"><span class="bar-day">Tue</span>
+                            <div class="bar-track">
+                                <div class="bar-fill" style="width:92%"></div>
+                            </div><span class="bar-val">368</span>
+                        </div>
+                        <div class="bar-row"><span class="bar-day">Wed</span>
+                            <div class="bar-track">
+                                <div class="bar-fill" style="width:65%"></div>
+                            </div><span class="bar-val">260</span>
+                        </div>
+                        <div class="bar-row"><span class="bar-day">Thu</span>
+                            <div class="bar-track">
+                                <div class="bar-fill" style="width:88%"></div>
+                            </div><span class="bar-val">352</span>
+                        </div>
+                        <div class="bar-row"><span class="bar-day">Fri</span>
+                            <div class="bar-track">
+                                <div class="bar-fill" style="width:100%"></div>
+                            </div><span class="bar-val">400</span>
+                        </div>
+                        <div class="bar-row"><span class="bar-day">Sat</span>
+                            <div class="bar-track">
+                                <div class="bar-fill" style="width:38%"></div>
+                            </div><span class="bar-val">152</span>
+                        </div>
+                        <div class="bar-row"><span class="bar-day">Sun</span>
+                            <div class="bar-track">
+                                <div class="bar-fill" style="width:22%"></div>
+                            </div><span class="bar-val">88</span>
+                        </div>
+                    </div>
+
+                    <!-- Most Active Users -->
+                    <div class="side-panel">
+                        <div class="side-panel-title"><i class="fa-solid fa-ranking-star"
+                                style="color:var(--accent);margin-right:6px"></i>Most Active Users</div>
+                        <div class="recent-user">
+                            <div class="user-dot" style="background:#eff6ff;color:#2563eb;width:30px;height:30px"><i
+                                    class="fa-solid fa-user"></i></div>
+                            <div class="ru-info">
+                                <div class="ru-name">Administrator</div>
+                                <div class="ru-count">309 actions this month</div>
+                            </div>
+                            <div class="ru-badge"><span class="badge badge-blue">Super Admin</span></div>
+                        </div>
+                        <div class="recent-user">
+                            <div class="user-dot" style="background:#f0fdf4;color:#16a34a;width:30px;height:30px"><i
+                                    class="fa-solid fa-chalkboard-user"></i></div>
+                            <div class="ru-info">
+                                <div class="ru-name">R. Garcia</div>
+                                <div class="ru-count">148 actions this month</div>
+                            </div>
+                            <div class="ru-badge"><span class="badge badge-green">Teacher</span></div>
+                        </div>
+                        <div class="recent-user">
+                            <div class="user-dot" style="background:#f0fdf4;color:#16a34a;width:30px;height:30px"><i
+                                    class="fa-solid fa-chalkboard-user"></i></div>
+                            <div class="ru-info">
+                                <div class="ru-name">L. Mendoza</div>
+                                <div class="ru-count">112 actions this month</div>
+                            </div>
+                            <div class="ru-badge"><span class="badge badge-green">Teacher</span></div>
+                        </div>
+                        <div class="recent-user">
+                            <div class="user-dot" style="background:#f0fdf4;color:#16a34a;width:30px;height:30px"><i
+                                    class="fa-solid fa-user"></i></div>
+                            <div class="ru-info">
+                                <div class="ru-name">J. Dela Cruz</div>
+                                <div class="ru-count">87 actions this month</div>
+                            </div>
+                            <div class="ru-badge"><span class="badge badge-blue">Moderator</span></div>
+                        </div>
+                        <div class="recent-user">
+                            <div class="user-dot" style="background:#f3f4f6;color:#6b7280;width:30px;height:30px"><i
+                                    class="fa-solid fa-robot"></i></div>
+                            <div class="ru-info">
+                                <div class="ru-name">System</div>
+                                <div class="ru-count">64 automated actions</div>
+                            </div>
+                            <div class="ru-badge"><span class="badge badge-gray">Auto</span></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <span>MotoMaster</span> Admin Panel &mdash; Activity Logs &copy; 2025
+            <span>v2.1.0</span>
+        </footer>
+
+    </main>
+
+    <!-- ── DETAIL MODAL ── -->
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">Event Detail</h3>
+                <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">Event</div>
+                        <div class="detail-value" id="d-event">—</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Severity</div>
+                        <div class="detail-value" id="d-severity">—</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">User</div>
+                        <div class="detail-value" id="d-user">—</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Category</div>
+                        <div class="detail-value" id="d-category">—</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">IP Address</div>
+                        <div class="detail-value" id="d-ip">—</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Timestamp</div>
+                        <div class="detail-value" id="d-time">—</div>
+                    </div>
+                    <div class="detail-item detail-full">
+                        <div class="detail-label">Description</div>
+                        <div class="detail-desc" id="d-desc">—</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer-row">
+                <button class="btn-cancel" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── CLEAR LOGS MODAL ── -->
+    <div class="modal-overlay" id="clearModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-triangle-exclamation"
+                        style="color:#dc2626;margin-right:8px;font-size:0.9rem"></i>Clear Old Logs</h3>
+                <button class="modal-close" onclick="closeClearModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <p
+                    style="margin-bottom:14px;font-size:0.82rem;font-weight:600;color:var(--text-secondary);line-height:1.6">
+                    Select a retention period. All logs older than the chosen threshold will be <strong
+                        style="color:#dc2626">permanently deleted</strong> and cannot be recovered.</p>
+                <div style="display:flex;flex-direction:column;gap:5px">
+                    <label
+                        style="font-size:0.7rem;font-weight:800;color:var(--text-secondary);text-transform:uppercase">Delete
+                        logs older than</label>
+                    <select class="form-control"
+                        style="padding:8px 12px;border:1.5px solid var(--border-color);border-radius:8px;font-family:'Nunito',sans-serif;font-size:0.82rem;outline:none;">
+                        <option>30 days</option>
+                        <option>60 days</option>
+                        <option selected>90 days</option>
+                        <option>180 days</option>
+                        <option>All logs</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer-row">
+                <button class="btn-cancel" onclick="closeClearModal()">Cancel</button>
+                <button
+                    style="background:#dc2626;border:none;color:#fff;padding:8px 18px;border-radius:8px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:0.78rem;font-weight:800"
+                    onclick="closeClearModal()"><i class="fa-solid fa-trash-can"></i> Confirm Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="teacher-profile.js"></script>
+    <script>
+        function openDetail(event, user, category, severity, ip, time, desc) {
+            document.getElementById('modalTitle').textContent = event;
+            document.getElementById('d-event').textContent = event;
+            document.getElementById('d-user').textContent = user;
+            document.getElementById('d-category').textContent = category;
+            document.getElementById('d-severity').textContent = severity;
+            document.getElementById('d-ip').textContent = ip;
+            document.getElementById('d-time').textContent = time;
+            document.getElementById('d-desc').textContent = desc;
+            document.getElementById('detailModal').classList.add('open');
+        }
+
+        function closeModal() {
+            document.getElementById('detailModal').classList.remove('open');
+        }
+
+        function openClearModal() {
+            document.getElementById('clearModal').classList.add('open');
+        }
+
+        function closeClearModal() {
+            document.getElementById('clearModal').classList.remove('open');
+        }
+
+        function exportLogs() {
+            const btn = event.currentTarget;
+            const orig = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> Exported!';
+            setTimeout(() => { btn.innerHTML = orig; }, 1800);
+        }
+
+        function filterLogs() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#logBody tr');
+            let visible = 0;
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                const show = !search || text.includes(search);
+                row.style.display = show ? '' : 'none';
+                if (show) visible++;
+            });
+            document.getElementById('logCount').textContent = `Showing ${visible} entries`;
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('filterType').value = '';
+            document.getElementById('filterSeverity').value = '';
+            document.getElementById('filterPeriod').value = '';
+            filterLogs();
+        }
+
+        document.getElementById('detailModal').addEventListener('click', function (e) { if (e.target === this) closeModal(); });
+        document.getElementById('clearModal').addEventListener('click', function (e) { if (e.target === this) closeClearModal(); });
+    </script>
+
+</body>
+
+</html>

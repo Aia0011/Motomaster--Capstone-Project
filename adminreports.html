@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotoMaster Admin – Reports</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #f3f4f6;
+            --panel-bg: #ffffff;
+            --border-color: #e5e7eb;
+            --text-primary: #1a1a2e;
+            --text-secondary: #6b7280;
+            --accent: #2563eb;
+            --accent-dark: #1d4ed8;
+            --accent-light: #eff6ff;
+            --green: #16a34a;
+            --red: #dc2626;
+            --orange: #d97706;
+            --purple: #9333ea;
+            --sidebar-w: 240px;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; font-family: 'Nunito', sans-serif; background: var(--bg-color); color: var(--text-primary); font-size: 14px; }
+        body { display: flex; height: 100vh; overflow: hidden; }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+
+        /* ── SIDEBAR ── */
+        .sidebar { width: var(--sidebar-w); background: #fff; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; flex-shrink: 0; box-shadow: 2px 0 8px rgba(0,0,0,0.04); }
+        .logo-container { padding: 18px 20px 14px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; }
+        .logo-container img { width: 32px; height: 32px; object-fit: contain; }
+        .logo-text { font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--text-primary); }
+        .logo-sub { font-size: 0.62rem; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; display: block; }
+        .nav-section-label { font-size: 0.6rem; font-weight: 800; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.8px; padding: 14px 18px 4px; }
+        .nav-menu { list-style: none; flex-grow: 1; overflow-y: auto; padding: 8px 0; }
+        .nav-menu::-webkit-scrollbar { width: 0; }
+        .nav-item { padding: 9px 16px; margin: 2px 10px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; color: var(--text-secondary); font-size: 0.82rem; font-weight: 700; transition: all 0.2s; text-decoration: none; }
+        .nav-item i { width: 16px; font-size: 13px; flex-shrink: 0; }
+        .nav-item:hover { background: var(--accent-light); color: var(--accent); }
+        .nav-item.active { background: var(--accent-light); color: var(--accent); }
+        .nav-item.active i { color: var(--accent); }
+        .sidebar-bottom { padding: 12px 0 16px; border-top: 1px solid var(--border-color); }
+
+        /* ── MAIN ── */
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; background: var(--bg-color); }
+
+        /* ── TOPBAR ── */
+        .topbar { background: #fff; border-bottom: 1px solid var(--border-color); padding: 0 28px; height: 58px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+        .topbar-left h1 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text-primary); }
+        .topbar-left p { font-size: 0.72rem; color: var(--text-secondary); font-weight: 600; }
+        .topbar-right { display: flex; align-items: center; gap: 12px; }
+        .notif-btn { position: relative; width: 36px; height: 36px; border-radius: 8px; background: var(--bg-color); border: 1.5px solid var(--border-color); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary); }
+        .notif-badge { position: absolute; top: -4px; right: -4px; background: var(--red); color: #fff; font-size: 0.58rem; font-weight: 800; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; }
+        .profile-pill { display: flex; align-items: center; gap: 9px; padding: 5px 12px 5px 5px; border-radius: 30px; border: 1.5px solid var(--border-color); background: #fff; cursor: pointer; }
+        .profile-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--accent-light); display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 12px; }
+        .profile-name { font-size: 0.78rem; font-weight: 800; color: var(--text-primary); }
+        .profile-role { font-size: 0.62rem; color: var(--text-secondary); font-weight: 600; }
+
+        /* ── BUTTONS ── */
+        .btn-outline { background: #fff; border: 1.5px solid var(--border-color); color: var(--text-secondary); padding: 7px 14px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-family: 'Nunito', sans-serif; font-size: 0.75rem; font-weight: 700; transition: border-color 0.2s; }
+        .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+        .btn-primary { background: var(--accent); border: none; color: #fff; padding: 7px 14px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-family: 'Nunito', sans-serif; font-size: 0.75rem; font-weight: 800; transition: background 0.2s; }
+        .btn-primary:hover { background: var(--accent-dark); }
+
+        /* ── LAYOUT ── */
+        .dashboard-container { padding: 22px 28px 28px; display: flex; flex-direction: column; gap: 18px; }
+
+        /* ── KPI ── */
+        .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+        .kpi-card { background: #fff; border-radius: 12px; padding: 16px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); transition: box-shadow 0.2s, border-color 0.2s; }
+        .kpi-card:hover { box-shadow: 0 4px 16px rgba(37,99,235,0.10); border-color: #bfdbfe; }
+        .kpi-header { display: flex; align-items: center; gap: 10px; }
+        .kpi-icon { width: 36px; height: 36px; border-radius: 9px; background: var(--accent-light); display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 16px; flex-shrink: 0; }
+        .kpi-title { font-size: 0.68rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.4px; }
+        .kpi-value { font-family: 'Rajdhani', sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--text-primary); line-height: 1; }
+        .kpi-foot { display: flex; justify-content: space-between; font-size: 0.68rem; font-weight: 700; color: var(--text-secondary); border-top: 1px solid var(--border-color); padding-top: 8px; }
+
+        /* ── PANEL ── */
+        .panel { background: #fff; border-radius: 12px; border: 1px solid var(--border-color); display: flex; flex-direction: column; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+        .panel-top { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px 14px; border-bottom: 1px solid var(--border-color); }
+        .panel-title { font-size: 0.88rem; font-weight: 800; color: var(--text-primary); }
+        .panel-subtitle { font-size: 0.72rem; color: var(--text-secondary); font-weight: 600; margin-top: 2px; }
+        .panel-body { padding: 18px 20px; }
+
+        /* ── REPORT TYPE CARDS ── */
+        .report-cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+        .report-card { background: #fff; border-radius: 12px; border: 1px solid var(--border-color); padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); transition: box-shadow 0.2s, border-color 0.2s; cursor: pointer; }
+        .report-card:hover { box-shadow: 0 4px 18px rgba(37,99,235,0.10); border-color: #bfdbfe; }
+        .report-card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+        .report-card-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+        .report-card-title { font-size: 0.85rem; font-weight: 800; color: var(--text-primary); margin-bottom: 3px; }
+        .report-card-desc { font-size: 0.7rem; font-weight: 600; color: var(--text-secondary); line-height: 1.5; }
+        .report-card-meta { display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid var(--border-color); font-size: 0.68rem; font-weight: 700; color: var(--text-secondary); }
+        .report-card-meta-right { display: flex; gap: 6px; }
+
+        /* ── BADGE ── */
+        .badge { display: inline-flex; align-items: center; padding: 2px 9px; border-radius: 20px; font-size: 0.6rem; font-weight: 800; }
+        .badge-blue { background: var(--accent-light); color: var(--accent); border: 1px solid #bfdbfe; }
+        .badge-green { background: #f0fdf4; color: var(--green); border: 1px solid #bbf7d0; }
+        .badge-orange { background: #fff7ed; color: var(--orange); border: 1px solid #fed7aa; }
+        .badge-purple { background: #fdf4ff; color: var(--purple); border: 1px solid #e9d5ff; }
+        .badge-gray { background: #f3f4f6; color: #6b7280; border: 1px solid #e5e7eb; }
+
+        /* ── GRID HELPERS ── */
+        .two-col { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; }
+        .two-col-equal { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+        /* ── REPORT LOG TABLE ── */
+        .rpt-table { width: 100%; border-collapse: collapse; }
+        .rpt-table thead th { padding: 9px 16px; text-align: left; font-size: 0.62rem; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; background: var(--bg-color); border-bottom: 1px solid var(--border-color); white-space: nowrap; }
+        .rpt-table tbody tr { border-bottom: 1px solid var(--border-color); transition: background 0.15s; }
+        .rpt-table tbody tr:last-child { border-bottom: none; }
+        .rpt-table tbody tr:hover { background: #f8f9ff; }
+        .rpt-table td { padding: 11px 16px; font-size: 0.78rem; font-weight: 700; color: var(--text-primary); vertical-align: middle; }
+        .rpt-table td.muted { color: var(--text-secondary); font-weight: 600; }
+        .rpt-icon-cell { display: flex; align-items: center; gap: 10px; }
+        .rpt-dot { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+
+        .action-btn { width: 28px; height: 28px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 11px; transition: all 0.2s; border: 1.5px solid; }
+        .action-btn.view { background: var(--bg-color); border-color: var(--border-color); color: var(--text-secondary); }
+        .action-btn.view:hover { border-color: var(--accent); color: var(--accent); }
+        .action-btn.dl { background: #f0fdf4; border-color: #bbf7d0; color: var(--green); }
+        .action-btn.dl:hover { background: #dcfce7; }
+        .actions-cell { display: flex; gap: 5px; }
+
+        /* ── CHART ── */
+        .chart-wrap { position: relative; }
+        .chart-wrap canvas { display: block; }
+
+        /* ── SUMMARY LIST ── */
+        .summary-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border-color); }
+        .summary-item:last-child { border-bottom: none; }
+        .s-icon { width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+        .s-name { font-size: 0.78rem; font-weight: 800; color: var(--text-primary); }
+        .s-sub { font-size: 0.62rem; font-weight: 600; color: var(--text-secondary); margin-top: 1px; }
+        .s-val { font-family: 'Rajdhani', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--text-primary); }
+        .s-val-sub { font-size: 0.6rem; font-weight: 700; color: var(--text-secondary); text-align: right; margin-top: 1px; }
+
+        /* ── SCHEDULE ITEM ── */
+        .sched-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border-color); }
+        .sched-item:last-child { border-bottom: none; }
+        .sched-day { font-family: 'Rajdhani', sans-serif; font-size: 0.88rem; font-weight: 700; color: var(--accent); min-width: 38px; text-align: center; line-height: 1.2; }
+        .sched-title { font-size: 0.78rem; font-weight: 800; color: var(--text-primary); }
+        .sched-meta { font-size: 0.62rem; font-weight: 600; color: var(--text-secondary); margin-top: 1px; }
+        .sched-badge { margin-left: auto; flex-shrink: 0; }
+
+        /* ── PROGRESS BAR ── */
+        .prog-bar { width: 100%; height: 5px; background: #e5e7eb; border-radius: 3px; overflow: hidden; margin-top: 4px; }
+        .prog-bar-fill { height: 100%; border-radius: 3px; }
+
+        /* ── FOOTER ── */
+        footer { display: flex; justify-content: space-between; align-items: center; padding: 12px 28px; font-size: 0.7rem; color: var(--text-secondary); border-top: 1px solid var(--border-color); background: #fff; margin-top: auto; font-weight: 700; flex-shrink: 0; }
+        footer span { color: var(--accent); font-weight: 800; }
+
+        /* ── MODAL ── */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-overlay.open { display: flex; }
+        .modal { background: #fff; border-radius: 14px; box-shadow: 0 8px 40px rgba(0,0,0,0.18); width: 100%; max-width: 480px; overflow: hidden; animation: slideUp 0.22s ease; }
+        @keyframes slideUp { from { transform: translateY(24px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px 14px; border-bottom: 1px solid var(--border-color); }
+        .modal-header h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--text-primary); }
+        .modal-close { background: none; border: none; cursor: pointer; color: var(--text-secondary); font-size: 1rem; padding: 4px; border-radius: 6px; }
+        .modal-close:hover { background: var(--bg-color); }
+        .modal-body { padding: 20px 22px; }
+        .modal-footer-row { display: flex; justify-content: flex-end; gap: 8px; padding: 14px 22px; border-top: 1px solid var(--border-color); }
+        .btn-save { background: var(--accent); border: none; color: #fff; padding: 8px 18px; border-radius: 8px; cursor: pointer; font-family: 'Nunito', sans-serif; font-size: 0.78rem; font-weight: 800; transition: background 0.2s; }
+        .btn-save:hover { background: var(--accent-dark); }
+        .btn-cancel { background: #fff; border: 1.5px solid var(--border-color); color: var(--text-secondary); padding: 8px 18px; border-radius: 8px; cursor: pointer; font-family: 'Nunito', sans-serif; font-size: 0.78rem; font-weight: 700; transition: border-color 0.2s; }
+        .btn-cancel:hover { border-color: var(--accent); color: var(--accent); }
+        .form-group { margin-bottom: 14px; }
+        .form-label { display: block; font-size: 0.72rem; font-weight: 800; color: var(--text-secondary); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.3px; }
+        .form-control { width: 100%; padding: 8px 12px; border: 1.5px solid var(--border-color); border-radius: 8px; font-family: 'Nunito', sans-serif; font-size: 0.82rem; color: var(--text-primary); outline: none; transition: border-color 0.2s; background: #fff; }
+        .form-control:focus { border-color: var(--accent); }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="sidebar">
+        <div class="logo-container">
+            <img src="images/finalogo.png" alt="MotoMaster" />
+            <div>
+                <span class="logo-text">MotoMaster</span>
+                <span class="logo-sub">Admin Panel</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-section-label">Main</li>
+            <li class="nav-item" onclick="window.location.href='admindash.html'"><i class="fa-solid fa-house"></i> Dashboard</li>
+            <li class="nav-item" onclick="window.location.href='admintech.html'"><i class="fa-solid fa-chalkboard-user"></i> Teachers</li>
+            <li class="nav-item" onclick="window.location.href='adminstud.html'"><i class="fa-solid fa-users"></i> Students</li>
+            <li class="nav-item" onclick="window.location.href='adminmod.html'"><i class="fa-solid fa-book-open"></i> Modules</li>
+            <li class="nav-item" onclick="window.location.href='adminassess.html'"><i class="fa-solid fa-clipboard-check"></i> Assessments</li>
+            <li class="nav-item" onclick="window.location.href='adminpractice.html'"><i class="fa-solid fa-gamepad"></i> Practice Sessions</li>
+            <li class="nav-section-label">Insights</li>
+            <li class="nav-item" onclick="window.location.href='adminanalytics.html'"><i class="fa-solid fa-chart-simple"></i> Analytics</li>
+            <li class="nav-item active"><i class="fa-solid fa-file-invoice"></i> Reports</li>
+            <li class="nav-section-label">System</li>
+            <li class="nav-item" onclick="window.location.href='adminsettings.html'"><i class="fa-solid fa-gear"></i> Settings</li>
+            <li class="nav-item" onclick="window.location.href='adminactivitylogs.html'"><i class="fa-solid fa-list-check"></i> Activity Logs</li>
+            <li class="nav-item" onclick="window.location.href='adminsystembackup.html'"><i class="fa-solid fa-server"></i> System Backup</li>
+            <li class="nav-item" onclick="window.location.href='adminnotif.html'"><i class="fa-regular fa-bell"></i> Notifications</li>
+        </ul>
+        <div class="sidebar-bottom">
+            <a class="nav-item" href="index.html"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+        </div>
+    </aside>
+
+    <!-- ── MAIN ── -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <h1>Reports</h1>
+                <p>Generate, schedule, and download platform reports.</p>
+            </div>
+            <div class="topbar-right">
+                <button class="btn-outline" onclick="openGenerateModal()"><i class="fa-solid fa-sliders"></i> Custom Report</button>
+                <button class="btn-primary"><i class="fa-solid fa-arrow-up-from-bracket"></i> Export All</button>
+                <div class="notif-btn">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="notif-badge">8</span>
+                </div>
+                <div class="profile-pill">
+                    <div class="profile-avatar"><i class="fa-solid fa-user"></i></div>
+                    <div>
+                        <div class="profile-name">Administrator</div>
+                        <div class="profile-role">Super Admin</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-container">
+
+            <!-- ── KPI ROW ── -->
+            <div class="kpi-row">
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon"><i class="fa-solid fa-file-lines"></i></div>
+                        <div class="kpi-title">Total Reports</div>
+                    </div>
+                    <div class="kpi-value">48</div>
+                    <div class="kpi-foot"><span>Generated This Month</span><span style="color:var(--accent)">12</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon" style="background:#f0fdf4;color:var(--green)"><i class="fa-solid fa-circle-down"></i></div>
+                        <div class="kpi-title">Downloads</div>
+                    </div>
+                    <div class="kpi-value">214</div>
+                    <div class="kpi-foot"><span>PDF</span><span>142</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon" style="background:#fff7ed;color:var(--orange)"><i class="fa-solid fa-calendar-check"></i></div>
+                        <div class="kpi-title">Scheduled Reports</div>
+                    </div>
+                    <div class="kpi-value">6</div>
+                    <div class="kpi-foot"><span>Next Run</span><span style="color:var(--orange)">Jun 1</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon" style="background:#fdf4ff;color:var(--purple)"><i class="fa-solid fa-share-nodes"></i></div>
+                        <div class="kpi-title">Shared Reports</div>
+                    </div>
+                    <div class="kpi-value">19</div>
+                    <div class="kpi-foot"><span>Active Links</span><span>7</span></div>
+                </div>
+            </div>
+
+            <!-- ── REPORT TYPE CARDS ── -->
+            <div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                    <div>
+                        <div style="font-size:0.88rem;font-weight:800;color:var(--text-primary)">Available Report Types</div>
+                        <div style="font-size:0.72rem;font-weight:600;color:var(--text-secondary);margin-top:2px">Click any card to generate or schedule</div>
+                    </div>
+                </div>
+                <div class="report-cards-grid">
+
+                    <div class="report-card" onclick="openGenerateModal('Student Progress Report')">
+                        <div class="report-card-header">
+                            <div style="flex:1">
+                                <div class="report-card-title">Student Progress Report</div>
+                                <div class="report-card-desc">Tracks individual and cohort-level module completion, lesson progress, and time-on-task across all enrolled students.</div>
+                            </div>
+                            <div class="report-card-icon" style="background:#eff6ff;color:#2563eb"><i class="fa-solid fa-user-graduate"></i></div>
+                        </div>
+                        <div class="report-card-meta">
+                            <span>Last generated: May 25, 2025</span>
+                            <div class="report-card-meta-right">
+                                <span class="badge badge-blue">Students</span>
+                                <span class="badge badge-green">PDF / CSV</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="report-card" onclick="openGenerateModal('Module Performance Report')">
+                        <div class="report-card-header">
+                            <div style="flex:1">
+                                <div class="report-card-title">Module Performance Report</div>
+                                <div class="report-card-desc">Summarizes enrollment counts, completion rates, average ratings, and engagement metrics per module.</div>
+                            </div>
+                            <div class="report-card-icon" style="background:#eff6ff;color:#2563eb"><i class="fa-solid fa-book-open"></i></div>
+                        </div>
+                        <div class="report-card-meta">
+                            <span>Last generated: May 22, 2025</span>
+                            <div class="report-card-meta-right">
+                                <span class="badge badge-blue">Modules</span>
+                                <span class="badge badge-green">PDF / CSV</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="report-card" onclick="openGenerateModal('Assessment Results Report')">
+                        <div class="report-card-header">
+                            <div style="flex:1">
+                                <div class="report-card-title">Assessment Results Report</div>
+                                <div class="report-card-desc">Detailed breakdown of quiz and final exam scores, pass/fail rates, and score distributions per assessment.</div>
+                            </div>
+                            <div class="report-card-icon" style="background:#f0fdf4;color:#16a34a"><i class="fa-solid fa-clipboard-check"></i></div>
+                        </div>
+                        <div class="report-card-meta">
+                            <span>Last generated: May 27, 2025</span>
+                            <div class="report-card-meta-right">
+                                <span class="badge badge-green">Assessments</span>
+                                <span class="badge badge-green">PDF / CSV</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="report-card" onclick="openGenerateModal('Teacher Activity Report')">
+                        <div class="report-card-header">
+                            <div style="flex:1">
+                                <div class="report-card-title">Teacher Activity Report</div>
+                                <div class="report-card-desc">Logs instructor-level activity: modules published, lessons updated, assessments created, and student interactions.</div>
+                            </div>
+                            <div class="report-card-icon" style="background:#fff7ed;color:#d97706"><i class="fa-solid fa-chalkboard-user"></i></div>
+                        </div>
+                        <div class="report-card-meta">
+                            <span>Last generated: May 20, 2025</span>
+                            <div class="report-card-meta-right">
+                                <span class="badge badge-orange">Teachers</span>
+                                <span class="badge badge-green">PDF / CSV</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="report-card" onclick="openGenerateModal('Engagement & Retention Report')">
+                        <div class="report-card-header">
+                            <div style="flex:1">
+                                <div class="report-card-title">Engagement &amp; Retention Report</div>
+                                <div class="report-card-desc">Measures daily active users, session frequency, drop-off points, and month-over-month retention rates.</div>
+                            </div>
+                            <div class="report-card-icon" style="background:#fdf4ff;color:#9333ea"><i class="fa-solid fa-chart-line"></i></div>
+                        </div>
+                        <div class="report-card-meta">
+                            <span>Last generated: May 18, 2025</span>
+                            <div class="report-card-meta-right">
+                                <span class="badge badge-purple">Engagement</span>
+                                <span class="badge badge-green">PDF</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="report-card" onclick="openGenerateModal('Practice Session Report')">
+                        <div class="report-card-header">
+                            <div style="flex:1">
+                                <div class="report-card-title">Practice Session Report</div>
+                                <div class="report-card-desc">Covers practice quiz attempts, average scores, most-missed questions, and improvement trends over time.</div>
+                            </div>
+                            <div class="report-card-icon" style="background:#fef2f2;color:#dc2626"><i class="fa-solid fa-gamepad"></i></div>
+                        </div>
+                        <div class="report-card-meta">
+                            <span>Last generated: May 15, 2025</span>
+                            <div class="report-card-meta-right">
+                                <span class="badge badge-gray">Practice</span>
+                                <span class="badge badge-green">PDF / CSV</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ── CHART + SUMMARY ── -->
+            <div class="two-col">
+
+                <div class="panel">
+                    <div class="panel-top">
+                        <div>
+                            <div class="panel-title">Reports Generated Over Time</div>
+                            <div class="panel-subtitle">Monthly volume by report type — last 6 months</div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="chart-wrap" style="height:200px">
+                            <canvas id="reportsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-top">
+                        <div>
+                            <div class="panel-title">Report Summary</div>
+                            <div class="panel-subtitle">Totals across all report types</div>
+                        </div>
+                    </div>
+                    <div class="panel-body" style="display:flex;flex-direction:column;gap:0">
+                        <div class="summary-item">
+                            <div class="s-icon" style="background:#eff6ff;color:#2563eb"><i class="fa-solid fa-user-graduate"></i></div>
+                            <div style="flex:1;min-width:0"><div class="s-name">Student Progress</div><div class="s-sub">1,032 students tracked</div></div>
+                            <div style="text-align:right"><div class="s-val">14</div><div class="s-val-sub">reports</div></div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="s-icon" style="background:#eff6ff;color:#2563eb"><i class="fa-solid fa-book-open"></i></div>
+                            <div style="flex:1;min-width:0"><div class="s-name">Module Performance</div><div class="s-sub">6 modules, 6 categories</div></div>
+                            <div style="text-align:right"><div class="s-val">10</div><div class="s-val-sub">reports</div></div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="s-icon" style="background:#f0fdf4;color:#16a34a"><i class="fa-solid fa-clipboard-check"></i></div>
+                            <div style="flex:1;min-width:0"><div class="s-name">Assessment Results</div><div class="s-sub">18 assessments, 2,841 submissions</div></div>
+                            <div style="text-align:right"><div class="s-val">12</div><div class="s-val-sub">reports</div></div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="s-icon" style="background:#fff7ed;color:#d97706"><i class="fa-solid fa-chalkboard-user"></i></div>
+                            <div style="flex:1;min-width:0"><div class="s-name">Teacher Activity</div><div class="s-sub">8 teachers monitored</div></div>
+                            <div style="text-align:right"><div class="s-val">6</div><div class="s-val-sub">reports</div></div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="s-icon" style="background:#fdf4ff;color:#9333ea"><i class="fa-solid fa-chart-line"></i></div>
+                            <div style="flex:1;min-width:0"><div class="s-name">Engagement &amp; Retention</div><div class="s-sub">876 active learners</div></div>
+                            <div style="text-align:right"><div class="s-val">6</div><div class="s-val-sub">reports</div></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ── RECENT LOG + SCHEDULED + COVERAGE ── -->
+            <div class="two-col-equal">
+
+                <!-- Recent Reports Table -->
+                <div class="panel">
+                    <div class="panel-top">
+                        <div>
+                            <div class="panel-title">Recent Reports</div>
+                            <div class="panel-subtitle">Latest generated report files</div>
+                        </div>
+                        <button class="btn-outline" style="font-size:0.72rem;padding:5px 12px">View All</button>
+                    </div>
+                    <div style="overflow-x:auto">
+                        <table class="rpt-table">
+                            <thead>
+                                <tr>
+                                    <th>Report</th>
+                                    <th>By</th>
+                                    <th>Date</th>
+                                    <th>Fmt</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="rpt-icon-cell">
+                                            <div class="rpt-dot" style="background:#eff6ff;color:#2563eb"><i class="fa-solid fa-clipboard-check"></i></div>
+                                            <div><div style="font-weight:800;font-size:0.78rem">Assessment Results</div><div style="font-size:0.62rem;color:var(--text-secondary);font-weight:600">All modules – May 2025</div></div>
+                                        </div>
+                                    </td>
+                                    <td class="muted">Admin</td>
+                                    <td class="muted">May 27</td>
+                                    <td><span class="badge badge-orange">PDF</span></td>
+                                    <td><div class="actions-cell"><button class="action-btn view"><i class="fa-solid fa-eye"></i></button><button class="action-btn dl"><i class="fa-solid fa-download"></i></button></div></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="rpt-icon-cell">
+                                            <div class="rpt-dot" style="background:#eff6ff;color:#2563eb"><i class="fa-solid fa-user-graduate"></i></div>
+                                            <div><div style="font-weight:800;font-size:0.78rem">Student Progress</div><div style="font-size:0.62rem;color:var(--text-secondary);font-weight:600">Cohort A – May 2025</div></div>
+                                        </div>
+                                    </td>
+                                    <td class="muted">Admin</td>
+                                    <td class="muted">May 25</td>
+                                    <td><span class="badge badge-green">CSV</span></td>
+                                    <td><div class="actions-cell"><button class="action-btn view"><i class="fa-solid fa-eye"></i></button><button class="action-btn dl"><i class="fa-solid fa-download"></i></button></div></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="rpt-icon-cell">
+                                            <div class="rpt-dot" style="background:#eff6ff;color:#2563eb"><i class="fa-solid fa-book-open"></i></div>
+                                            <div><div style="font-weight:800;font-size:0.78rem">Module Performance</div><div style="font-size:0.62rem;color:var(--text-secondary);font-weight:600">All 6 modules – May 2025</div></div>
+                                        </div>
+                                    </td>
+                                    <td class="muted">J. Dela Cruz</td>
+                                    <td class="muted">May 22</td>
+                                    <td><span class="badge badge-orange">PDF</span></td>
+                                    <td><div class="actions-cell"><button class="action-btn view"><i class="fa-solid fa-eye"></i></button><button class="action-btn dl"><i class="fa-solid fa-download"></i></button></div></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="rpt-icon-cell">
+                                            <div class="rpt-dot" style="background:#fff7ed;color:#d97706"><i class="fa-solid fa-chalkboard-user"></i></div>
+                                            <div><div style="font-weight:800;font-size:0.78rem">Teacher Activity</div><div style="font-size:0.62rem;color:var(--text-secondary);font-weight:600">Q2 2025 – All teachers</div></div>
+                                        </div>
+                                    </td>
+                                    <td class="muted">Admin</td>
+                                    <td class="muted">May 20</td>
+                                    <td><span class="badge badge-green">CSV</span></td>
+                                    <td><div class="actions-cell"><button class="action-btn view"><i class="fa-solid fa-eye"></i></button><button class="action-btn dl"><i class="fa-solid fa-download"></i></button></div></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="rpt-icon-cell">
+                                            <div class="rpt-dot" style="background:#fdf4ff;color:#9333ea"><i class="fa-solid fa-chart-line"></i></div>
+                                            <div><div style="font-weight:800;font-size:0.78rem">Engagement &amp; Retention</div><div style="font-size:0.62rem;color:var(--text-secondary);font-weight:600">April – May 2025</div></div>
+                                        </div>
+                                    </td>
+                                    <td class="muted">Admin</td>
+                                    <td class="muted">May 18</td>
+                                    <td><span class="badge badge-orange">PDF</span></td>
+                                    <td><div class="actions-cell"><button class="action-btn view"><i class="fa-solid fa-eye"></i></button><button class="action-btn dl"><i class="fa-solid fa-download"></i></button></div></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Right col: Scheduled + Module Coverage -->
+                <div style="display:flex;flex-direction:column;gap:18px">
+
+                    <div class="panel">
+                        <div class="panel-top">
+                            <div>
+                                <div class="panel-title">Scheduled Reports</div>
+                                <div class="panel-subtitle">Automated delivery calendar</div>
+                            </div>
+                            <button class="btn-outline" style="font-size:0.72rem;padding:5px 12px"><i class="fa-solid fa-plus" style="font-size:10px"></i> Add</button>
+                        </div>
+                        <div class="panel-body" style="display:flex;flex-direction:column;gap:0">
+                            <div class="sched-item">
+                                <div class="sched-day">JUN<br>1</div>
+                                <div style="flex:1;min-width:0"><div class="sched-title">Monthly Student Progress</div><div class="sched-meta">PDF &bull; Email to admin</div></div>
+                                <div class="sched-badge"><span class="badge badge-blue">Monthly</span></div>
+                            </div>
+                            <div class="sched-item">
+                                <div class="sched-day">JUN<br>1</div>
+                                <div style="flex:1;min-width:0"><div class="sched-title">Assessment Results Summary</div><div class="sched-meta">CSV &bull; Email to admin</div></div>
+                                <div class="sched-badge"><span class="badge badge-blue">Monthly</span></div>
+                            </div>
+                            <div class="sched-item">
+                                <div class="sched-day">MAY<br>31</div>
+                                <div style="flex:1;min-width:0"><div class="sched-title">Weekly Engagement Snapshot</div><div class="sched-meta">PDF &bull; Dashboard</div></div>
+                                <div class="sched-badge"><span class="badge badge-orange">Weekly</span></div>
+                            </div>
+                            <div class="sched-item">
+                                <div class="sched-day">JUN<br>7</div>
+                                <div style="flex:1;min-width:0"><div class="sched-title">Module Performance Digest</div><div class="sched-meta">PDF &bull; Email to teachers</div></div>
+                                <div class="sched-badge"><span class="badge badge-orange">Weekly</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-top">
+                            <div>
+                                <div class="panel-title">Module Report Coverage</div>
+                                <div class="panel-subtitle">Data coverage per module across all reports</div>
+                            </div>
+                        </div>
+                        <div class="panel-body" style="display:flex;flex-direction:column;gap:10px">
+                            <div>
+                                <div style="display:flex;justify-content:space-between;font-size:0.7rem;font-weight:700;color:var(--text-secondary);margin-bottom:3px"><span>Engine Oil Change</span><span style="color:#2563eb;font-weight:800">95%</span></div>
+                                <div class="prog-bar"><div class="prog-bar-fill" style="width:95%;background:#2563eb"></div></div>
+                            </div>
+                            <div>
+                                <div style="display:flex;justify-content:space-between;font-size:0.7rem;font-weight:700;color:var(--text-secondary);margin-bottom:3px"><span>Brake Pad Replacement</span><span style="color:#7c3aed;font-weight:800">88%</span></div>
+                                <div class="prog-bar"><div class="prog-bar-fill" style="width:88%;background:#7c3aed"></div></div>
+                            </div>
+                            <div>
+                                <div style="display:flex;justify-content:space-between;font-size:0.7rem;font-weight:700;color:var(--text-secondary);margin-bottom:3px"><span>Battery Maintenance</span><span style="color:#6b7280;font-weight:800">80%</span></div>
+                                <div class="prog-bar"><div class="prog-bar-fill" style="width:80%;background:#6b7280"></div></div>
+                            </div>
+                            <div>
+                                <div style="display:flex;justify-content:space-between;font-size:0.7rem;font-weight:700;color:var(--text-secondary);margin-bottom:3px"><span>Fuel Filter Replacement</span><span style="color:#d97706;font-weight:800">75%</span></div>
+                                <div class="prog-bar"><div class="prog-bar-fill" style="width:75%;background:#d97706"></div></div>
+                            </div>
+                            <div>
+                                <div style="display:flex;justify-content:space-between;font-size:0.7rem;font-weight:700;color:var(--text-secondary);margin-bottom:3px"><span>Air Filter Replacement</span><span style="color:#16a34a;font-weight:800">70%</span></div>
+                                <div class="prog-bar"><div class="prog-bar-fill" style="width:70%;background:#16a34a"></div></div>
+                            </div>
+                            <div>
+                                <div style="display:flex;justify-content:space-between;font-size:0.7rem;font-weight:700;color:var(--text-secondary);margin-bottom:3px"><span>Spark Plug Replacement</span><span style="color:#e11d48;font-weight:800">58%</span></div>
+                                <div class="prog-bar"><div class="prog-bar-fill" style="width:58%;background:#e11d48"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <footer>
+            <span>MotoMaster</span> Admin Panel &mdash; Reports &copy; 2025
+            <span>v2.1.0</span>
+        </footer>
+
+    </main>
+
+    <!-- ── GENERATE REPORT MODAL ── -->
+    <div class="modal-overlay" id="generateModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-file-lines" style="color:var(--accent);margin-right:8px;font-size:0.9rem"></i> Generate Report</h3>
+                <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Report Type</label>
+                    <select class="form-control" id="gType">
+                        <option>Student Progress Report</option>
+                        <option>Module Performance Report</option>
+                        <option>Assessment Results Report</option>
+                        <option>Teacher Activity Report</option>
+                        <option>Engagement &amp; Retention Report</option>
+                        <option>Practice Session Report</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Date From</label>
+                        <input type="date" class="form-control" id="gFrom">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Date To</label>
+                        <input type="date" class="form-control" id="gTo">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Module Filter</label>
+                        <select class="form-control" id="gModule">
+                            <option>All Modules</option>
+                            <option>Engine Oil Change &amp; Maintenance</option>
+                            <option>Brake Pad Replacement</option>
+                            <option>Battery Maintenance</option>
+                            <option>Fuel Filter Replacement</option>
+                            <option>Air Filter Replacement</option>
+                            <option>Spark Plug Replacement</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Output Format</label>
+                        <select class="form-control" id="gFormat">
+                            <option>PDF</option>
+                            <option>CSV</option>
+                            <option>Excel</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Schedule (Optional)</label>
+                    <select class="form-control" id="gSchedule">
+                        <option value="">One-time only</option>
+                        <option>Daily</option>
+                        <option>Weekly</option>
+                        <option>Monthly</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer-row">
+                <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="btn-save" onclick="confirmGenerate()"><i class="fa-solid fa-bolt" style="font-size:11px"></i> Generate Now</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        Chart.defaults.font.family = "'Nunito', sans-serif";
+        Chart.defaults.font.size = 11;
+        Chart.defaults.color = '#6b7280';
+
+        new Chart(document.getElementById('reportsChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                datasets: [
+                    { label: 'Student Progress', data: [2,3,2,3,2,2], backgroundColor: '#2563eb', borderRadius: 4, borderSkipped: false, stack: 'rpt' },
+                    { label: 'Module Perf.',      data: [1,2,1,2,2,2], backgroundColor: '#7c3aed', borderRadius: 4, borderSkipped: false, stack: 'rpt' },
+                    { label: 'Assessment',         data: [2,2,3,2,2,3], backgroundColor: '#16a34a', borderRadius: 4, borderSkipped: false, stack: 'rpt' },
+                    { label: 'Teacher',            data: [1,1,1,1,1,1], backgroundColor: '#d97706', borderRadius: 4, borderSkipped: false, stack: 'rpt' },
+                    { label: 'Engagement',         data: [1,1,2,1,2,1], backgroundColor: '#9333ea', borderRadius: 4, borderSkipped: false, stack: 'rpt' },
+                    { label: 'Practice',           data: [1,1,1,1,1,3], backgroundColor: '#e11d48', borderRadius: 4, borderSkipped: false, stack: 'rpt' }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, padding: 10, font: { size: 10 } } } },
+                scales: {
+                    x: { grid: { display: false }, stacked: true },
+                    y: { grid: { color: '#f3f4f6' }, stacked: true, ticks: { stepSize: 2 } }
+                }
+            }
+        });
+
+        function openGenerateModal(type) {
+            if (type) {
+                const sel = document.getElementById('gType');
+                for (let o of sel.options) { if (o.text.includes(type.replace(' &amp; ', ' & '))) { sel.value = o.value; break; } }
+            }
+            const today = new Date();
+            document.getElementById('gFrom').value = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
+            document.getElementById('gTo').value = today.toISOString().split('T')[0];
+            document.getElementById('generateModal').classList.add('open');
+        }
+
+        function closeModal() {
+            document.getElementById('generateModal').classList.remove('open');
+        }
+
+        document.getElementById('generateModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        function confirmGenerate() {
+            const type = document.getElementById('gType').value;
+            const fmt = document.getElementById('gFormat').value;
+            closeModal();
+            alert('"' + type + '" (' + fmt + ') has been queued for generation.');
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,1793 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotoMaster Admin - Teachers Management</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-color: #f3f4f6;
+            --panel-bg: #ffffff;
+            --border-color: #e5e7eb;
+            --text-primary: #1a1a2e;
+            --text-secondary: #6b7280;
+            --accent: #2563eb;
+            --accent-dark: #1d4ed8;
+            --accent-light: #eff6ff;
+            --green: #16a34a;
+            --green-bg: #f0fdf4;
+            --red: #dc2626;
+            --red-bg: #fef2f2;
+            --orange: #d97706;
+            --orange-bg: #fef3c7;
+            --sidebar-w: 240px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+            font-family: 'Nunito', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        body {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ── SCROLLBAR ── */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 10px;
+        }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: #fff;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .logo-container {
+            padding: 18px 20px 14px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-container img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .logo-sub {
+            font-size: 0.62rem;
+            font-weight: 800;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+        }
+
+        .nav-section-label {
+            font-size: 0.6rem;
+            font-weight: 800;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 14px 18px 4px;
+        }
+
+        .nav-menu {
+            list-style: none;
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 8px 0;
+        }
+
+        .nav-menu::-webkit-scrollbar {
+            width: 0;
+        }
+
+        .nav-item {
+            padding: 9px 16px;
+            margin: 2px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            font-weight: 700;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .nav-item i {
+            width: 16px;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+
+        .nav-item:hover {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .nav-item.active {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .nav-item.active i {
+            color: var(--accent);
+        }
+
+        .nav-divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 8px 16px;
+        }
+
+        .sidebar-bottom {
+            padding: 12px 0 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* ── MAIN CONTENT ── */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background: var(--bg-color);
+        }
+
+        /* ── TOPBAR ── */
+        .topbar {
+            background: #fff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 28px;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+        }
+
+        .topbar-left h1 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .topbar-left p {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-color);
+            border: 1.5px solid var(--border-color);
+            border-radius: 8px;
+            padding: 7px 12px;
+            transition: border-color 0.2s;
+        }
+
+        .search-bar:focus-within {
+            border-color: var(--accent);
+            background: #fff;
+        }
+
+        .search-bar i {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .search-bar input {
+            background: none;
+            border: none;
+            outline: none;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.8rem;
+            color: var(--text-primary);
+            width: 180px;
+        }
+
+        .search-bar input::placeholder {
+            color: #9ca3af;
+        }
+
+        .notif-btn {
+            position: relative;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: var(--bg-color);
+            border: 1.5px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: border-color 0.2s, color 0.2s;
+        }
+
+        .notif-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .notif-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: var(--red);
+            color: #fff;
+            font-size: 0.58rem;
+            font-weight: 800;
+            border-radius: 50%;
+            width: 14px;
+            height: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-pill {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 5px 12px 5px 5px;
+            border-radius: 30px;
+            border: 1.5px solid var(--border-color);
+            background: #fff;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .profile-pill:hover {
+            border-color: var(--accent);
+        }
+
+        .profile-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--accent-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 12px;
+        }
+
+        .profile-name {
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .profile-role {
+            font-size: 0.62rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        /* ── DASHBOARD BODY ── */
+        .dashboard-container {
+            padding: 22px 28px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        /* ── BUTTONS ── */
+        .btn-header {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            transition: all 0.2s;
+            text-decoration: none;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+        }
+
+        .btn-header:hover {
+            background: var(--bg-color);
+            border-color: #cbd5e1;
+            color: var(--accent);
+        }
+
+        .btn-header-primary {
+            background: var(--accent);
+            border: 1px solid var(--accent);
+            color: #fff;
+        }
+
+        .btn-header-primary:hover {
+            background: var(--accent-dark);
+            border-color: var(--accent-dark);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+
+        /* ── KPI ROW ── */
+        .kpi-row-teachers {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+        }
+
+        @media (max-width: 1200px) {
+            .kpi-row-teachers {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .kpi-row-teachers {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .kpi-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+            transition: box-shadow 0.2s, border-color 0.2s;
+        }
+
+        .kpi-card:hover {
+            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.10);
+            border-color: #bfdbfe;
+        }
+
+        .kpi-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .kpi-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .kpi-title {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .kpi-value {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.1;
+        }
+
+        /* ── PANELS ── */
+        .panel {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+        }
+
+        .panel-select {
+            background: var(--bg-color);
+            color: var(--text-primary);
+            border: 1.5px solid var(--border-color);
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.76rem;
+            font-weight: 700;
+            outline: none;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .panel-select:focus {
+            border-color: var(--accent);
+            background: #fff;
+        }
+
+        /* ── TEACHER TABLE & BADGES ── */
+        .teacher-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .teacher-table th {
+            color: var(--text-secondary);
+            font-size: 10.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: #fafafa;
+            border-bottom: 1px solid var(--border-color);
+            padding: 13px 14px;
+        }
+
+        .teacher-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 12px;
+            vertical-align: middle;
+            color: var(--text-primary);
+        }
+
+        .teacher-table tbody tr {
+            transition: background 0.15s;
+        }
+
+        .teacher-table tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .chip-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 10px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .chip-class {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+        }
+
+        .chip-spec {
+            background: #f8fafc;
+            color: #334155;
+            border: 1px solid #e2e8f0;
+            font-weight: 700;
+        }
+
+        .action-icon-btn {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            transition: all 0.2s;
+        }
+
+        .action-icon-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-light);
+        }
+
+        .action-icon-btn.btn-delete:hover {
+            border-color: var(--red);
+            color: var(--red);
+            background: var(--red-bg);
+        }
+
+        .table-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 20px;
+            border-top: 1px solid var(--border-color);
+            font-size: 12px;
+            color: var(--text-secondary);
+            background: #fff;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .pagination-btns {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .page-btn {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .page-btn.active {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        /* ── MODALS ── */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.45);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+            animation: modalFadeIn 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-card {
+            background: #ffffff;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 580px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: modalSlideUp 0.25s ease;
+        }
+
+        @keyframes modalSlideUp {
+            from { transform: translateY(18px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            padding: 16px 22px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fafbfc;
+        }
+
+        .modal-header h3 {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .modal-close-btn {
+            background: none;
+            border: none;
+            font-size: 15px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .modal-close-btn:hover {
+            background: #fee2e2;
+            color: var(--red);
+        }
+
+        .modal-body {
+            padding: 22px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .modal-footer {
+            padding: 14px 22px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            background: #fafbfc;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .form-input, .form-select {
+            background: var(--bg-color);
+            border: 1.5px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 9px 12px;
+            border-radius: 6px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus, .form-select:focus {
+            border-color: var(--accent);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        /* ── TOAST NOTIFICATION ── */
+        .toast-notification {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #1e293b;
+            color: #fff;
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 20px -3px rgba(0, 0, 0, 0.25);
+            z-index: 10000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+
+        .toast-notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-notification i {
+            font-size: 14px;
+            color: #38bdf8;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 28px;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            background: #fff;
+            margin-top: auto;
+            font-weight: 700;
+        }
+
+        footer span {
+            color: var(--accent);
+            font-weight: 800;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="sidebar">
+        <div class="logo-container">
+            <img src="images/finalogo.png" alt="MotoMaster" />
+            <div>
+                <span class="logo-text">MotoMaster</span>
+                <span class="logo-sub">Admin Panel</span>
+            </div>
+        </div>
+
+        <ul class="nav-menu">
+            <li class="nav-section-label">Main</li>
+            <li class="nav-item" onclick="window.location.href='admindash.html'">
+                <i class="fa-solid fa-house"></i>
+                Dashboard
+            </li>
+            <li class="nav-item active">
+                <i class="fa-solid fa-chalkboard-user"></i>
+                Teachers
+            </li>
+            <li class="nav-item" onclick="window.location.href='adminstud.html'">
+                <i class="fa-solid fa-users"></i> Students
+            </li>
+            <li class="nav-item" onclick="window.location.href='adminmod.html'">
+                <i class="fa-solid fa-book-open"></i> Modules
+            </li>
+            <li class="nav-item" onclick="window.location.href='adminassess.html'">
+                <i class="fa-solid fa-clipboard-check"></i> Assessments
+            </li>
+            <li class="nav-item" onclick="window.location.href='adminpractice.html'">
+                <i class="fa-solid fa-gamepad"></i> Practice Sessions
+            </li>
+
+            <li class="nav-section-label">Insights</li>
+            <li class="nav-item" onclick="window.location.href='adminanalytics.html'">
+                <i class="fa-solid fa-chart-simple"></i> Analytics
+            </li>
+            <li class="nav-item" onclick="window.location.href='adminreports.html'">
+                <i class="fa-solid fa-file-invoice"></i> Reports
+            </li>
+
+            <li class="nav-section-label">System</li>
+            <li class="nav-item" onclick="window.location.href='adminsettings.html'">
+                <i class="fa-solid fa-gear"></i> Settings
+            </li>
+            <li class="nav-item" onclick="window.location.href='messages.html'">
+                <i class="fa-solid fa-envelope"></i> Messages
+            </li>
+            <li class="nav-item" onclick="window.location.href='adminactivitylogs.html'">
+                <i class="fa-solid fa-list-check"></i> Activity Logs
+            </li>
+            <li class="nav-item" onclick="window.location.href='adminsystembackup.html'">
+                <i class="fa-solid fa-server"></i> System Backup
+            </li>
+            <li class="nav-item" onclick="window.location.href='adminnotif.html'">
+                <i class="fa-regular fa-bell"></i> Notifications
+            </li>
+        </ul>
+
+        <div class="sidebar-bottom">
+            <a class="nav-item" href="index.html">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+            </a>
+        </div>
+    </aside>
+
+    <!-- ── MAIN ── -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <h1>Teachers Management</h1>
+                <p>Manage faculty credentials, instructional specializations, and assigned student cohorts.</p>
+            </div>
+            <div class="topbar-right">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="topbarSearchInput" placeholder="Search teacher...">
+                </div>
+                <div class="notif-btn" onclick="window.location.href='adminnotif.html'" title="Notifications">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="notif-badge">8</span>
+                </div>
+                <div class="profile-pill">
+                    <div class="profile-avatar"><i class="fa-solid fa-user"></i></div>
+                    <div>
+                        <div class="profile-name">Administrator</div>
+                        <div class="profile-role">Super Admin</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DASHBOARD CONTAINER -->
+        <div class="dashboard-container">
+            <!-- Page Actions -->
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 2px;">
+                <button class="btn-header" onclick="exportTeachersCSV()"><i class="fa-solid fa-file-arrow-down"></i> Export</button>
+                <button class="btn-header" onclick="triggerImport()"><i class="fa-solid fa-arrow-up-from-bracket"></i> Import Faculty</button>
+                <button class="btn-header btn-header-primary" onclick="openAddTeacherModal()"><i class="fa-solid fa-user-plus"></i> Add Teacher</button>
+            </div>
+
+            <!-- Teachers KPIs Row -->
+            <div class="kpi-row-teachers">
+                <!-- Card 1: Total Faculty -->
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon" style="color: var(--accent); background: var(--accent-light);"><i class="fa-solid fa-chalkboard-user"></i></div>
+                        <div>
+                            <div class="kpi-title">Total Faculty</div>
+                            <div class="kpi-value" id="kpiTotalTeachersVal">0</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-color);">
+                        <span style="color: var(--text-secondary); font-weight: 600;">Active Teaching</span>
+                        <span style="color: var(--green); font-weight: 800;" id="kpiActiveVal">0</span>
+                    </div>
+                </div>
+
+                <!-- Card 2: Assigned Sections -->
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon" style="color: #8b5cf6; background: #f5f3ff;"><i class="fa-solid fa-layer-group"></i></div>
+                        <div>
+                            <div class="kpi-title">Assigned Sections</div>
+                            <div class="kpi-value" id="kpiTotalClassesVal">0</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-color);">
+                        <span style="color: var(--text-secondary); font-weight: 600;">Average / Instructor</span>
+                        <span style="color: var(--text-primary); font-weight: 800;" id="kpiAvgClassesVal">0</span>
+                    </div>
+                </div>
+
+                <!-- Card 3: Total Student Load -->
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon" style="color: #0284c7; background: #f0f9ff;"><i class="fa-solid fa-user-graduate"></i></div>
+                        <div>
+                            <div class="kpi-title">Students Mentored</div>
+                            <div class="kpi-value" id="kpiTotalStudentsMentoredVal">0</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-color);">
+                        <span style="color: var(--text-secondary); font-weight: 600;">Department Scope</span>
+                        <span style="color: var(--accent); font-weight: 800;">Automotive Servicing</span>
+                    </div>
+                </div>
+
+                <!-- Card 4: Passing Rate Benchmark -->
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon" style="color: var(--green); background: var(--green-bg);"><i class="fa-solid fa-chart-line"></i></div>
+                        <div>
+                            <div class="kpi-title">Faculty Pass Rate</div>
+                            <div class="kpi-value" id="kpiAvgPassRateVal">0%</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-color);">
+                        <span style="color: var(--text-secondary); font-weight: 600;">Benchmark Rating</span>
+                        <span style="color: var(--green); font-weight: 800;" id="kpiBenchmarkVal">Good (75%+)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Teachers Table Area -->
+            <div class="panel" style="margin-top: 4px; padding: 0; overflow: hidden;">
+                <!-- Filters Toolbar -->
+                <div style="display: flex; gap: 12px; padding: 14px 20px; border-bottom: 1px solid var(--border-color); align-items: center; flex-wrap: wrap; background: #fff;">
+                    <div class="search-bar" style="flex-grow: 1; background: var(--bg-color); min-width: 230px;">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="teacherSearchInput" placeholder="Search teacher by name, email, or department..." style="width: 100%;">
+                    </div>
+                    
+                    <select class="panel-select" id="specFilter" style="min-width: 170px;">
+                        <option value="all">All Specializations</option>
+                        <option value="Automotive Servicing NC II">Automotive Servicing NC II</option>
+                        <option value="Engine Mechanical & Overhaul">Engine Mechanical & Overhaul</option>
+                        <option value="Automotive Electrical & Ignition">Electrical & Ignition</option>
+                        <option value="Brake Systems & Chassis Maintenance">Brake & Chassis</option>
+                        <option value="Transmission & Drivetrain Servicing">Transmission & Drivetrain</option>
+                        <option value="Diagnostic Tools & Scanning">Diagnostic Tools</option>
+                    </select>
+
+                    <select class="panel-select" id="statusFilter" style="min-width: 130px;">
+                        <option value="all">All Status</option>
+                        <option value="Active">Active</option>
+                        <option value="On Leave">On Leave</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+
+                    <button class="btn-header" onclick="resetFilters()" style="padding: 7px 12px; font-size: 11px;" title="Reset filters">
+                        <i class="fa-solid fa-arrow-rotate-left"></i> Reset
+                    </button>
+                </div>
+                
+                <!-- Table View -->
+                <div style="overflow-x: auto;">
+                    <table class="teacher-table" style="min-width: 1000px;">
+                        <thead>
+                            <tr>
+                                <th style="padding: 14px 20px;">TEACHER</th>
+                                <th>CONTACT INFO</th>
+                                <th>SPECIALIZATION</th>
+                                <th>ASSIGNED CLASSES</th>
+                                <th style="text-align: center;">STUDENT LOAD</th>
+                                <th style="text-align: center;">AVG. PASS RATE</th>
+                                <th style="text-align: center;">STATUS</th>
+                                <th>LAST ACTIVE</th>
+                                <th style="padding: 14px 20px; text-align: center;">ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="teacherTableBody">
+                            <tr>
+                                <td colspan="9" style="padding: 36px; text-align: center; color: var(--text-secondary);">
+                                    <i class="fa-solid fa-circle-notch fa-spin" style="margin-right: 8px; color: var(--accent);"></i> Loading faculty records...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Table Footer & Pagination -->
+                <div class="table-footer">
+                    <div id="tableRecordCount">Showing 0 instructors</div>
+                    <div class="pagination-btns">
+                        <button class="page-btn" id="prevPageBtn" onclick="changePage(-1)" disabled><i class="fa-solid fa-chevron-left"></i> Prev</button>
+                        <span id="pageIndicator" style="font-weight: 800; font-size: 11px; padding: 0 6px;">Page 1 of 1</span>
+                        <button class="page-btn" id="nextPageBtn" onclick="changePage(1)" disabled>Next <i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── MODAL: ADD TEACHER ── -->
+        <div class="modal-overlay" id="addTeacherModal">
+            <div class="modal-card">
+                <div class="modal-header">
+                    <h3><i class="fa-solid fa-user-plus" style="color: var(--accent);"></i> Add New Teacher</h3>
+                    <button class="modal-close-btn" onclick="closeAddTeacherModal()"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <form id="addTeacherForm" onsubmit="handleAddTeacherSubmit(event)">
+                    <div class="modal-body">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>First Name</label>
+                                <input type="text" id="addFirstName" class="form-input" placeholder="e.g. Roberto" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Last Name</label>
+                                <input type="text" id="addLastName" class="form-input" placeholder="e.g. Santos" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Email Address</label>
+                                <input type="email" id="addEmail" class="form-input" placeholder="teacher@motomaster.edu.ph" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Contact Number</label>
+                                <input type="tel" id="addContact" class="form-input" placeholder="+63 917 123 4567" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Primary Specialization</label>
+                            <select id="addSpecialization" class="form-select" required>
+                                <option value="Automotive Servicing NC II">Automotive Servicing NC II</option>
+                                <option value="Engine Mechanical & Overhaul">Engine Mechanical & Overhaul</option>
+                                <option value="Automotive Electrical & Ignition">Automotive Electrical & Ignition</option>
+                                <option value="Brake Systems & Chassis Maintenance">Brake Systems & Chassis Maintenance</option>
+                                <option value="Transmission & Drivetrain Servicing">Transmission & Drivetrain Servicing</option>
+                                <option value="Diagnostic Tools & Scanning">Diagnostic Tools & Scanning</option>
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Assigned Classes (Comma-separated)</label>
+                                <input type="text" id="addClasses" class="form-input" placeholder="e.g. BSMA 1-A, BSMA 2-B" value="BSMA 1-A">
+                            </div>
+                            <div class="form-group">
+                                <label>Status</label>
+                                <select id="addStatus" class="form-select">
+                                    <option value="Active">Active</option>
+                                    <option value="On Leave">On Leave</option>
+                                    <option value="Inactive">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-header" onclick="closeAddTeacherModal()">Cancel</button>
+                        <button type="submit" class="btn-header btn-header-primary"><i class="fa-solid fa-check"></i> Save Teacher</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ── MODAL: EDIT TEACHER ── -->
+        <div class="modal-overlay" id="editTeacherModal">
+            <div class="modal-card">
+                <div class="modal-header">
+                    <h3><i class="fa-solid fa-user-pen" style="color: var(--accent);"></i> Edit Teacher Details</h3>
+                    <button class="modal-close-btn" onclick="closeEditTeacherModal()"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <form id="editTeacherForm" onsubmit="handleEditTeacherSubmit(event)">
+                    <input type="hidden" id="editTeacherId">
+                    <div class="modal-body">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>First Name</label>
+                                <input type="text" id="editFirstName" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Last Name</label>
+                                <input type="text" id="editLastName" class="form-input" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Email Address</label>
+                                <input type="email" id="editEmail" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Contact Number</label>
+                                <input type="tel" id="editContact" class="form-input" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Primary Specialization</label>
+                            <select id="editSpecialization" class="form-select" required>
+                                <option value="Automotive Servicing NC II">Automotive Servicing NC II</option>
+                                <option value="Engine Mechanical & Overhaul">Engine Mechanical & Overhaul</option>
+                                <option value="Automotive Electrical & Ignition">Automotive Electrical & Ignition</option>
+                                <option value="Brake Systems & Chassis Maintenance">Brake Systems & Chassis Maintenance</option>
+                                <option value="Transmission & Drivetrain Servicing">Transmission & Drivetrain Servicing</option>
+                                <option value="Diagnostic Tools & Scanning">Diagnostic Tools & Scanning</option>
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Assigned Classes (Comma-separated)</label>
+                                <input type="text" id="editClasses" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Status</label>
+                                <select id="editStatus" class="form-select">
+                                    <option value="Active">Active</option>
+                                    <option value="On Leave">On Leave</option>
+                                    <option value="Inactive">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-header" onclick="closeEditTeacherModal()">Cancel</button>
+                        <button type="submit" class="btn-header btn-header-primary"><i class="fa-solid fa-floppy-disk"></i> Update Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ── MODAL: VIEW TEACHER PROFILE ── -->
+        <div class="modal-overlay" id="viewTeacherModal">
+            <div class="modal-card" style="max-width: 520px;">
+                <div class="modal-header">
+                    <h3><i class="fa-solid fa-address-card" style="color: var(--accent);"></i> Teacher Profile</h3>
+                    <button class="modal-close-btn" onclick="closeViewTeacherModal()"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="modal-body" id="viewTeacherBody">
+                    <!-- Dynamic details rendered via JS -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-header" onclick="closeViewTeacherModal()">Close</button>
+                    <button type="button" class="btn-header btn-header-primary" id="viewEditBtn"><i class="fa-solid fa-pencil"></i> Edit Profile</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── TOAST NOTIFICATION ── -->
+        <div class="toast-notification" id="toastNotif">
+            <i class="fa-solid fa-circle-check"></i>
+            <span id="toastMsg">Operation successful</span>
+        </div>
+
+        <!-- Hidden File Input for Import Simulation -->
+        <input type="file" id="importFileInput" accept=".csv, .xlsx" style="display: none;" onchange="handleImportFile(event)">
+
+        <!-- FOOTER -->
+        <footer>
+            <div>&copy; 2024 <span>MotoMaster</span>. All rights reserved.</div>
+            <div>Version 1.0.0</div>
+        </footer>
+
+    </main>
+
+    <!-- ── JAVASCRIPT LOGIC ── -->
+    <script>
+        // State
+        let allTeachers = [];
+        let filteredTeachers = [];
+        let currentPage = 1;
+        const pageSize = 8;
+
+        // API Configuration - connects directly to motomasterdb via PHP backend
+        const API_BASE = (window.location.protocol === 'http:' || window.location.protocol === 'https:')
+            ? 'admin_data_api.php'
+            : 'http://localhost/motomaster/admin_data_api.php';
+
+        // ── LOAD TEACHERS DATA FROM DATABASE ──
+        function loadAdminTeachers() {
+            fetch(`${API_BASE}?action=get_teachers_data`)
+                .then(res => {
+                    if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+                    return res.json();
+                })
+                .then(data => {
+                    if (data && data.success && Array.isArray(data.teachers)) {
+                        allTeachers = data.teachers.map((t, idx) => normalizeTeacherRecord(t, idx));
+                    } else {
+                        allTeachers = [];
+                    }
+                    calculateKPIs();
+                    filterAndRender();
+                })
+                .catch(err => {
+                    console.error('Failed to load registered faculty from motomasterdb:', err);
+                    allTeachers = [];
+                    calculateKPIs();
+                    filterAndRender();
+                });
+        }
+
+        function normalizeTeacherRecord(t, idx) {
+            const tId = parseInt(t.teacher_id) || (idx + 1);
+            return {
+                teacher_id: tId,
+                faculty_code: t.faculty_code || ('MM-T' + String(tId).padStart(3, '0')),
+                first_name: t.first_name || '',
+                last_name: t.last_name || '',
+                email: t.email || '',
+                contact_number: t.contact_number || '—',
+                specialization: t.specialization || 'Automotive Servicing NC II',
+                classes: Array.isArray(t.classes) ? t.classes : (t.classes ? t.classes.split(',').map(s => s.trim()) : ['BSMA 1-A']),
+                students_count: t.students_count !== undefined ? parseInt(t.students_count) : 0,
+                avg_pass_rate: t.avg_pass_rate !== undefined ? parseInt(t.avg_pass_rate) : 0,
+                status: t.status || 'Active',
+                last_active: t.last_active || 'Active now',
+                joined_date: t.joined_date || 'Registered Faculty'
+            };
+        }
+
+        // ── KPI AGGREGATION ──
+        function calculateKPIs() {
+            const totalCount = allTeachers.length;
+            let activeCount = 0;
+            let totalStudents = 0;
+            let totalPassRate = 0;
+            let ratedTeachers = 0;
+            const uniqueClasses = new Set();
+
+            allTeachers.forEach(t => {
+                if (t.status === 'Active') activeCount++;
+                if (t.students_count) totalStudents += parseInt(t.students_count);
+                if (t.avg_pass_rate) {
+                    totalPassRate += parseFloat(t.avg_pass_rate);
+                    ratedTeachers++;
+                }
+                if (Array.isArray(t.classes)) {
+                    t.classes.forEach(c => uniqueClasses.add(c));
+                }
+            });
+
+            const avgPassRate = ratedTeachers > 0 ? Math.round(totalPassRate / ratedTeachers) : (totalCount > 0 ? 90 : 0);
+            const avgClasses = totalCount > 0 ? (uniqueClasses.size / totalCount).toFixed(1) : '0';
+
+            // Update UI elements
+            document.getElementById('kpiTotalTeachersVal').textContent = totalCount;
+            document.getElementById('kpiActiveVal').textContent = activeCount + ' Active';
+            document.getElementById('kpiTotalClassesVal').textContent = uniqueClasses.size;
+            document.getElementById('kpiAvgClassesVal').textContent = avgClasses + ' / Teacher';
+            document.getElementById('kpiTotalStudentsMentoredVal').textContent = totalStudents;
+            document.getElementById('kpiAvgPassRateVal').textContent = avgPassRate + '%';
+            
+            const benchmarkEl = document.getElementById('kpiBenchmarkVal');
+            if (totalCount === 0) {
+                benchmarkEl.textContent = 'No Teachers';
+                benchmarkEl.style.color = 'var(--text-secondary)';
+            } else if (avgPassRate >= 85) {
+                benchmarkEl.textContent = 'Excellent (85%+)';
+                benchmarkEl.style.color = 'var(--green)';
+            } else if (avgPassRate >= 75) {
+                benchmarkEl.textContent = 'Good (75%+)';
+                benchmarkEl.style.color = 'var(--accent)';
+            } else {
+                benchmarkEl.textContent = 'Needs Focus (<75%)';
+                benchmarkEl.style.color = 'var(--orange)';
+            }
+        }
+
+        // ── RENDER TABLE ──
+        function renderTeachersTable(teachers) {
+            const tbody = document.getElementById('teacherTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            const total = teachers.length;
+            const totalPages = Math.ceil(total / pageSize) || 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+
+            // Slice for current page
+            const startIndex = (currentPage - 1) * pageSize;
+            const pageData = teachers.slice(startIndex, startIndex + pageSize);
+
+            // Update footer info
+            document.getElementById('tableRecordCount').textContent = `Showing ${pageData.length} of ${total} faculty members`;
+            document.getElementById('pageIndicator').textContent = `Page ${currentPage} of ${totalPages}`;
+            document.getElementById('prevPageBtn').disabled = currentPage <= 1;
+            document.getElementById('nextPageBtn').disabled = currentPage >= totalPages;
+
+            if (pageData.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="9" style="padding: 40px 20px; text-align: center; color: var(--text-secondary);">
+                            <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                                <i class="fa-solid fa-chalkboard-user" style="font-size: 28px; color: #cbd5e1;"></i>
+                                <span style="font-weight: 700;">No faculty records match your criteria</span>
+                                <span style="font-size: 11px;">Try clearing filters or search keywords</span>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            pageData.forEach(t => {
+                const initials = (t.first_name[0] || '') + (t.last_name[0] || '');
+                const colors = [
+                    { bg: '#eff6ff', text: '#2563eb' },
+                    { bg: '#f0fdf4', text: '#16a34a' },
+                    { bg: '#faf5ff', text: '#9333ea' },
+                    { bg: '#fff7ed', text: '#d97706' },
+                    { bg: '#ecfeff', text: '#0891b2' },
+                    { bg: '#fdf2f8', text: '#db2777' }
+                ];
+                const colorIdx = Math.abs(t.teacher_id || 1) % colors.length;
+                const avatarColor = colors[colorIdx];
+
+                // Status styling
+                let statusColor = 'var(--green)';
+                let statusBg = 'var(--green-bg)';
+                let statusBorder = 'rgba(22, 163, 74, 0.3)';
+
+                if (t.status === 'On Leave') {
+                    statusColor = 'var(--orange)';
+                    statusBg = 'var(--orange-bg)';
+                    statusBorder = 'rgba(217, 119, 6, 0.3)';
+                } else if (t.status === 'Inactive') {
+                    statusColor = 'var(--red)';
+                    statusBg = 'var(--red-bg)';
+                    statusBorder = 'rgba(220, 38, 38, 0.3)';
+                }
+
+                // Classes tags
+                const classesTags = Array.isArray(t.classes) && t.classes.length > 0 
+                    ? t.classes.map(c => `<span class="chip-badge chip-class">${c}</span>`).join(' ')
+                    : '<span style="color: var(--text-secondary); font-size: 11px;">None</span>';
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="padding: 13px 20px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px; color: ${avatarColor.text}; background: ${avatarColor.bg}; border: 1px solid ${avatarColor.text}20; flex-shrink: 0;">
+                                ${initials}
+                            </div>
+                            <div style="display: flex; flex-direction: column;">
+                                <span style="font-weight: 800; color: var(--text-primary);">${t.first_name} ${t.last_name}</span>
+                                <span style="color: var(--text-secondary); font-size: 11px; font-weight: 600;">${t.faculty_code || 'MM-T' + t.teacher_id}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; flex-direction: column; gap: 2px;">
+                            <span style="color: var(--text-primary); font-weight: 600; font-size: 11.5px;"><i class="fa-regular fa-envelope" style="color: var(--text-secondary); margin-right: 4px; font-size: 11px;"></i>${t.email}</span>
+                            <span style="color: var(--text-secondary); font-size: 11px;"><i class="fa-solid fa-phone" style="margin-right: 4px; font-size: 10px;"></i>${t.contact_number || '—'}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="chip-badge chip-spec"><i class="fa-solid fa-wrench" style="font-size: 9px; color: var(--accent);"></i> ${t.specialization}</span>
+                    </td>
+                    <td>
+                        <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                            ${classesTags}
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <span style="font-weight: 800; color: var(--text-primary); font-size: 12px;">${t.students_count || 0}</span>
+                        <span style="color: var(--text-secondary); font-size: 10px; display: block;">Students</span>
+                    </td>
+                    <td style="text-align: center;">
+                        <div style="display: inline-flex; flex-direction: column; align-items: center; gap: 3px;">
+                            <span style="font-weight: 800; font-size: 11.5px; color: ${t.avg_pass_rate >= 80 ? 'var(--green)' : 'var(--text-primary)'};">${t.avg_pass_rate || 0}%</span>
+                            <div style="width: 50px; height: 4px; background: #e2e8f0; border-radius: 2px; overflow: hidden;">
+                                <div style="width: ${t.avg_pass_rate || 0}%; height: 100%; background: ${t.avg_pass_rate >= 80 ? 'var(--green)' : 'var(--accent)'};"></div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <span style="color: ${statusColor}; background: ${statusBg}; border: 1px solid ${statusBorder}; padding: 3px 9px; border-radius: 20px; font-size: 10.5px; font-weight: 800; display: inline-block;">
+                            ${t.status}
+                        </span>
+                    </td>
+                    <td>
+                        <span style="color: var(--text-secondary); font-size: 11.5px; font-weight: 600;">${t.last_active}</span>
+                    </td>
+                    <td style="padding: 13px 20px; text-align: center;">
+                        <div style="display: flex; gap: 6px; justify-content: center;">
+                            <button class="action-icon-btn" onclick="openViewTeacherModal(${t.teacher_id})" title="View Profile">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                            <button class="action-icon-btn" onclick="openEditTeacherModal(${t.teacher_id})" title="Edit Teacher">
+                                <i class="fa-solid fa-pencil"></i>
+                            </button>
+                            <button class="action-icon-btn btn-delete" onclick="confirmDeleteTeacher(${t.teacher_id})" title="Remove Faculty">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // ── FILTERING & SEARCH ──
+        function filterAndRender() {
+            const query = (document.getElementById('teacherSearchInput').value || '').toLowerCase().trim();
+            const spec = document.getElementById('specFilter').value;
+            const status = document.getElementById('statusFilter').value;
+
+            filteredTeachers = allTeachers.filter(t => {
+                const fullName = `${t.first_name} ${t.last_name}`.toLowerCase();
+                const code = (t.faculty_code || '').toLowerCase();
+                const email = (t.email || '').toLowerCase();
+                const specialization = (t.specialization || '').toLowerCase();
+                const classesStr = Array.isArray(t.classes) ? t.classes.join(' ').toLowerCase() : '';
+
+                const matchesQuery = !query || 
+                    fullName.includes(query) || 
+                    code.includes(query) || 
+                    email.includes(query) || 
+                    specialization.includes(query) || 
+                    classesStr.includes(query);
+
+                const matchesSpec = spec === 'all' || t.specialization === spec;
+                const matchesStatus = status === 'all' || t.status === status;
+
+                return matchesQuery && matchesSpec && matchesStatus;
+            });
+
+            renderTeachersTable(filteredTeachers);
+        }
+
+        function resetFilters() {
+            document.getElementById('teacherSearchInput').value = '';
+            document.getElementById('topbarSearchInput').value = '';
+            document.getElementById('specFilter').value = 'all';
+            document.getElementById('statusFilter').value = 'all';
+            currentPage = 1;
+            filterAndRender();
+            showToast('Filters have been reset');
+        }
+
+        function changePage(delta) {
+            currentPage += delta;
+            renderTeachersTable(filteredTeachers);
+        }
+
+        // ── SYNC TOPBAR SEARCH ──
+        document.getElementById('topbarSearchInput').addEventListener('input', function(e) {
+            document.getElementById('teacherSearchInput').value = e.target.value;
+            currentPage = 1;
+            filterAndRender();
+        });
+
+        document.getElementById('teacherSearchInput').addEventListener('input', function(e) {
+            document.getElementById('topbarSearchInput').value = e.target.value;
+            currentPage = 1;
+            filterAndRender();
+        });
+
+        document.getElementById('specFilter').addEventListener('change', function() {
+            currentPage = 1;
+            filterAndRender();
+        });
+
+        document.getElementById('statusFilter').addEventListener('change', function() {
+            currentPage = 1;
+            filterAndRender();
+        });
+
+        // ── ADD TEACHER MODAL ──
+        function openAddTeacherModal() {
+            document.getElementById('addTeacherForm').reset();
+            document.getElementById('addTeacherModal').classList.add('active');
+        }
+
+        function closeAddTeacherModal() {
+            document.getElementById('addTeacherModal').classList.remove('active');
+        }
+
+        function handleAddTeacherSubmit(e) {
+            e.preventDefault();
+            const first = document.getElementById('addFirstName').value.trim();
+            const last = document.getElementById('addLastName').value.trim();
+            const email = document.getElementById('addEmail').value.trim();
+            const contact = document.getElementById('addContact').value.trim();
+            const specialization = document.getElementById('addSpecialization').value;
+
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            if (submitBtn) submitBtn.disabled = true;
+
+            fetch(`${API_BASE}?action=add_teacher`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    first_name: first,
+                    last_name: last,
+                    email: email,
+                    contact_number: contact,
+                    specialization: specialization
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (submitBtn) submitBtn.disabled = false;
+                if (data.success) {
+                    closeAddTeacherModal();
+                    showToast(`Teacher ${first} ${last} registered in motomasterdb!`);
+                    loadAdminTeachers();
+                } else {
+                    alert(data.message || 'Failed to add teacher to database');
+                }
+            })
+            .catch(err => {
+                if (submitBtn) submitBtn.disabled = false;
+                console.error('Add teacher error:', err);
+                alert('Database request error: ' + err.message);
+            });
+        }
+
+        // ── EDIT TEACHER MODAL ──
+        function openEditTeacherModal(id) {
+            const teacher = allTeachers.find(t => t.teacher_id === id);
+            if (!teacher) return;
+
+            document.getElementById('editTeacherId').value = teacher.teacher_id;
+            document.getElementById('editFirstName').value = teacher.first_name;
+            document.getElementById('editLastName').value = teacher.last_name;
+            document.getElementById('editEmail').value = teacher.email;
+            document.getElementById('editContact').value = teacher.contact_number || '';
+            document.getElementById('editSpecialization').value = teacher.specialization;
+            document.getElementById('editClasses').value = Array.isArray(teacher.classes) ? teacher.classes.join(', ') : '';
+            document.getElementById('editStatus').value = teacher.status;
+
+            document.getElementById('editTeacherModal').classList.add('active');
+        }
+
+        function closeEditTeacherModal() {
+            document.getElementById('editTeacherModal').classList.remove('active');
+        }
+
+        function handleEditTeacherSubmit(e) {
+            e.preventDefault();
+            const id = parseInt(document.getElementById('editTeacherId').value);
+            const first = document.getElementById('editFirstName').value.trim();
+            const last = document.getElementById('editLastName').value.trim();
+            const email = document.getElementById('editEmail').value.trim();
+            const contact = document.getElementById('editContact').value.trim();
+            const specialization = document.getElementById('editSpecialization').value;
+
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            if (submitBtn) submitBtn.disabled = true;
+
+            fetch(`${API_BASE}?action=update_teacher`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    instructor_id: id,
+                    first_name: first,
+                    last_name: last,
+                    email: email,
+                    contact_number: contact,
+                    specialization: specialization
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (submitBtn) submitBtn.disabled = false;
+                if (data.success) {
+                    closeEditTeacherModal();
+                    showToast('Teacher record updated in motomasterdb!');
+                    loadAdminTeachers();
+                } else {
+                    alert(data.message || 'Failed to update teacher in database');
+                }
+            })
+            .catch(err => {
+                if (submitBtn) submitBtn.disabled = false;
+                console.error('Update teacher error:', err);
+                alert('Database request error: ' + err.message);
+            });
+        }
+
+        // ── VIEW TEACHER MODAL ──
+        function openViewTeacherModal(id) {
+            const t = allTeachers.find(item => item.teacher_id === id);
+            if (!t) return;
+
+            const initials = (t.first_name[0] || '') + (t.last_name[0] || '');
+            const body = document.getElementById('viewTeacherBody');
+            
+            const classesTags = Array.isArray(t.classes) && t.classes.length > 0 
+                ? t.classes.map(c => `<span class="chip-badge chip-class">${c}</span>`).join(' ')
+                : '<span style="color: var(--text-secondary);">No sections currently assigned</span>';
+
+            body.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--border-color);">
+                    <div style="width: 52px; height: 52px; border-radius: 50%; background: var(--accent-light); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; border: 2px solid #bfdbfe;">
+                        ${initials}
+                    </div>
+                    <div>
+                        <div style="font-size: 16px; font-weight: 800; color: var(--text-primary);">${t.first_name} ${t.last_name}</div>
+                        <div style="display: flex; align-items: center; gap: 8px; margin-top: 3px;">
+                            <span class="chip-badge chip-spec">${t.faculty_code || 'ID: #' + t.teacher_id}</span>
+                            <span style="font-size: 11px; font-weight: 700; color: ${t.status === 'Active' ? 'var(--green)' : 'var(--orange)'};">${t.status}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 12px;">
+                    <div>
+                        <span style="color: var(--text-secondary); font-weight: 700; font-size: 10.5px; text-transform: uppercase;">Email</span>
+                        <div style="font-weight: 700; color: var(--text-primary); margin-top: 2px;">${t.email}</div>
+                    </div>
+                    <div>
+                        <span style="color: var(--text-secondary); font-weight: 700; font-size: 10.5px; text-transform: uppercase;">Contact Number</span>
+                        <div style="font-weight: 700; color: var(--text-primary); margin-top: 2px;">${t.contact_number || 'None'}</div>
+                    </div>
+                    <div>
+                        <span style="color: var(--text-secondary); font-weight: 700; font-size: 10.5px; text-transform: uppercase;">Specialization</span>
+                        <div style="font-weight: 700; color: var(--text-primary); margin-top: 2px;">${t.specialization}</div>
+                    </div>
+                    <div>
+                        <span style="color: var(--text-secondary); font-weight: 700; font-size: 10.5px; text-transform: uppercase;">Last Active</span>
+                        <div style="font-weight: 700; color: var(--text-primary); margin-top: 2px;">${t.last_active}</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 4px;">
+                    <span style="color: var(--text-secondary); font-weight: 700; font-size: 10.5px; text-transform: uppercase;">Assigned Student Cohorts</span>
+                    <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px;">
+                        ${classesTags}
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 12px; background: var(--bg-color); border-radius: 8px; margin-top: 4px;">
+                    <div>
+                        <div style="font-size: 10px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">Student Load</div>
+                        <div style="font-size: 16px; font-weight: 800; color: var(--text-primary); font-family: 'Rajdhani', sans-serif;">${t.students_count || 0} Students</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 10px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase;">Average Student Pass Rate</div>
+                        <div style="font-size: 16px; font-weight: 800; color: var(--green); font-family: 'Rajdhani', sans-serif;">${t.avg_pass_rate || 0}%</div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('viewEditBtn').onclick = function() {
+                closeViewTeacherModal();
+                openEditTeacherModal(t.teacher_id);
+            };
+
+            document.getElementById('viewTeacherModal').classList.add('active');
+        }
+
+        function closeViewTeacherModal() {
+            document.getElementById('viewTeacherModal').classList.remove('active');
+        }
+
+        // ── DELETE TEACHER ──
+        function confirmDeleteTeacher(id) {
+            const t = allTeachers.find(item => item.teacher_id === id);
+            if (!t) return;
+
+            if (confirm(`Are you sure you want to remove ${t.first_name} ${t.last_name} from motomasterdb?`)) {
+                fetch(`${API_BASE}?action=delete_teacher`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ instructor_id: id })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast(`Instructor ${t.first_name} ${t.last_name} removed from database`);
+                        loadAdminTeachers();
+                    } else {
+                        alert(data.message || 'Failed to remove teacher from database');
+                    }
+                })
+                .catch(err => {
+                    console.error('Delete teacher error:', err);
+                    alert('Database request error: ' + err.message);
+                });
+            }
+        }
+
+        // ── EXPORT CSV ──
+        function exportTeachersCSV() {
+            if (allTeachers.length === 0) {
+                alert('No faculty records to export.');
+                return;
+            }
+
+            let csvContent = 'data:text/csv;charset=utf-8,';
+            csvContent += 'Faculty Code,First Name,Last Name,Email,Contact Number,Specialization,Assigned Classes,Student Load,Avg Pass Rate,Status,Last Active\n';
+
+            allTeachers.forEach(t => {
+                const classesStr = Array.isArray(t.classes) ? t.classes.join('; ') : '';
+                const row = [
+                    `"${t.faculty_code || ''}"`,
+                    `"${t.first_name}"`,
+                    `"${t.last_name}"`,
+                    `"${t.email}"`,
+                    `"${t.contact_number || ''}"`,
+                    `"${t.specialization}"`,
+                    `"${classesStr}"`,
+                    t.students_count || 0,
+                    `${t.avg_pass_rate || 0}%`,
+                    `"${t.status}"`,
+                    `"${t.last_active}"`
+                ].join(',');
+                csvContent += row + '\n';
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement('a');
+            link.setAttribute('href', encodedUri);
+            link.setAttribute('download', 'motomaster_faculty_roster.csv');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast('Faculty records exported as CSV');
+        }
+
+        // ── IMPORT SIMULATION ──
+        function triggerImport() {
+            document.getElementById('importFileInput').click();
+        }
+
+        function handleImportFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            showToast(`Importing ${file.name}...`);
+            setTimeout(() => {
+                showToast(`Successfully processed faculty list from ${file.name}`);
+            }, 800);
+            event.target.value = '';
+        }
+
+        // ── TOAST HELPER ──
+        function showToast(msg) {
+            const toast = document.getElementById('toastNotif');
+            document.getElementById('toastMsg').textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Close modals with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeAddTeacherModal();
+                closeEditTeacherModal();
+                closeViewTeacherModal();
+            }
+        });
+
+        // Initialize on DOM load
+        document.addEventListener('DOMContentLoaded', loadAdminTeachers);
+    </script>
+</body>
+
+</html>

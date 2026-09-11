@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotoMaster Admin – Settings</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #f3f4f6;
+            --border-color: #e5e7eb;
+            --text-primary: #1a1a2e;
+            --text-secondary: #6b7280;
+            --accent: #2563eb;
+            --accent-dark: #1d4ed8;
+            --accent-light: #eff6ff;
+            --green: #16a34a;
+            --red: #dc2626;
+            --orange: #d97706;
+            --purple: #9333ea;
+            --sidebar-w: 240px;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; font-family: 'Nunito', sans-serif; background: var(--bg-color); color: var(--text-primary); font-size: 14px; }
+        body { display: flex; height: 100vh; overflow: hidden; }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+
+        /* ── SIDEBAR ── */
+        .sidebar { width: var(--sidebar-w); background: #fff; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; flex-shrink: 0; box-shadow: 2px 0 8px rgba(0,0,0,0.04); }
+        .logo-container { padding: 18px 20px 14px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; }
+        .logo-container img { width: 32px; height: 32px; object-fit: contain; }
+        .logo-text { font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--text-primary); }
+        .logo-sub { font-size: 0.62rem; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; display: block; }
+        .nav-section-label { font-size: 0.6rem; font-weight: 800; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.8px; padding: 14px 18px 4px; }
+        .nav-menu { list-style: none; flex-grow: 1; overflow-y: auto; padding: 8px 0; }
+        .nav-menu::-webkit-scrollbar { width: 0; }
+        .nav-item { padding: 9px 16px; margin: 2px 10px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; color: var(--text-secondary); font-size: 0.82rem; font-weight: 700; transition: all 0.2s; text-decoration: none; }
+        .nav-item i { width: 16px; font-size: 13px; flex-shrink: 0; }
+        .nav-item:hover { background: var(--accent-light); color: var(--accent); }
+        .nav-item.active { background: var(--accent-light); color: var(--accent); }
+        .sidebar-bottom { padding: 12px 0 16px; border-top: 1px solid var(--border-color); }
+
+        /* ── MAIN ── */
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; background: var(--bg-color); }
+
+        /* ── TOPBAR ── */
+        .topbar { background: #fff; border-bottom: 1px solid var(--border-color); padding: 0 28px; height: 58px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+        .topbar-left h1 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text-primary); }
+        .topbar-left p { font-size: 0.72rem; color: var(--text-secondary); font-weight: 600; }
+        .topbar-right { display: flex; align-items: center; gap: 12px; }
+        .notif-btn { position: relative; width: 36px; height: 36px; border-radius: 8px; background: var(--bg-color); border: 1.5px solid var(--border-color); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary); }
+        .notif-badge { position: absolute; top: -4px; right: -4px; background: var(--red); color: #fff; font-size: 0.58rem; font-weight: 800; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; }
+        .profile-pill { display: flex; align-items: center; gap: 9px; padding: 5px 12px 5px 5px; border-radius: 30px; border: 1.5px solid var(--border-color); background: #fff; cursor: pointer; }
+        .profile-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--accent-light); display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 12px; }
+        .profile-name { font-size: 0.78rem; font-weight: 800; color: var(--text-primary); }
+        .profile-role { font-size: 0.62rem; color: var(--text-secondary); font-weight: 600; }
+
+        /* ── BUTTONS ── */
+        .btn-primary { background: var(--accent); border: none; color: #fff; padding: 7px 16px; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-family: 'Nunito', sans-serif; font-size: 0.75rem; font-weight: 800; transition: background 0.2s; }
+        .btn-primary:hover { background: var(--accent-dark); }
+        .btn-outline { background: #fff; border: 1.5px solid var(--border-color); color: var(--text-secondary); padding: 7px 14px; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-family: 'Nunito', sans-serif; font-size: 0.75rem; font-weight: 700; transition: border-color 0.2s; }
+        .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+        .btn-danger { background: #fef2f2; border: 1.5px solid #fecaca; color: var(--red); padding: 7px 14px; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-family: 'Nunito', sans-serif; font-size: 0.75rem; font-weight: 700; transition: background 0.2s; }
+        .btn-danger:hover { background: #fee2e2; }
+
+        /* ── LAYOUT ── */
+        .settings-container { padding: 22px 28px 28px; display: flex; flex-direction: column; gap: 20px; }
+
+        /* ── SETTINGS LAYOUT ── */
+        .settings-layout { display: grid; grid-template-columns: 220px 1fr; gap: 20px; align-items: start; }
+
+        /* ── SETTINGS TABS ── */
+        .settings-tabs { background: #fff; border-radius: 12px; border: 1px solid var(--border-color); overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.04); position: sticky; top: 0; }
+        .settings-tabs-header { padding: 14px 16px 10px; border-bottom: 1px solid var(--border-color); }
+        .settings-tabs-header span { font-size: 0.68rem; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
+        .tab-item { display: flex; align-items: center; gap: 10px; padding: 10px 16px; cursor: pointer; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); transition: all 0.15s; border-left: 3px solid transparent; }
+        .tab-item i { width: 14px; font-size: 12px; flex-shrink: 0; }
+        .tab-item:hover { background: var(--bg-color); color: var(--text-primary); }
+        .tab-item.active { background: var(--accent-light); color: var(--accent); border-left-color: var(--accent); }
+
+        /* ── PANEL ── */
+        .panel { background: #fff; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+        .panel-top { display: flex; justify-content: space-between; align-items: center; padding: 16px 22px 14px; border-bottom: 1px solid var(--border-color); }
+        .panel-title { font-size: 0.88rem; font-weight: 800; color: var(--text-primary); }
+        .panel-subtitle { font-size: 0.72rem; color: var(--text-secondary); font-weight: 600; margin-top: 2px; }
+        .panel-body { padding: 22px; }
+
+        /* ── SECTION TAB CONTENT ── */
+        .tab-section { display: none; flex-direction: column; gap: 20px; }
+        .tab-section.active { display: flex; }
+
+        /* ── FORM ── */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        .form-group.full { grid-column: 1 / -1; }
+        .form-label { font-size: 0.7rem; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.3px; }
+        .form-control { padding: 8px 12px; border: 1.5px solid var(--border-color); border-radius: 8px; font-family: 'Nunito', sans-serif; font-size: 0.82rem; color: var(--text-primary); outline: none; transition: border-color 0.2s; background: #fff; }
+        .form-control:focus { border-color: var(--accent); }
+        .form-control[disabled] { background: var(--bg-color); color: var(--text-secondary); cursor: not-allowed; }
+        .form-hint { font-size: 0.62rem; color: var(--text-secondary); font-weight: 600; }
+        .form-actions { display: flex; gap: 8px; justify-content: flex-end; padding-top: 8px; }
+
+        /* ── AVATAR AREA ── */
+        .avatar-row { display: flex; align-items: center; gap: 18px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; }
+        .avatar-big { width: 64px; height: 64px; border-radius: 50%; background: var(--accent-light); display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 26px; flex-shrink: 0; border: 3px solid #bfdbfe; }
+        .avatar-info .name { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text-primary); }
+        .avatar-info .role { font-size: 0.72rem; font-weight: 600; color: var(--text-secondary); margin-top: 2px; }
+        .avatar-info .email { font-size: 0.72rem; font-weight: 700; color: var(--accent); margin-top: 3px; }
+        .avatar-actions { margin-left: auto; display: flex; gap: 8px; }
+
+        /* ── TOGGLE SWITCH ── */
+        .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border-color); }
+        .toggle-row:last-child { border-bottom: none; }
+        .toggle-label .t-title { font-size: 0.82rem; font-weight: 800; color: var(--text-primary); }
+        .toggle-label .t-sub { font-size: 0.68rem; font-weight: 600; color: var(--text-secondary); margin-top: 2px; }
+        .toggle { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
+        .toggle input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider { position: absolute; inset: 0; background: #d1d5db; border-radius: 22px; cursor: pointer; transition: background 0.2s; }
+        .toggle-slider::before { content: ''; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: transform 0.2s; }
+        .toggle input:checked + .toggle-slider { background: var(--accent); }
+        .toggle input:checked + .toggle-slider::before { transform: translateX(18px); }
+
+        /* ── BADGE ── */
+        .badge { display: inline-flex; align-items: center; padding: 2px 9px; border-radius: 20px; font-size: 0.6rem; font-weight: 800; }
+        .badge-green { background: #f0fdf4; color: var(--green); border: 1px solid #bbf7d0; }
+        .badge-orange { background: #fff7ed; color: var(--orange); border: 1px solid #fed7aa; }
+        .badge-red { background: #fef2f2; color: var(--red); border: 1px solid #fecaca; }
+        .badge-blue { background: var(--accent-light); color: var(--accent); border: 1px solid #bfdbfe; }
+
+        /* ── ROLE / USER TABLE ── */
+        .usr-table { width: 100%; border-collapse: collapse; }
+        .usr-table thead th { padding: 9px 14px; text-align: left; font-size: 0.62rem; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; background: var(--bg-color); border-bottom: 1px solid var(--border-color); }
+        .usr-table tbody tr { border-bottom: 1px solid var(--border-color); transition: background 0.15s; }
+        .usr-table tbody tr:last-child { border-bottom: none; }
+        .usr-table tbody tr:hover { background: #f8f9ff; }
+        .usr-table td { padding: 10px 14px; font-size: 0.78rem; font-weight: 700; color: var(--text-primary); vertical-align: middle; }
+        .usr-table td.muted { color: var(--text-secondary); font-weight: 600; }
+        .user-cell { display: flex; align-items: center; gap: 10px; }
+        .user-dot { width: 30px; height: 30px; border-radius: 50%; background: var(--accent-light); display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 11px; flex-shrink: 0; }
+        .action-btn { width: 28px; height: 28px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 11px; transition: all 0.2s; border: 1.5px solid; }
+        .action-btn.edit { background: var(--bg-color); border-color: var(--border-color); color: var(--text-secondary); }
+        .action-btn.edit:hover { border-color: var(--accent); color: var(--accent); }
+        .action-btn.del { background: #fef2f2; border-color: #fecaca; color: var(--red); }
+        .action-btn.del:hover { background: #fee2e2; }
+        .actions-cell { display: flex; gap: 5px; }
+
+        /* ── DANGER ZONE ── */
+        .danger-item { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--border-color); }
+        .danger-item:last-child { border-bottom: none; }
+        .danger-title { font-size: 0.82rem; font-weight: 800; color: #dc2626; }
+        .danger-sub { font-size: 0.68rem; font-weight: 600; color: var(--text-secondary); margin-top: 2px; }
+
+        /* ── INTEGRATION CARD ── */
+        .integration-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+        .int-card { border: 1.5px solid var(--border-color); border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 10px; transition: border-color 0.2s; }
+        .int-card:hover { border-color: #bfdbfe; }
+        .int-card-top { display: flex; align-items: center; gap: 12px; }
+        .int-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+        .int-name { font-size: 0.82rem; font-weight: 800; color: var(--text-primary); }
+        .int-desc { font-size: 0.68rem; font-weight: 600; color: var(--text-secondary); line-height: 1.5; }
+        .int-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 8px; border-top: 1px solid var(--border-color); }
+
+        /* ── FOOTER ── */
+        footer { display: flex; justify-content: space-between; align-items: center; padding: 12px 28px; font-size: 0.7rem; color: var(--text-secondary); border-top: 1px solid var(--border-color); background: #fff; margin-top: auto; font-weight: 700; flex-shrink: 0; }
+        footer span { color: var(--accent); font-weight: 800; }
+
+        /* ── CONFIRM MODAL ── */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-overlay.open { display: flex; }
+        .modal { background: #fff; border-radius: 14px; box-shadow: 0 8px 40px rgba(0,0,0,0.18); width: 100%; max-width: 420px; overflow: hidden; animation: slideUp 0.22s ease; }
+        @keyframes slideUp { from { transform: translateY(24px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px 14px; border-bottom: 1px solid var(--border-color); }
+        .modal-header h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--text-primary); }
+        .modal-close { background: none; border: none; cursor: pointer; color: var(--text-secondary); font-size: 1rem; padding: 4px; border-radius: 6px; }
+        .modal-close:hover { background: var(--bg-color); }
+        .modal-body { padding: 20px 22px; font-size: 0.82rem; color: var(--text-secondary); font-weight: 600; line-height: 1.6; }
+        .modal-footer-row { display: flex; justify-content: flex-end; gap: 8px; padding: 14px 22px; border-top: 1px solid var(--border-color); }
+        .btn-save { background: var(--accent); border: none; color: #fff; padding: 8px 18px; border-radius: 8px; cursor: pointer; font-family: 'Nunito', sans-serif; font-size: 0.78rem; font-weight: 800; }
+        .btn-save:hover { background: var(--accent-dark); }
+        .btn-save-danger { background: var(--red); border: none; color: #fff; padding: 8px 18px; border-radius: 8px; cursor: pointer; font-family: 'Nunito', sans-serif; font-size: 0.78rem; font-weight: 800; }
+        .btn-save-danger:hover { background: #b91c1c; }
+        .btn-cancel { background: #fff; border: 1.5px solid var(--border-color); color: var(--text-secondary); padding: 8px 18px; border-radius: 8px; cursor: pointer; font-family: 'Nunito', sans-serif; font-size: 0.78rem; font-weight: 700; }
+        .btn-cancel:hover { border-color: var(--accent); color: var(--accent); }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="sidebar">
+        <div class="logo-container">
+            <img src="images/finalogo.png" alt="MotoMaster" />
+            <div>
+                <span class="logo-text">MotoMaster</span>
+                <span class="logo-sub">Admin Panel</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-section-label">Main</li>
+            <li class="nav-item" onclick="window.location.href='admindash.html'"><i class="fa-solid fa-house"></i> Dashboard</li>
+            <li class="nav-item" onclick="window.location.href='admintech.html'"><i class="fa-solid fa-chalkboard-user"></i> Teachers</li>
+            <li class="nav-item" onclick="window.location.href='adminstud.html'"><i class="fa-solid fa-users"></i> Students</li>
+            <li class="nav-item" onclick="window.location.href='adminmod.html'"><i class="fa-solid fa-book-open"></i> Modules</li>
+            <li class="nav-item" onclick="window.location.href='adminassess.html'"><i class="fa-solid fa-clipboard-check"></i> Assessments</li>
+            <li class="nav-item" onclick="window.location.href='adminpractice.html'"><i class="fa-solid fa-gamepad"></i> Practice Sessions</li>
+            <li class="nav-section-label">Insights</li>
+            <li class="nav-item" onclick="window.location.href='adminanalytics.html'"><i class="fa-solid fa-chart-simple"></i> Analytics</li>
+            <li class="nav-item" onclick="window.location.href='adminreports.html'"><i class="fa-solid fa-file-invoice"></i> Reports</li>
+            <li class="nav-section-label">System</li>
+            <li class="nav-item active"><i class="fa-solid fa-gear"></i> Settings</li>
+            <li class="nav-item" onclick="window.location.href='adminactivitylogs.html'"><i class="fa-solid fa-list-check"></i> Activity Logs</li>
+            <li class="nav-item" onclick="window.location.href='adminsystembackup.html'"><i class="fa-solid fa-server"></i> System Backup</li>
+            <li class="nav-item" onclick="window.location.href='adminnotif.html'"><i class="fa-regular fa-bell"></i> Notifications</li>
+        </ul>
+        <div class="sidebar-bottom">
+            <a class="nav-item" href="index.html"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+        </div>
+    </aside>
+
+    <!-- ── MAIN ── -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <h1>Settings</h1>
+                <p>Manage system configuration, account preferences, and access control.</p>
+            </div>
+            <div class="topbar-right">
+                <button class="btn-primary" onclick="saveSettings()"><i class="fa-solid fa-floppy-disk"></i> Save Changes</button>
+                <div class="notif-btn">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="notif-badge">8</span>
+                </div>
+                <div class="profile-pill">
+                    <div class="profile-avatar"><i class="fa-solid fa-user"></i></div>
+                    <div>
+                        <div class="profile-name">Administrator</div>
+                        <div class="profile-role">Super Admin</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-container">
+            <div class="settings-layout">
+
+                <!-- ── TABS NAV ── -->
+                <div class="settings-tabs">
+                    <div class="settings-tabs-header"><span>Preferences</span></div>
+                    <div class="tab-item active" onclick="switchTab('profile')"><i class="fa-solid fa-user-circle"></i> Profile</div>
+                    <div class="tab-item" onclick="switchTab('platform')"><i class="fa-solid fa-sliders"></i> Platform</div>
+                    <div class="tab-item" onclick="switchTab('notifications')"><i class="fa-regular fa-bell"></i> Notifications</div>
+                    <div class="tab-item" onclick="switchTab('security')"><i class="fa-solid fa-shield-halved"></i> Security</div>
+                    <div class="settings-tabs-header" style="margin-top:4px"><span>Administration</span></div>
+                    <div class="tab-item" onclick="switchTab('users')"><i class="fa-solid fa-users-gear"></i> Admin Users</div>
+                    <div class="tab-item" onclick="switchTab('integrations')"><i class="fa-solid fa-plug"></i> Integrations</div>
+                    <div class="tab-item" onclick="switchTab('danger')"><i class="fa-solid fa-triangle-exclamation" style="color:#dc2626"></i> <span style="color:#dc2626">Danger Zone</span></div>
+                </div>
+
+                <!-- ── TAB CONTENT ── -->
+                <div style="display:flex;flex-direction:column;gap:20px;min-width:0">
+
+                    <!-- ── PROFILE ── -->
+                    <div class="tab-section active" id="tab-profile">
+                        <div class="panel">
+                            <div class="panel-top">
+                                <div>
+                                    <div class="panel-title">Admin Profile</div>
+                                    <div class="panel-subtitle">Update your display name, contact info, and avatar</div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div class="avatar-row">
+                                    <div class="avatar-big"><i class="fa-solid fa-user"></i></div>
+                                    <div class="avatar-info">
+                                        <div class="name">Administrator</div>
+                                        <div class="role">Super Admin</div>
+                                        <div class="email">admin@motomaster.edu</div>
+                                    </div>
+                                    <div class="avatar-actions">
+                                        <button class="btn-outline"><i class="fa-solid fa-camera"></i> Change Photo</button>
+                                    </div>
+                                </div>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label">First Name</label>
+                                        <input type="text" class="form-control" value="Admin">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Last Name</label>
+                                        <input type="text" class="form-control" value="User">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Email Address</label>
+                                        <input type="email" class="form-control" value="admin@motomaster.edu">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Phone Number</label>
+                                        <input type="tel" class="form-control" placeholder="+63 9XX XXX XXXX">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Role</label>
+                                        <input type="text" class="form-control" value="Super Admin" disabled>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Timezone</label>
+                                        <select class="form-control">
+                                            <option selected>Asia/Manila (UTC+8)</option>
+                                            <option>UTC</option>
+                                            <option>America/New_York (UTC-5)</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group full">
+                                        <label class="form-label">Bio / Notes</label>
+                                        <textarea class="form-control" rows="3" style="resize:vertical">Platform administrator for MotoMaster LMS.</textarea>
+                                    </div>
+                                </div>
+                                <div class="form-actions">
+                                    <button class="btn-outline">Discard</button>
+                                    <button class="btn-primary" onclick="saveSettings()"><i class="fa-solid fa-floppy-disk"></i> Save Profile</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── PLATFORM ── -->
+                    <div class="tab-section" id="tab-platform">
+                        <div class="panel">
+                            <div class="panel-top">
+                                <div>
+                                    <div class="panel-title">Platform Settings</div>
+                                    <div class="panel-subtitle">General configuration for the MotoMaster LMS</div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label">Platform Name</label>
+                                        <input type="text" class="form-control" value="MotoMaster LMS">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Support Email</label>
+                                        <input type="email" class="form-control" value="support@motomaster.edu">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Default Language</label>
+                                        <select class="form-control">
+                                            <option selected>English (Philippines)</option>
+                                            <option>Filipino</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Date Format</label>
+                                        <select class="form-control">
+                                            <option selected>MM/DD/YYYY</option>
+                                            <option>DD/MM/YYYY</option>
+                                            <option>YYYY-MM-DD</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Session Timeout (minutes)</label>
+                                        <input type="number" class="form-control" value="60" min="15" max="480">
+                                        <span class="form-hint">Idle users are logged out after this duration.</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Max File Upload Size (MB)</label>
+                                        <input type="number" class="form-control" value="50" min="5" max="500">
+                                    </div>
+                                    <div class="form-group full">
+                                        <label class="form-label">Platform Announcement Banner</label>
+                                        <input type="text" class="form-control" placeholder="Leave blank to hide banner..." value="">
+                                        <span class="form-hint">Shown at the top of all learner-facing pages.</span>
+                                    </div>
+                                </div>
+                                <div style="margin-top:20px;padding-top:18px;border-top:1px solid var(--border-color)">
+                                    <div style="font-size:0.8rem;font-weight:800;color:var(--text-primary);margin-bottom:12px">Feature Toggles</div>
+                                    <div class="toggle-row">
+                                        <div class="toggle-label"><div class="t-title">Practice Sessions</div><div class="t-sub">Allow students to access ungraded practice quizzes.</div></div>
+                                        <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+                                    </div>
+                                    <div class="toggle-row">
+                                        <div class="toggle-label"><div class="t-title">Leaderboard</div><div class="t-sub">Show student ranking on module completion dashboards.</div></div>
+                                        <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+                                    </div>
+                                    <div class="toggle-row">
+                                        <div class="toggle-label"><div class="t-title">Student Self-Registration</div><div class="t-sub">Allow new learners to register without admin approval.</div></div>
+                                        <label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label>
+                                    </div>
+                                    <div class="toggle-row">
+                                        <div class="toggle-label"><div class="t-title">Maintenance Mode</div><div class="t-sub">Show a maintenance notice to all non-admin users.</div></div>
+                                        <label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label>
+                                    </div>
+                                </div>
+                                <div class="form-actions" style="margin-top:16px">
+                                    <button class="btn-outline">Discard</button>
+                                    <button class="btn-primary" onclick="saveSettings()"><i class="fa-solid fa-floppy-disk"></i> Save Platform Settings</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── NOTIFICATIONS ── -->
+                    <div class="tab-section" id="tab-notifications">
+                        <div class="panel">
+                            <div class="panel-top">
+                                <div>
+                                    <div class="panel-title">Notification Preferences</div>
+                                    <div class="panel-subtitle">Control which system events trigger alerts</div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div style="font-size:0.8rem;font-weight:800;color:var(--text-primary);margin-bottom:14px">Email Notifications</div>
+                                <div class="toggle-row">
+                                    <div class="toggle-label"><div class="t-title">New Student Registration</div><div class="t-sub">Get notified when a new student account is created.</div></div>
+                                    <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+                                </div>
+                                <div class="toggle-row">
+                                    <div class="toggle-label"><div class="t-title">Module Published</div><div class="t-sub">Receive an email when a teacher publishes a module.</div></div>
+                                    <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+                                </div>
+                                <div class="toggle-row">
+                                    <div class="toggle-label"><div class="t-title">Assessment Submitted</div><div class="t-sub">Get a summary email when final exams are submitted.</div></div>
+                                    <label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label>
+                                </div>
+                                <div class="toggle-row">
+                                    <div class="toggle-label"><div class="t-title">Scheduled Report Ready</div><div class="t-sub">Email when an auto-generated report is available.</div></div>
+                                    <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+                                </div>
+                                <div style="font-size:0.8rem;font-weight:800;color:var(--text-primary);margin:18px 0 14px">In-App Notifications</div>
+                                <div class="toggle-row">
+                                    <div class="toggle-label"><div class="t-title">Student Progress Alerts</div><div class="t-sub">Show alerts when a student falls below 60% completion.</div></div>
+                                    <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+                                </div>
+                                <div class="toggle-row">
+                                    <div class="toggle-label"><div class="t-title">Failed Assessment Alerts</div><div class="t-sub">Notify admin when a student fails a final exam twice.</div></div>
+                                    <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+                                </div>
+                                <div class="toggle-row">
+                                    <div class="toggle-label"><div class="t-title">System Backup Reminders</div><div class="t-sub">Remind admin if no backup has been taken in 7 days.</div></div>
+                                    <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+                                </div>
+                                <div class="form-actions" style="margin-top:16px">
+                                    <button class="btn-primary" onclick="saveSettings()"><i class="fa-solid fa-floppy-disk"></i> Save Preferences</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── SECURITY ── -->
+                    <div class="tab-section" id="tab-security">
+                        <div class="panel">
+                            <div class="panel-top">
+                                <div>
+                                    <div class="panel-title">Security &amp; Authentication</div>
+                                    <div class="panel-subtitle">Password policy, 2FA, and session controls</div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div style="font-size:0.8rem;font-weight:800;color:var(--text-primary);margin-bottom:14px">Change Password</div>
+                                <div class="form-grid">
+                                    <div class="form-group full">
+                                        <label class="form-label">Current Password</label>
+                                        <input type="password" class="form-control" placeholder="Enter current password">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">New Password</label>
+                                        <input type="password" class="form-control" placeholder="At least 8 characters">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Confirm New Password</label>
+                                        <input type="password" class="form-control" placeholder="Repeat new password">
+                                    </div>
+                                </div>
+                                <div class="form-actions" style="margin-top:4px;margin-bottom:20px">
+                                    <button class="btn-primary" onclick="saveSettings()">Update Password</button>
+                                </div>
+                                <div style="border-top:1px solid var(--border-color);padding-top:18px">
+                                    <div style="font-size:0.8rem;font-weight:800;color:var(--text-primary);margin-bottom:14px">Security Options</div>
+                                    <div class="toggle-row">
+                                        <div class="toggle-label"><div class="t-title">Two-Factor Authentication (2FA)</div><div class="t-sub">Require OTP on every admin login.</div></div>
+                                        <label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label>
+                                    </div>
+                                    <div class="toggle-row">
+                                        <div class="toggle-label"><div class="t-title">Login Attempt Limit</div><div class="t-sub">Lock accounts after 5 consecutive failed logins.</div></div>
+                                        <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+                                    </div>
+                                    <div class="toggle-row">
+                                        <div class="toggle-label"><div class="t-title">Force HTTPS</div><div class="t-sub">Redirect all HTTP traffic to HTTPS.</div></div>
+                                        <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+                                    </div>
+                                    <div class="toggle-row">
+                                        <div class="toggle-label"><div class="t-title">Audit Admin Actions</div><div class="t-sub">Log every admin-level change to the activity log.</div></div>
+                                        <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+                                    </div>
+                                </div>
+                                <div style="border-top:1px solid var(--border-color);padding-top:18px;margin-top:4px">
+                                    <div style="font-size:0.8rem;font-weight:800;color:var(--text-primary);margin-bottom:12px">Active Sessions</div>
+                                    <table class="usr-table">
+                                        <thead>
+                                            <tr><th>Device</th><th>IP Address</th><th>Last Active</th><th>Status</th><th></th></tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><div class="user-cell"><div class="user-dot" style="background:#eff6ff;color:#2563eb"><i class="fa-solid fa-desktop"></i></div><div><div style="font-weight:800">Windows PC – Chrome</div><div style="font-size:0.62rem;color:var(--text-secondary);font-weight:600">Current session</div></div></div></td>
+                                                <td class="muted">192.168.1.100</td>
+                                                <td class="muted">Just now</td>
+                                                <td><span class="badge badge-green">Active</span></td>
+                                                <td>—</td>
+                                            </tr>
+                                            <tr>
+                                                <td><div class="user-cell"><div class="user-dot" style="background:#fff7ed;color:#d97706"><i class="fa-solid fa-mobile"></i></div><div><div style="font-weight:800">Android – Chrome</div><div style="font-size:0.62rem;color:var(--text-secondary);font-weight:600">Mobile</div></div></div></td>
+                                                <td class="muted">112.200.45.88</td>
+                                                <td class="muted">2 hours ago</td>
+                                                <td><span class="badge badge-orange">Idle</span></td>
+                                                <td><button class="btn-danger" style="padding:4px 10px;font-size:0.68rem" onclick="openConfirm('Revoke this session?')">Revoke</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── ADMIN USERS ── -->
+                    <div class="tab-section" id="tab-users">
+                        <div class="panel">
+                            <div class="panel-top">
+                                <div>
+                                    <div class="panel-title">Admin Users</div>
+                                    <div class="panel-subtitle">Manage who has access to the admin panel</div>
+                                </div>
+                                <button class="btn-primary"><i class="fa-solid fa-plus"></i> Add Admin</button>
+                            </div>
+                            <div style="overflow-x:auto">
+                                <table class="usr-table">
+                                    <thead>
+                                        <tr><th>User</th><th>Email</th><th>Role</th><th>Last Login</th><th>Status</th><th>Actions</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><div class="user-cell"><div class="user-dot"><i class="fa-solid fa-user"></i></div><div><div style="font-weight:800">Administrator</div><div style="font-size:0.62rem;color:var(--text-secondary);font-weight:600">You</div></div></div></td>
+                                            <td class="muted">admin@motomaster.edu</td>
+                                            <td><span class="badge badge-blue">Super Admin</span></td>
+                                            <td class="muted">Just now</td>
+                                            <td><span class="badge badge-green">Active</span></td>
+                                            <td class="muted">—</td>
+                                        </tr>
+                                        <tr>
+                                            <td><div class="user-cell"><div class="user-dot" style="background:#f0fdf4;color:#16a34a"><i class="fa-solid fa-user"></i></div><div><div style="font-weight:800">Juan Dela Cruz</div></div></div></td>
+                                            <td class="muted">jdelacruz@motomaster.edu</td>
+                                            <td><span class="badge badge-green">Moderator</span></td>
+                                            <td class="muted">May 27, 2025</td>
+                                            <td><span class="badge badge-green">Active</span></td>
+                                            <td><div class="actions-cell"><button class="action-btn edit"><i class="fa-solid fa-pen"></i></button><button class="action-btn del" onclick="openConfirm('Remove Juan Dela Cruz?')"><i class="fa-solid fa-trash"></i></button></div></td>
+                                        </tr>
+                                        <tr>
+                                            <td><div class="user-cell"><div class="user-dot" style="background:#fff7ed;color:#d97706"><i class="fa-solid fa-user"></i></div><div><div style="font-weight:800">Maria Santos</div></div></div></td>
+                                            <td class="muted">msantos@motomaster.edu</td>
+                                            <td><span class="badge badge-orange">Content Editor</span></td>
+                                            <td class="muted">May 20, 2025</td>
+                                            <td><span class="badge badge-green">Active</span></td>
+                                            <td><div class="actions-cell"><button class="action-btn edit"><i class="fa-solid fa-pen"></i></button><button class="action-btn del" onclick="openConfirm('Remove Maria Santos?')"><i class="fa-solid fa-trash"></i></button></div></td>
+                                        </tr>
+                                        <tr>
+                                            <td><div class="user-cell"><div class="user-dot" style="background:#fef2f2;color:#dc2626"><i class="fa-solid fa-user"></i></div><div><div style="font-weight:800">Carlos Reyes</div></div></div></td>
+                                            <td class="muted">creyes@motomaster.edu</td>
+                                            <td><span class="badge badge-green">Moderator</span></td>
+                                            <td class="muted">Apr 15, 2025</td>
+                                            <td><span class="badge badge-red">Inactive</span></td>
+                                            <td><div class="actions-cell"><button class="action-btn edit"><i class="fa-solid fa-pen"></i></button><button class="action-btn del" onclick="openConfirm('Remove Carlos Reyes?')"><i class="fa-solid fa-trash"></i></button></div></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── INTEGRATIONS ── -->
+                    <div class="tab-section" id="tab-integrations">
+                        <div class="panel">
+                            <div class="panel-top">
+                                <div>
+                                    <div class="panel-title">Integrations</div>
+                                    <div class="panel-subtitle">Connect third-party services and APIs</div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div class="integration-grid">
+                                    <div class="int-card">
+                                        <div class="int-card-top">
+                                            <div class="int-icon" style="background:#eff6ff;color:#2563eb"><i class="fa-solid fa-envelope"></i></div>
+                                            <div><div class="int-name">SMTP Email</div></div>
+                                        </div>
+                                        <div class="int-desc">Send system emails and report notifications via your SMTP server.</div>
+                                        <div class="int-footer"><span class="badge badge-green">Connected</span><button class="btn-outline" style="padding:4px 10px;font-size:0.68rem">Configure</button></div>
+                                    </div>
+                                    <div class="int-card">
+                                        <div class="int-card-top">
+                                            <div class="int-icon" style="background:#fdf4ff;color:#9333ea"><i class="fa-brands fa-google"></i></div>
+                                            <div><div class="int-name">Google OAuth</div></div>
+                                        </div>
+                                        <div class="int-desc">Allow admins and students to log in using their Google account.</div>
+                                        <div class="int-footer"><span class="badge badge-orange">Not Set Up</span><button class="btn-outline" style="padding:4px 10px;font-size:0.68rem">Configure</button></div>
+                                    </div>
+                                    <div class="int-card">
+                                        <div class="int-card-top">
+                                            <div class="int-icon" style="background:#f0fdf4;color:#16a34a"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                                            <div><div class="int-name">Cloud Storage</div></div>
+                                        </div>
+                                        <div class="int-desc">Store module media files and backups in a cloud bucket.</div>
+                                        <div class="int-footer"><span class="badge badge-orange">Not Set Up</span><button class="btn-outline" style="padding:4px 10px;font-size:0.68rem">Configure</button></div>
+                                    </div>
+                                    <div class="int-card">
+                                        <div class="int-card-top">
+                                            <div class="int-icon" style="background:#fff7ed;color:#d97706"><i class="fa-solid fa-chart-pie"></i></div>
+                                            <div><div class="int-name">Analytics Webhook</div></div>
+                                        </div>
+                                        <div class="int-desc">Push platform events to an external analytics pipeline.</div>
+                                        <div class="int-footer"><span class="badge badge-green">Connected</span><button class="btn-outline" style="padding:4px 10px;font-size:0.68rem">Configure</button></div>
+                                    </div>
+                                    <div class="int-card">
+                                        <div class="int-card-top">
+                                            <div class="int-icon" style="background:#fef2f2;color:#dc2626"><i class="fa-brands fa-facebook"></i></div>
+                                            <div><div class="int-name">Facebook SSO</div></div>
+                                        </div>
+                                        <div class="int-desc">Allow students to register and log in via Facebook.</div>
+                                        <div class="int-footer"><span class="badge badge-red">Disabled</span><button class="btn-outline" style="padding:4px 10px;font-size:0.68rem">Configure</button></div>
+                                    </div>
+                                    <div class="int-card">
+                                        <div class="int-card-top">
+                                            <div class="int-icon" style="background:#f3f4f6;color:#6b7280"><i class="fa-solid fa-bell"></i></div>
+                                            <div><div class="int-name">Push Notifications</div></div>
+                                        </div>
+                                        <div class="int-desc">Send browser push notifications to enrolled students.</div>
+                                        <div class="int-footer"><span class="badge badge-orange">Not Set Up</span><button class="btn-outline" style="padding:4px 10px;font-size:0.68rem">Configure</button></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── DANGER ZONE ── -->
+                    <div class="tab-section" id="tab-danger">
+                        <div class="panel" style="border-color:#fecaca">
+                            <div class="panel-top" style="border-bottom-color:#fecaca;background:#fff5f5;border-radius:12px 12px 0 0">
+                                <div>
+                                    <div class="panel-title" style="color:#dc2626"><i class="fa-solid fa-triangle-exclamation"></i> Danger Zone</div>
+                                    <div class="panel-subtitle">These actions are irreversible. Proceed with caution.</div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div class="danger-item">
+                                    <div>
+                                        <div class="danger-title">Reset All Student Progress</div>
+                                        <div class="danger-sub">Clears all module completion records, assessment scores, and practice session data for every student.</div>
+                                    </div>
+                                    <button class="btn-danger" onclick="openConfirm('Reset all student progress? This cannot be undone.')"><i class="fa-solid fa-rotate-left"></i> Reset Progress</button>
+                                </div>
+                                <div class="danger-item">
+                                    <div>
+                                        <div class="danger-title">Archive All Modules</div>
+                                        <div class="danger-sub">Unpublishes all modules and hides them from students. Modules can be re-published individually.</div>
+                                    </div>
+                                    <button class="btn-danger" onclick="openConfirm('Archive all modules?')"><i class="fa-solid fa-box-archive"></i> Archive Modules</button>
+                                </div>
+                                <div class="danger-item">
+                                    <div>
+                                        <div class="danger-title">Clear Activity Logs</div>
+                                        <div class="danger-sub">Permanently deletes all admin and system activity log entries older than 30 days.</div>
+                                    </div>
+                                    <button class="btn-danger" onclick="openConfirm('Clear activity logs older than 30 days?')"><i class="fa-solid fa-trash-can"></i> Clear Logs</button>
+                                </div>
+                                <div class="danger-item">
+                                    <div>
+                                        <div class="danger-title">Delete All Student Accounts</div>
+                                        <div class="danger-sub">Permanently removes every student account and their associated data from the system.</div>
+                                    </div>
+                                    <button class="btn-danger" onclick="openConfirm('Delete ALL student accounts? This is permanent.')"><i class="fa-solid fa-user-xmark"></i> Delete Accounts</button>
+                                </div>
+                                <div class="danger-item">
+                                    <div>
+                                        <div class="danger-title">Factory Reset Platform</div>
+                                        <div class="danger-sub">Restores the platform to its default state. All content, users, and data will be permanently deleted.</div>
+                                    </div>
+                                    <button class="btn-danger" onclick="openConfirm('Factory reset the entire platform? ALL DATA WILL BE LOST.')"><i class="fa-solid fa-power-off"></i> Factory Reset</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <span>MotoMaster</span> Admin Panel &mdash; Settings &copy; 2025
+            <span>v2.1.0</span>
+        </footer>
+
+    </main>
+
+    <!-- ── CONFIRM MODAL ── -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-triangle-exclamation" style="color:#dc2626;margin-right:8px;font-size:0.9rem"></i> Confirm Action</h3>
+                <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" id="confirmMsg">Are you sure you want to proceed?</div>
+            <div class="modal-footer-row">
+                <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="btn-save-danger" onclick="closeModal()"><i class="fa-solid fa-check"></i> Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(name) {
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            document.getElementById('tab-' + name).classList.add('active');
+        }
+
+        function saveSettings() {
+            const btn = event.currentTarget;
+            const orig = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> Saved!';
+            btn.style.background = '#16a34a';
+            setTimeout(() => { btn.innerHTML = orig; btn.style.background = ''; }, 1800);
+        }
+
+        function openConfirm(msg) {
+            document.getElementById('confirmMsg').textContent = msg;
+            document.getElementById('confirmModal').classList.add('open');
+        }
+
+        function closeModal() {
+            document.getElementById('confirmModal').classList.remove('open');
+        }
+
+        document.getElementById('confirmModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotoMaster Admin – System Backup</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #f3f4f6;
+            --border-color: #e5e7eb;
+            --text-primary: #1a1a2e;
+            --text-secondary: #6b7280;
+            --accent: #2563eb;
+            --accent-dark: #1d4ed8;
+            --accent-light: #eff6ff;
+            --green: #16a34a;
+            --red: #dc2626;
+            --orange: #d97706;
+            --purple: #9333ea;
+            --sidebar-w: 240px;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; font-family: 'Nunito', sans-serif; background: var(--bg-color); color: var(--text-primary); font-size: 14px; }
+        body { display: flex; height: 100vh; overflow: hidden; }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+
+        /* ── SIDEBAR ── */
+        .sidebar { width: var(--sidebar-w); background: #fff; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; flex-shrink: 0; box-shadow: 2px 0 8px rgba(0,0,0,0.04); }
+        .logo-container { padding: 18px 20px 14px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; }
+        .logo-container img { width: 32px; height: 32px; object-fit: contain; }
+        .logo-text { font-family: 'Rajdhani', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--text-primary); }
+        .logo-sub { font-size: 0.62rem; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; display: block; }
+        .nav-section-label { font-size: 0.6rem; font-weight: 800; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.8px; padding: 14px 18px 4px; }
+        .nav-menu { list-style: none; flex-grow: 1; overflow-y: auto; padding: 8px 0; }
+        .nav-menu::-webkit-scrollbar { width: 0; }
+        .nav-item { padding: 9px 16px; margin: 2px 10px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; color: var(--text-secondary); font-size: 0.82rem; font-weight: 700; transition: all 0.2s; text-decoration: none; }
+        .nav-item i { width: 16px; font-size: 13px; flex-shrink: 0; }
+        .nav-item:hover { background: var(--accent-light); color: var(--accent); }
+        .nav-item.active { background: var(--accent-light); color: var(--accent); }
+        .sidebar-bottom { padding: 12px 0 16px; border-top: 1px solid var(--border-color); }
+
+        /* ── MAIN ── */
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; background: var(--bg-color); }
+
+        /* ── TOPBAR ── */
+        .topbar { background: #fff; border-bottom: 1px solid var(--border-color); padding: 0 28px; height: 58px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+        .topbar-left h1 { font-family: 'Rajdhani', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text-primary); }
+        .topbar-left p { font-size: 0.72rem; color: var(--text-secondary); font-weight: 600; }
+        .topbar-right { display: flex; align-items: center; gap: 12px; }
+        .notif-btn { position: relative; width: 36px; height: 36px; border-radius: 8px; background: var(--bg-color); border: 1.5px solid var(--border-color); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary); }
+        .notif-badge { position: absolute; top: -4px; right: -4px; background: var(--red); color: #fff; font-size: 0.58rem; font-weight: 800; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; }
+        .profile-pill { display: flex; align-items: center; gap: 9px; padding: 5px 12px 5px 5px; border-radius: 30px; border: 1.5px solid var(--border-color); background: #fff; cursor: pointer; }
+        .profile-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--accent-light); display: flex; align-items: center; justify-content: center; color: var(--accent); font-size: 12px; }
+        .profile-name { font-size: 0.78rem; font-weight: 800; color: var(--text-primary); }
+        .profile-role { font-size: 0.62rem; color: var(--text-secondary); font-weight: 600; }
+
+        /* ── BUTTONS ── */
+        .btn-primary { background: var(--accent); border: none; color: #fff; padding: 7px 16px; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-family: 'Nunito', sans-serif; font-size: 0.75rem; font-weight: 800; transition: background 0.2s; }
+        .btn-primary:hover { background: var(--accent-dark); }
+        .btn-outline { background: #fff; border: 1.5px solid var(--border-color); color: var(--text-secondary); padding: 7px 14px; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-family: 'Nunito', sans-serif; font-size: 0.75rem; font-weight: 700; transition: border-color 0.2s; }
+        .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+        .btn-danger { background: #fef2f2; border: 1.5px solid #fecaca; color: var(--red); padding: 7px 14px; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-family: 'Nunito', sans-serif; font-size: 0.75rem; font-weight: 700; transition: background 0.2s; }
+        .btn-danger:hover { background: #fee2e2; }
+        .btn-green { background: #f0fdf4; border: 1.5px solid #bbf7d0; color: var(--green); padding: 7px 14px; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-family: 'Nunito', sans-serif; font-size: 0.75rem; font-weight: 700; transition: background 0.2s; }
+        .btn-green:hover { background: #dcfce7; }
+
+        /* ── LAYOUT ── */
+        .page-container { padding: 22px 28px 28px; display: flex; flex-direction: column; gap: 20px; }
+
+        /* ── KPI ROW ── */
+        .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+        .kpi-card { background: #fff; border-radius: 12px; border: 1px solid var(--border-color); padding: 16px 18px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+        .kpi-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .kpi-icon { width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+        .kpi-title { font-size: 0.72rem; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.3px; }
+        .kpi-value { font-family: 'Rajdhani', sans-serif; font-size: 1.8rem; font-weight: 700; color: var(--text-primary); line-height: 1; margin-bottom: 8px; }
+        .kpi-foot { display: flex; justify-content: space-between; font-size: 0.68rem; font-weight: 700; color: var(--text-secondary); }
+
+        /* ── MAIN GRID ── */
+        .main-grid { display: grid; grid-template-columns: 1fr 320px; gap: 20px; align-items: start; }
+
+        /* ── PANEL ── */
+        .panel { background: #fff; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 1px 4px rgba(0,0,0,0.04); overflow: hidden; }
+        .panel-top { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px 12px; border-bottom: 1px solid var(--border-color); }
+        .panel-title { font-size: 0.88rem; font-weight: 800; color: var(--text-primary); }
+        .panel-subtitle { font-size: 0.7rem; color: var(--text-secondary); font-weight: 600; margin-top: 2px; }
+
+        /* ── BACKUP TABLE ── */
+        .bk-table { width: 100%; border-collapse: collapse; }
+        .bk-table thead th { padding: 9px 14px; text-align: left; font-size: 0.6rem; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; background: var(--bg-color); border-bottom: 1px solid var(--border-color); white-space: nowrap; }
+        .bk-table tbody tr { border-bottom: 1px solid var(--border-color); transition: background 0.15s; }
+        .bk-table tbody tr:last-child { border-bottom: none; }
+        .bk-table tbody tr:hover { background: #f8f9ff; }
+        .bk-table td { padding: 10px 14px; font-size: 0.76rem; font-weight: 700; color: var(--text-primary); vertical-align: middle; }
+        .bk-table td.muted { color: var(--text-secondary); font-weight: 600; font-size: 0.7rem; }
+
+        /* ── BACKUP FILE CELL ── */
+        .file-cell { display: flex; align-items: center; gap: 10px; }
+        .file-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+        .file-name { font-size: 0.76rem; font-weight: 800; color: var(--text-primary); }
+        .file-sub { font-size: 0.62rem; color: var(--text-secondary); font-weight: 600; margin-top: 1px; }
+
+        /* ── BADGE ── */
+        .badge { display: inline-flex; align-items: center; padding: 2px 9px; border-radius: 20px; font-size: 0.6rem; font-weight: 800; white-space: nowrap; }
+        .badge-green { background: #f0fdf4; color: var(--green); border: 1px solid #bbf7d0; }
+        .badge-orange { background: #fff7ed; color: var(--orange); border: 1px solid #fed7aa; }
+        .badge-red { background: #fef2f2; color: var(--red); border: 1px solid #fecaca; }
+        .badge-blue { background: var(--accent-light); color: var(--accent); border: 1px solid #bfdbfe; }
+        .badge-gray { background: #f3f4f6; color: #6b7280; border: 1px solid #e5e7eb; }
+
+        /* ── ACTION BTNS ── */
+        .actions-cell { display: flex; gap: 5px; }
+        .action-btn { width: 28px; height: 28px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 11px; transition: all 0.2s; border: 1.5px solid; }
+        .action-btn.dl { background: var(--bg-color); border-color: var(--border-color); color: var(--text-secondary); }
+        .action-btn.dl:hover { border-color: var(--accent); color: var(--accent); }
+        .action-btn.restore { background: #f0fdf4; border-color: #bbf7d0; color: var(--green); }
+        .action-btn.restore:hover { background: #dcfce7; }
+        .action-btn.del { background: #fef2f2; border-color: #fecaca; color: var(--red); }
+        .action-btn.del:hover { background: #fee2e2; }
+
+        /* ── STORAGE BAR ── */
+        .storage-bar-wrap { padding: 16px 18px; border-bottom: 1px solid var(--border-color); }
+        .storage-label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .storage-label { font-size: 0.76rem; font-weight: 800; color: var(--text-primary); }
+        .storage-pct { font-family: 'Rajdhani', sans-serif; font-size: 1rem; font-weight: 700; color: var(--accent); }
+        .storage-track { height: 10px; background: #f3f4f6; border-radius: 10px; overflow: hidden; }
+        .storage-fill { height: 100%; border-radius: 10px; background: linear-gradient(90deg, var(--accent), #60a5fa); transition: width 0.4s ease; }
+        .storage-foot { display: flex; justify-content: space-between; font-size: 0.64rem; font-weight: 700; color: var(--text-secondary); margin-top: 6px; }
+
+        /* ── SCHEDULE CONFIG ── */
+        .config-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border-color); }
+        .config-row:last-child { border-bottom: none; }
+        .config-label .c-title { font-size: 0.78rem; font-weight: 800; color: var(--text-primary); }
+        .config-label .c-sub { font-size: 0.64rem; font-weight: 600; color: var(--text-secondary); margin-top: 2px; }
+        .config-val { font-size: 0.76rem; font-weight: 800; color: var(--accent); }
+        .form-control-sm { padding: 5px 10px; border: 1.5px solid var(--border-color); border-radius: 7px; font-family: 'Nunito', sans-serif; font-size: 0.74rem; color: var(--text-primary); outline: none; background: var(--bg-color); font-weight: 700; }
+        .form-control-sm:focus { border-color: var(--accent); background: #fff; }
+
+        /* ── TOGGLE ── */
+        .toggle { position: relative; width: 38px; height: 20px; flex-shrink: 0; }
+        .toggle input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider { position: absolute; inset: 0; background: #d1d5db; border-radius: 20px; cursor: pointer; transition: background 0.2s; }
+        .toggle-slider::before { content: ''; position: absolute; width: 14px; height: 14px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: transform 0.2s; }
+        .toggle input:checked + .toggle-slider { background: var(--accent); }
+        .toggle input:checked + .toggle-slider::before { transform: translateX(18px); }
+
+        /* ── SIDE PANEL ── */
+        .side-panel { background: #fff; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 1px 4px rgba(0,0,0,0.04); overflow: hidden; }
+        .side-panel-title { font-size: 0.78rem; font-weight: 800; color: var(--text-primary); padding: 12px 16px 10px; border-bottom: 1px solid var(--border-color); background: var(--bg-color); }
+
+        /* ── INTEGRITY ITEMS ── */
+        .integrity-item { display: flex; align-items: center; gap: 12px; padding: 11px 16px; border-bottom: 1px solid var(--border-color); }
+        .integrity-item:last-child { border-bottom: none; }
+        .integrity-icon { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+        .integrity-label { font-size: 0.76rem; font-weight: 800; color: var(--text-primary); }
+        .integrity-sub { font-size: 0.62rem; font-weight: 600; color: var(--text-secondary); }
+        .integrity-badge { margin-left: auto; }
+
+        /* ── DESTINATION LIST ── */
+        .dest-item { display: flex; align-items: center; gap: 12px; padding: 11px 16px; border-bottom: 1px solid var(--border-color); }
+        .dest-item:last-child { border-bottom: none; }
+        .dest-icon { width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+        .dest-label { font-size: 0.76rem; font-weight: 800; color: var(--text-primary); }
+        .dest-sub { font-size: 0.62rem; font-weight: 600; color: var(--text-secondary); }
+        .dest-toggle { margin-left: auto; }
+
+        /* ── MODAL ── */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-overlay.open { display: flex; }
+        .modal { background: #fff; border-radius: 14px; box-shadow: 0 8px 40px rgba(0,0,0,0.18); width: 100%; max-width: 460px; overflow: hidden; animation: slideUp 0.22s ease; }
+        @keyframes slideUp { from { transform: translateY(24px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px 14px; border-bottom: 1px solid var(--border-color); }
+        .modal-header h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--text-primary); }
+        .modal-close { background: none; border: none; cursor: pointer; color: var(--text-secondary); font-size: 1rem; padding: 4px; border-radius: 6px; }
+        .modal-close:hover { background: var(--bg-color); }
+        .modal-body { padding: 20px 22px; display: flex; flex-direction: column; gap: 14px; }
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        .form-label { font-size: 0.68rem; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.3px; }
+        .form-control { padding: 8px 12px; border: 1.5px solid var(--border-color); border-radius: 8px; font-family: 'Nunito', sans-serif; font-size: 0.82rem; color: var(--text-primary); outline: none; transition: border-color 0.2s; background: #fff; font-weight: 700; }
+        .form-control:focus { border-color: var(--accent); }
+        .form-hint { font-size: 0.62rem; color: var(--text-secondary); font-weight: 600; }
+        .modal-footer-row { display: flex; justify-content: flex-end; gap: 8px; padding: 14px 22px; border-top: 1px solid var(--border-color); }
+        .btn-save { background: var(--accent); border: none; color: #fff; padding: 8px 18px; border-radius: 8px; cursor: pointer; font-family: 'Nunito', sans-serif; font-size: 0.78rem; font-weight: 800; }
+        .btn-save:hover { background: var(--accent-dark); }
+        .btn-save-green { background: var(--green); border: none; color: #fff; padding: 8px 18px; border-radius: 8px; cursor: pointer; font-family: 'Nunito', sans-serif; font-size: 0.78rem; font-weight: 800; }
+        .btn-save-green:hover { background: #15803d; }
+        .btn-save-danger { background: var(--red); border: none; color: #fff; padding: 8px 18px; border-radius: 8px; cursor: pointer; font-family: 'Nunito', sans-serif; font-size: 0.78rem; font-weight: 800; }
+        .btn-save-danger:hover { background: #b91c1c; }
+        .btn-cancel { background: #fff; border: 1.5px solid var(--border-color); color: var(--text-secondary); padding: 8px 18px; border-radius: 8px; cursor: pointer; font-family: 'Nunito', sans-serif; font-size: 0.78rem; font-weight: 700; }
+        .btn-cancel:hover { border-color: var(--accent); color: var(--accent); }
+
+        /* ── PROGRESS (backup running) ── */
+        .progress-block { display: none; flex-direction: column; gap: 8px; padding: 14px 22px; background: #f8faff; border-top: 1px solid var(--border-color); }
+        .progress-block.visible { display: flex; }
+        .progress-track { height: 8px; background: #e5e7eb; border-radius: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--accent); border-radius: 10px; width: 0%; transition: width 0.3s ease; }
+        .progress-label { font-size: 0.72rem; font-weight: 800; color: var(--accent); }
+
+        /* ── FOOTER ── */
+        footer { display: flex; justify-content: space-between; align-items: center; padding: 12px 28px; font-size: 0.7rem; color: var(--text-secondary); border-top: 1px solid var(--border-color); background: #fff; margin-top: auto; font-weight: 700; flex-shrink: 0; }
+        footer span { color: var(--accent); font-weight: 800; }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="sidebar">
+        <div class="logo-container">
+            <img src="images/finalogo.png" alt="MotoMaster" />
+            <div>
+                <span class="logo-text">MotoMaster</span>
+                <span class="logo-sub">Admin Panel</span>
+            </div>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-section-label">Main</li>
+            <li class="nav-item" onclick="window.location.href='admindash.html'"><i class="fa-solid fa-house"></i> Dashboard</li>
+            <li class="nav-item" onclick="window.location.href='admintech.html'"><i class="fa-solid fa-chalkboard-user"></i> Teachers</li>
+            <li class="nav-item" onclick="window.location.href='adminstud.html'"><i class="fa-solid fa-users"></i> Students</li>
+            <li class="nav-item" onclick="window.location.href='adminmod.html'"><i class="fa-solid fa-book-open"></i> Modules</li>
+            <li class="nav-item" onclick="window.location.href='adminassess.html'"><i class="fa-solid fa-clipboard-check"></i> Assessments</li>
+            <li class="nav-item" onclick="window.location.href='adminpractice.html'"><i class="fa-solid fa-gamepad"></i> Practice Sessions</li>
+            <li class="nav-section-label">Insights</li>
+            <li class="nav-item" onclick="window.location.href='adminanalytics.html'"><i class="fa-solid fa-chart-simple"></i> Analytics</li>
+            <li class="nav-item" onclick="window.location.href='adminreports.html'"><i class="fa-solid fa-file-invoice"></i> Reports</li>
+            <li class="nav-section-label">System</li>
+            <li class="nav-item" onclick="window.location.href='adminsettings.html'"><i class="fa-solid fa-gear"></i> Settings</li>
+            <li class="nav-item" onclick="window.location.href='adminactivitylogs.html'"><i class="fa-solid fa-list-check"></i> Activity Logs</li>
+            <li class="nav-item active"><i class="fa-solid fa-server"></i> System Backup</li>
+            <li class="nav-item" onclick="window.location.href='adminnotif.html'"><i class="fa-regular fa-bell"></i> Notifications</li>
+        </ul>
+        <div class="sidebar-bottom">
+            <a class="nav-item" href="index.html"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+        </div>
+    </aside>
+
+    <!-- ── MAIN ── -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <h1>System Backup</h1>
+                <p>Manage database snapshots, file archives, and restore points.</p>
+            </div>
+            <div class="topbar-right">
+                <button class="btn-outline" onclick="openScheduleModal()"><i class="fa-solid fa-calendar-check"></i> Schedule</button>
+                <button class="btn-primary" onclick="openBackupModal()"><i class="fa-solid fa-cloud-arrow-up"></i> Run Backup Now</button>
+                <div class="notif-btn">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="notif-badge">8</span>
+                </div>
+                <div class="profile-pill">
+                    <div class="profile-avatar"><i class="fa-solid fa-user"></i></div>
+                    <div>
+                        <div class="profile-name">Administrator</div>
+                        <div class="profile-role">Super Admin</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-container">
+
+            <!-- ── KPI ROW ── -->
+            <div class="kpi-row">
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon" style="background:#eff6ff;color:#2563eb"><i class="fa-solid fa-database"></i></div>
+                        <div class="kpi-title">Total Backups</div>
+                    </div>
+                    <div class="kpi-value">38</div>
+                    <div class="kpi-foot"><span>All time</span><span style="color:var(--accent)">3 this week</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon" style="background:#f0fdf4;color:#16a34a"><i class="fa-solid fa-circle-check"></i></div>
+                        <div class="kpi-title">Last Backup</div>
+                    </div>
+                    <div class="kpi-value" style="font-size:1.1rem;padding-top:6px">Today</div>
+                    <div class="kpi-foot"><span>May 28, 2025 – 02:00 AM</span><span style="color:var(--green)">Success</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon" style="background:#fff7ed;color:#d97706"><i class="fa-solid fa-hard-drive"></i></div>
+                        <div class="kpi-title">Storage Used</div>
+                    </div>
+                    <div class="kpi-value">2.4 GB</div>
+                    <div class="kpi-foot"><span>of 10 GB limit</span><span style="color:var(--orange)">24%</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-icon" style="background:#fdf4ff;color:#9333ea"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                        <div class="kpi-title">Retention</div>
+                    </div>
+                    <div class="kpi-value">30d</div>
+                    <div class="kpi-foot"><span>Auto-purge on</span><span style="color:var(--purple)">Next: Jun 28</span></div>
+                </div>
+            </div>
+
+            <!-- ── MAIN GRID ── -->
+            <div class="main-grid">
+
+                <!-- ── LEFT COLUMN ── -->
+                <div style="display:flex;flex-direction:column;gap:20px">
+
+                    <!-- Storage usage bar -->
+                    <div class="panel">
+                        <div class="storage-bar-wrap">
+                            <div class="storage-label-row">
+                                <span class="storage-label"><i class="fa-solid fa-hard-drive" style="color:var(--accent);margin-right:6px"></i>Storage Overview</span>
+                                <span class="storage-pct">2.4 GB / 10 GB</span>
+                            </div>
+                            <div class="storage-track"><div class="storage-fill" style="width:24%"></div></div>
+                            <div class="storage-foot"><span>2.4 GB used</span><span>7.6 GB free</span></div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-bottom:none">
+                            <div style="padding:12px 18px;border-right:1px solid var(--border-color)">
+                                <div style="font-size:0.62rem;font-weight:800;color:var(--text-secondary);text-transform:uppercase;margin-bottom:4px">Database</div>
+                                <div style="font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:700;color:var(--text-primary)">1.1 GB</div>
+                                <div style="font-size:0.62rem;font-weight:600;color:var(--text-secondary)">SQL dumps</div>
+                            </div>
+                            <div style="padding:12px 18px;border-right:1px solid var(--border-color)">
+                                <div style="font-size:0.62rem;font-weight:800;color:var(--text-secondary);text-transform:uppercase;margin-bottom:4px">Media Files</div>
+                                <div style="font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:700;color:var(--text-primary)">0.9 GB</div>
+                                <div style="font-size:0.62rem;font-weight:600;color:var(--text-secondary)">Module assets</div>
+                            </div>
+                            <div style="padding:12px 18px">
+                                <div style="font-size:0.62rem;font-weight:800;color:var(--text-secondary);text-transform:uppercase;margin-bottom:4px">Config / Logs</div>
+                                <div style="font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:700;color:var(--text-primary)">0.4 GB</div>
+                                <div style="font-size:0.62rem;font-weight:600;color:var(--text-secondary)">System data</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Backup history table -->
+                    <div class="panel">
+                        <div class="panel-top">
+                            <div>
+                                <div class="panel-title">Backup History</div>
+                                <div class="panel-subtitle">Click Restore to roll back to any snapshot</div>
+                            </div>
+                        </div>
+                        <div style="overflow-x:auto">
+                            <table class="bk-table">
+                                <thead>
+                                    <tr><th>File</th><th>Type</th><th>Size</th><th>Triggered By</th><th>Date</th><th>Status</th><th>Actions</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><div class="file-cell"><div class="file-icon" style="background:#eff6ff;color:#2563eb"><i class="fa-solid fa-file-zipper"></i></div><div><div class="file-name">motomaster_backup_20250528.zip</div><div class="file-sub">Full system snapshot</div></div></div></td>
+                                        <td><span class="badge badge-blue">Full</span></td>
+                                        <td class="muted">48.2 MB</td>
+                                        <td class="muted">Scheduled</td>
+                                        <td class="muted">May 28 – 02:00 AM</td>
+                                        <td><span class="badge badge-green">Success</span></td>
+                                        <td><div class="actions-cell"><button class="action-btn dl" title="Download"><i class="fa-solid fa-download"></i></button><button class="action-btn restore" title="Restore" onclick="openRestoreModal('motomaster_backup_20250528.zip')"><i class="fa-solid fa-rotate-left"></i></button><button class="action-btn del" title="Delete" onclick="openDeleteModal('motomaster_backup_20250528.zip')"><i class="fa-solid fa-trash"></i></button></div></td>
+                                    </tr>
+                                    <tr>
+                                        <td><div class="file-cell"><div class="file-icon" style="background:#eff6ff;color:#2563eb"><i class="fa-solid fa-file-zipper"></i></div><div><div class="file-name">motomaster_backup_20250527.zip</div><div class="file-sub">Full system snapshot</div></div></div></td>
+                                        <td><span class="badge badge-blue">Full</span></td>
+                                        <td class="muted">47.8 MB</td>
+                                        <td class="muted">Scheduled</td>
+                                        <td class="muted">May 27 – 02:00 AM</td>
+                                        <td><span class="badge badge-green">Success</span></td>
+                                        <td><div class="actions-cell"><button class="action-btn dl" title="Download"><i class="fa-solid fa-download"></i></button><button class="action-btn restore" title="Restore" onclick="openRestoreModal('motomaster_backup_20250527.zip')"><i class="fa-solid fa-rotate-left"></i></button><button class="action-btn del" title="Delete" onclick="openDeleteModal('motomaster_backup_20250527.zip')"><i class="fa-solid fa-trash"></i></button></div></td>
+                                    </tr>
+                                    <tr>
+                                        <td><div class="file-cell"><div class="file-icon" style="background:#f0fdf4;color:#16a34a"><i class="fa-solid fa-file-zipper"></i></div><div><div class="file-name">motomaster_db_20250526.sql.gz</div><div class="file-sub">Database only</div></div></div></td>
+                                        <td><span class="badge badge-green">DB Only</span></td>
+                                        <td class="muted">12.1 MB</td>
+                                        <td class="muted">Manual – Admin</td>
+                                        <td class="muted">May 26 – 04:30 PM</td>
+                                        <td><span class="badge badge-green">Success</span></td>
+                                        <td><div class="actions-cell"><button class="action-btn dl" title="Download"><i class="fa-solid fa-download"></i></button><button class="action-btn restore" title="Restore" onclick="openRestoreModal('motomaster_db_20250526.sql.gz')"><i class="fa-solid fa-rotate-left"></i></button><button class="action-btn del" title="Delete" onclick="openDeleteModal('motomaster_db_20250526.sql.gz')"><i class="fa-solid fa-trash"></i></button></div></td>
+                                    </tr>
+                                    <tr>
+                                        <td><div class="file-cell"><div class="file-icon" style="background:#eff6ff;color:#2563eb"><i class="fa-solid fa-file-zipper"></i></div><div><div class="file-name">motomaster_backup_20250526.zip</div><div class="file-sub">Full system snapshot</div></div></div></td>
+                                        <td><span class="badge badge-blue">Full</span></td>
+                                        <td class="muted">47.5 MB</td>
+                                        <td class="muted">Scheduled</td>
+                                        <td class="muted">May 26 – 02:00 AM</td>
+                                        <td><span class="badge badge-green">Success</span></td>
+                                        <td><div class="actions-cell"><button class="action-btn dl" title="Download"><i class="fa-solid fa-download"></i></button><button class="action-btn restore" title="Restore" onclick="openRestoreModal('motomaster_backup_20250526.zip')"><i class="fa-solid fa-rotate-left"></i></button><button class="action-btn del" title="Delete" onclick="openDeleteModal('motomaster_backup_20250526.zip')"><i class="fa-solid fa-trash"></i></button></div></td>
+                                    </tr>
+                                    <tr>
+                                        <td><div class="file-cell"><div class="file-icon" style="background:#fff7ed;color:#d97706"><i class="fa-solid fa-file-zipper"></i></div><div><div class="file-name">motomaster_backup_20250525.zip</div><div class="file-sub">Full system snapshot</div></div></div></td>
+                                        <td><span class="badge badge-blue">Full</span></td>
+                                        <td class="muted">46.9 MB</td>
+                                        <td class="muted">Scheduled</td>
+                                        <td class="muted">May 25 – 02:00 AM</td>
+                                        <td><span class="badge badge-orange">Partial</span></td>
+                                        <td><div class="actions-cell"><button class="action-btn dl" title="Download"><i class="fa-solid fa-download"></i></button><button class="action-btn restore" title="Restore" onclick="openRestoreModal('motomaster_backup_20250525.zip')"><i class="fa-solid fa-rotate-left"></i></button><button class="action-btn del" title="Delete" onclick="openDeleteModal('motomaster_backup_20250525.zip')"><i class="fa-solid fa-trash"></i></button></div></td>
+                                    </tr>
+                                    <tr>
+                                        <td><div class="file-cell"><div class="file-icon" style="background:#fef2f2;color:#dc2626"><i class="fa-solid fa-file-zipper"></i></div><div><div class="file-name">motomaster_backup_20250521.zip</div><div class="file-sub">Full system snapshot</div></div></div></td>
+                                        <td><span class="badge badge-blue">Full</span></td>
+                                        <td class="muted">—</td>
+                                        <td class="muted">Scheduled</td>
+                                        <td class="muted">May 21 – 02:00 AM</td>
+                                        <td><span class="badge badge-red">Failed</span></td>
+                                        <td><div class="actions-cell"><button class="action-btn dl" title="Download" disabled style="opacity:0.4;cursor:not-allowed"><i class="fa-solid fa-download"></i></button><button class="action-btn restore" title="Restore" disabled style="opacity:0.4;cursor:not-allowed"><i class="fa-solid fa-rotate-left"></i></button><button class="action-btn del" title="Delete" onclick="openDeleteModal('motomaster_backup_20250521.zip')"><i class="fa-solid fa-trash"></i></button></div></td>
+                                    </tr>
+                                    <tr>
+                                        <td><div class="file-cell"><div class="file-icon" style="background:#eff6ff;color:#2563eb"><i class="fa-solid fa-file-zipper"></i></div><div><div class="file-name">motomaster_weekly_20250518.zip</div><div class="file-sub">Weekly archive</div></div></div></td>
+                                        <td><span class="badge badge-purple">Weekly</span></td>
+                                        <td class="muted">45.1 MB</td>
+                                        <td class="muted">Scheduled</td>
+                                        <td class="muted">May 18 – 02:00 AM</td>
+                                        <td><span class="badge badge-green">Success</span></td>
+                                        <td><div class="actions-cell"><button class="action-btn dl" title="Download"><i class="fa-solid fa-download"></i></button><button class="action-btn restore" title="Restore" onclick="openRestoreModal('motomaster_weekly_20250518.zip')"><i class="fa-solid fa-rotate-left"></i></button><button class="action-btn del" title="Delete" onclick="openDeleteModal('motomaster_weekly_20250518.zip')"><i class="fa-solid fa-trash"></i></button></div></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ── RIGHT COLUMN ── -->
+                <div style="display:flex;flex-direction:column;gap:16px">
+
+                    <!-- Schedule Config -->
+                    <div class="side-panel">
+                        <div class="side-panel-title"><i class="fa-solid fa-calendar-check" style="color:var(--accent);margin-right:6px"></i>Backup Schedule</div>
+                        <div class="config-row">
+                            <div class="config-label"><div class="c-title">Auto Backup</div><div class="c-sub">Run backups automatically</div></div>
+                            <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+                        </div>
+                        <div class="config-row">
+                            <div class="config-label"><div class="c-title">Frequency</div><div class="c-sub">How often to run</div></div>
+                            <select class="form-control-sm">
+                                <option selected>Daily</option>
+                                <option>Weekly</option>
+                                <option>Monthly</option>
+                            </select>
+                        </div>
+                        <div class="config-row">
+                            <div class="config-label"><div class="c-title">Time</div><div class="c-sub">Scheduled run time</div></div>
+                            <input type="time" class="form-control-sm" value="02:00">
+                        </div>
+                        <div class="config-row">
+                            <div class="config-label"><div class="c-title">Backup Type</div><div class="c-sub">Scope of backup</div></div>
+                            <select class="form-control-sm">
+                                <option selected>Full</option>
+                                <option>DB Only</option>
+                                <option>Files Only</option>
+                            </select>
+                        </div>
+                        <div class="config-row">
+                            <div class="config-label"><div class="c-title">Retention</div><div class="c-sub">Keep backups for</div></div>
+                            <select class="form-control-sm">
+                                <option>7 days</option>
+                                <option selected>30 days</option>
+                                <option>60 days</option>
+                                <option>90 days</option>
+                            </select>
+                        </div>
+                        <div class="config-row">
+                            <div class="config-label"><div class="c-title">Email on Failure</div><div class="c-sub">Alert admin if backup fails</div></div>
+                            <label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label>
+                        </div>
+                        <div style="padding:12px 16px;border-top:1px solid var(--border-color)">
+                            <button class="btn-primary" style="width:100%;justify-content:center" onclick="saveSchedule()"><i class="fa-solid fa-floppy-disk"></i> Save Schedule</button>
+                        </div>
+                    </div>
+
+                    <!-- Integrity checks -->
+                    <div class="side-panel">
+                        <div class="side-panel-title"><i class="fa-solid fa-shield-check" style="color:var(--accent);margin-right:6px"></i>Integrity Checks</div>
+                        <div class="integrity-item">
+                            <div class="integrity-icon" style="background:#f0fdf4;color:#16a34a"><i class="fa-solid fa-database"></i></div>
+                            <div><div class="integrity-label">Database</div><div class="integrity-sub">Verified May 28, 02:01 AM</div></div>
+                            <div class="integrity-badge"><span class="badge badge-green">OK</span></div>
+                        </div>
+                        <div class="integrity-item">
+                            <div class="integrity-icon" style="background:#f0fdf4;color:#16a34a"><i class="fa-solid fa-folder-open"></i></div>
+                            <div><div class="integrity-label">Media Files</div><div class="integrity-sub">Verified May 28, 02:03 AM</div></div>
+                            <div class="integrity-badge"><span class="badge badge-green">OK</span></div>
+                        </div>
+                        <div class="integrity-item">
+                            <div class="integrity-icon" style="background:#fff7ed;color:#d97706"><i class="fa-solid fa-gear"></i></div>
+                            <div><div class="integrity-label">Config Files</div><div class="integrity-sub">1 warning – old .env backup</div></div>
+                            <div class="integrity-badge"><span class="badge badge-orange">Warn</span></div>
+                        </div>
+                        <div class="integrity-item">
+                            <div class="integrity-icon" style="background:#f0fdf4;color:#16a34a"><i class="fa-solid fa-file-lines"></i></div>
+                            <div><div class="integrity-label">Log Archives</div><div class="integrity-sub">Verified May 27, 11:59 PM</div></div>
+                            <div class="integrity-badge"><span class="badge badge-green">OK</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Destinations -->
+                    <div class="side-panel">
+                        <div class="side-panel-title"><i class="fa-solid fa-cloud" style="color:var(--accent);margin-right:6px"></i>Backup Destinations</div>
+                        <div class="dest-item">
+                            <div class="dest-icon" style="background:#eff6ff;color:#2563eb"><i class="fa-solid fa-server"></i></div>
+                            <div><div class="dest-label">Local Server</div><div class="dest-sub">/var/backups/motomaster</div></div>
+                            <div class="dest-toggle"><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+                        </div>
+                        <div class="dest-item">
+                            <div class="dest-icon" style="background:#f0fdf4;color:#16a34a"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                            <div><div class="dest-label">Cloud Storage</div><div class="dest-sub">Not configured</div></div>
+                            <div class="dest-toggle"><label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label></div>
+                        </div>
+                        <div class="dest-item">
+                            <div class="dest-icon" style="background:#fff7ed;color:#d97706"><i class="fa-solid fa-envelope"></i></div>
+                            <div><div class="dest-label">Email (DB only)</div><div class="dest-sub">admin@motomaster.edu</div></div>
+                            <div class="dest-toggle"><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <span>MotoMaster</span> Admin Panel &mdash; System Backup &copy; 2025
+            <span>v2.1.0</span>
+        </footer>
+
+    </main>
+
+    <!-- ── RUN BACKUP MODAL ── -->
+    <div class="modal-overlay" id="backupModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-cloud-arrow-up" style="color:var(--accent);margin-right:8px;font-size:0.9rem"></i>Run Backup Now</h3>
+                <button class="modal-close" onclick="closeBackupModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Backup Type</label>
+                    <select class="form-control">
+                        <option selected>Full (Database + Files + Config)</option>
+                        <option>Database Only</option>
+                        <option>Files Only</option>
+                        <option>Config Only</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Label / Note</label>
+                    <input type="text" class="form-control" placeholder="e.g. Pre-update snapshot">
+                    <span class="form-hint">Optional note to identify this backup.</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Destination</label>
+                    <select class="form-control">
+                        <option selected>Local Server</option>
+                        <option>Cloud Storage</option>
+                        <option>Both</option>
+                    </select>
+                </div>
+            </div>
+            <div class="progress-block" id="backupProgress">
+                <span class="progress-label" id="progressLabel">Initializing backup…</span>
+                <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+            </div>
+            <div class="modal-footer-row">
+                <button class="btn-cancel" onclick="closeBackupModal()">Cancel</button>
+                <button class="btn-save" id="runBtn" onclick="runBackup()"><i class="fa-solid fa-play"></i> Start Backup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── RESTORE MODAL ── -->
+    <div class="modal-overlay" id="restoreModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-rotate-left" style="color:var(--green);margin-right:8px;font-size:0.9rem"></i>Restore Backup</h3>
+                <button class="modal-close" onclick="closeRestoreModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size:0.82rem;font-weight:600;color:var(--text-secondary);line-height:1.6">You are about to restore the platform to the snapshot:</p>
+                <div style="background:var(--bg-color);border-radius:8px;padding:10px 14px;margin-top:8px;font-size:0.82rem;font-weight:800;color:var(--text-primary)" id="restoreFileName">—</div>
+                <p style="font-size:0.78rem;font-weight:600;color:#dc2626;line-height:1.6;margin-top:10px"><i class="fa-solid fa-triangle-exclamation" style="margin-right:5px"></i>All data created after this backup will be <strong>permanently lost</strong>. This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer-row">
+                <button class="btn-cancel" onclick="closeRestoreModal()">Cancel</button>
+                <button class="btn-save-green" onclick="closeRestoreModal()"><i class="fa-solid fa-rotate-left"></i> Confirm Restore</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── DELETE MODAL ── -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-triangle-exclamation" style="color:#dc2626;margin-right:8px;font-size:0.9rem"></i>Delete Backup</h3>
+                <button class="modal-close" onclick="closeDeleteModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size:0.82rem;font-weight:600;color:var(--text-secondary);line-height:1.6">Permanently delete the following backup file? This cannot be undone.</p>
+                <div style="background:#fef2f2;border-radius:8px;padding:10px 14px;margin-top:8px;font-size:0.82rem;font-weight:800;color:#dc2626" id="deleteFileName">—</div>
+            </div>
+            <div class="modal-footer-row">
+                <button class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+                <button class="btn-save-danger" onclick="closeDeleteModal()"><i class="fa-solid fa-trash"></i> Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── SCHEDULE MODAL ── -->
+    <div class="modal-overlay" id="scheduleModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-calendar-check" style="color:var(--accent);margin-right:8px;font-size:0.9rem"></i>Edit Backup Schedule</h3>
+                <button class="modal-close" onclick="closeScheduleModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Frequency</label>
+                    <select class="form-control">
+                        <option selected>Daily</option>
+                        <option>Every 12 Hours</option>
+                        <option>Weekly</option>
+                        <option>Monthly</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Run Time</label>
+                    <input type="time" class="form-control" value="02:00">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Retention Period</label>
+                    <select class="form-control">
+                        <option>7 days</option>
+                        <option selected>30 days</option>
+                        <option>60 days</option>
+                        <option>90 days</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Notify on Completion</label>
+                    <select class="form-control">
+                        <option selected>Only on failure</option>
+                        <option>Always</option>
+                        <option>Never</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer-row">
+                <button class="btn-cancel" onclick="closeScheduleModal()">Cancel</button>
+                <button class="btn-save" onclick="saveScheduleModal()"><i class="fa-solid fa-floppy-disk"></i> Save Schedule</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openBackupModal() { document.getElementById('backupModal').classList.add('open'); }
+        function closeBackupModal() {
+            document.getElementById('backupModal').classList.remove('open');
+            document.getElementById('backupProgress').classList.remove('visible');
+            document.getElementById('progressFill').style.width = '0%';
+            document.getElementById('progressLabel').textContent = 'Initializing backup…';
+            document.getElementById('runBtn').disabled = false;
+            document.getElementById('runBtn').innerHTML = '<i class="fa-solid fa-play"></i> Start Backup';
+        }
+
+        function runBackup() {
+            const progress = document.getElementById('backupProgress');
+            const fill = document.getElementById('progressFill');
+            const label = document.getElementById('progressLabel');
+            const btn = document.getElementById('runBtn');
+            progress.classList.add('visible');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Running…';
+            const steps = [
+                [20, 'Backing up database…'],
+                [50, 'Archiving media files…'],
+                [75, 'Compressing config data…'],
+                [95, 'Writing to destination…'],
+                [100, 'Backup complete!']
+            ];
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i < steps.length) {
+                    fill.style.width = steps[i][0] + '%';
+                    label.textContent = steps[i][1];
+                    i++;
+                } else {
+                    clearInterval(interval);
+                    btn.innerHTML = '<i class="fa-solid fa-check"></i> Done';
+                    btn.style.background = '#16a34a';
+                    setTimeout(() => closeBackupModal(), 1200);
+                }
+            }, 700);
+        }
+
+        function openRestoreModal(name) {
+            document.getElementById('restoreFileName').textContent = name;
+            document.getElementById('restoreModal').classList.add('open');
+        }
+        function closeRestoreModal() { document.getElementById('restoreModal').classList.remove('open'); }
+
+        function openDeleteModal(name) {
+            document.getElementById('deleteFileName').textContent = name;
+            document.getElementById('deleteModal').classList.add('open');
+        }
+        function closeDeleteModal() { document.getElementById('deleteModal').classList.remove('open'); }
+
+        function openScheduleModal() { document.getElementById('scheduleModal').classList.add('open'); }
+        function closeScheduleModal() { document.getElementById('scheduleModal').classList.remove('open'); }
+
+        function saveSchedule() {
+            const btn = event.currentTarget;
+            const orig = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> Saved!';
+            btn.style.background = '#16a34a';
+            setTimeout(() => { btn.innerHTML = orig; btn.style.background = ''; }, 1800);
+        }
+
+        function saveScheduleModal() {
+            closeScheduleModal();
+        }
+
+        document.querySelectorAll('.modal-overlay').forEach(m => {
+            m.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('open'); });
+        });
+    </script>
+
+</body>
+</html>

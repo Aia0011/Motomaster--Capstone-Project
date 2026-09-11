@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotoMaster Dashboard</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap"
+        rel="stylesheet" />
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: #eef1f8;
+            color: #1a1a2e;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: #fff;
+            display: flex;
+            align-items: center;
+            padding: 0 28px;
+            height: 62px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-brand img {
+            height: 38px;
+            object-fit: contain;
+        }
+
+        .nav-brand span {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            letter-spacing: 1px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-left: auto;
+        }
+
+        .nav-bell {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #f3f4f6;
+            color: #6b7280;
+            cursor: pointer;
+            border: none;
+            transition: background 0.2s;
+        }
+
+        .nav-bell:hover {
+            background: #e5e7eb;
+        }
+
+        .nav-bell svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .nav-user-wrap {
+            position: relative;
+        }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 5px 11px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 10px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: border-color 0.2s;
+            background: none;
+        }
+
+        .nav-user-wrap:hover .nav-user {
+            border-color: #2563eb;
+        }
+
+        .nav-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #2563eb;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .nav-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .nav-user-name {
+            font-size: 0.83rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            line-height: 1.2;
+        }
+
+        .nav-user-role {
+            font-size: 0.7rem;
+            color: #6b7280;
+        }
+
+        .nav-chevron svg {
+            width: 13px;
+            height: 13px;
+            color: #9ca3af;
+        }
+
+        .nav-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
+            min-width: 170px;
+            padding: 6px;
+            padding-top: 14px;
+            margin-top: 2px;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(-4px);
+            transition: opacity 0.18s, transform 0.18s;
+            z-index: 200;
+        }
+
+        .nav-user-wrap:hover .nav-dropdown {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0);
+        }
+
+        .nav-dropdown a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 12px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            text-decoration: none;
+            transition: background 0.15s;
+        }
+
+        .nav-dropdown a:hover {
+            background: #f3f4f6;
+        }
+
+        .nav-dropdown a svg {
+            width: 15px;
+            height: 15px;
+            color: #6b7280;
+            flex-shrink: 0;
+        }
+
+        .nav-dropdown .logout-link {
+            color: #dc2626;
+        }
+
+        .nav-dropdown .logout-link svg {
+            color: #dc2626;
+        }
+
+        .nav-dropdown .logout-link:hover {
+            background: #fef2f2;
+        }
+
+        .nav-dropdown-sep {
+            height: 1px;
+            background: #f0f0f5;
+            margin: 4px 0;
+        }
+
+        /* MAIN LAYOUT */
+        .main-layout {
+            display: flex;
+            gap: 18px;
+            padding: 24px 28px;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .content-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            min-width: 0;
+        }
+
+        .sidebar-col {
+            width: 252px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            height: 100%;
+        }
+
+        /* HERO BANNER */
+        .hero-banner {
+            background: url('images/bluehuman.png') no-repeat center center / cover;
+            border-radius: 18px;
+            padding: 44px 48px;
+            position: relative;
+            overflow: hidden;
+            min-height: 220px;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-banner::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.72) 45%, rgba(255, 255, 255, 0) 75%);
+            border-radius: 18px;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .hero-text-wrap {
+            position: relative;
+            z-index: 2;
+            max-width: 48%;
+        }
+
+        .hero-tagline {
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            color: #2563eb;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .hero-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 3.6rem;
+            font-weight: 700;
+            line-height: 1.0;
+            color: #1a1a2e;
+            margin-bottom: 16px;
+        }
+
+        .hero-title span {
+            color: #2563eb;
+            display: block;
+        }
+
+        .hero-desc {
+            font-size: 0.95rem;
+            color: #4b5563;
+            margin-bottom: 28px;
+            line-height: 1.65;
+        }
+
+        .hero-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 26px;
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+        }
+
+        .hero-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+        }
+
+        .hero-btn svg {
+            width: 17px;
+            height: 17px;
+        }
+
+        /* FEATURE CARDS */
+        .cards-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .feat-card {
+            background: #fff;
+            border-radius: 14px;
+            overflow: visible;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+        }
+
+        .feat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.14);
+        }
+
+        .feat-card-img {
+            width: 100%;
+            height: 130px;
+            object-fit: cover;
+            display: block;
+            border-radius: 14px 14px 0 0;
+        }
+
+        .feat-card-body {
+            padding: 42px 18px 18px;
+        }
+
+        .feat-card-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+            position: absolute;
+            top: 118px;
+            left: 18px;
+            z-index: 3;
+        }
+
+        .feat-card-icon svg {
+            width: 18px;
+            height: 18px;
+            color: #fff;
+        }
+
+        .feat-card-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 6px;
+            letter-spacing: 0.4px;
+        }
+
+        .feat-card-desc {
+            font-size: 0.8rem;
+            color: #6b7280;
+            line-height: 1.45;
+            margin-bottom: 10px;
+        }
+
+        .feat-card-footer {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .feat-card-arrow {
+            width: 26px;
+            height: 26px;
+            border: 1.5px solid #2563eb;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2563eb;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        /* SIDEBAR WIDGETS */
+        .widget {
+            background: #fff;
+            border-radius: 14px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .widget-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #6b7280;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .progress-widget {
+            background: #2563eb;
+        }
+
+        .progress-widget .widget-title {
+            color: rgba(255, 255, 255, 0.72);
+        }
+
+        .progress-ring-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .progress-ring {
+            position: relative;
+            width: 84px;
+            height: 84px;
+            margin-bottom: 6px;
+        }
+
+        .progress-ring svg {
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.2);
+            stroke-width: 8;
+        }
+
+        .progress-ring-fill {
+            fill: none;
+            stroke: #fff;
+            stroke-width: 8;
+            stroke-linecap: round;
+            stroke-dasharray: 215;
+            stroke-dashoffset: 52;
+        }
+
+        .progress-pct {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+
+        .progress-pct strong {
+            font-size: 1.25rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .progress-pct small {
+            font-size: 0.6rem;
+            color: rgba(255, 255, 255, 0.72);
+        }
+
+        .progress-modules {
+            font-size: 0.78rem;
+            color: rgba(255, 255, 255, 0.82);
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .progress-btn {
+            width: 100%;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.16);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background 0.2s;
+        }
+
+        .progress-btn:hover {
+            background: rgba(255, 255, 255, 0.26);
+        }
+
+        .progress-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .streak-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .streak-fire {
+            font-size: 1.4rem;
+        }
+
+        .streak-num {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            line-height: 1;
+        }
+
+        .streak-sub {
+            font-size: 0.7rem;
+            color: #9ca3af;
+            margin-top: 2px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            padding: 7px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .act-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #dcfce7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .act-dot svg {
+            width: 11px;
+            height: 11px;
+            color: #16a34a;
+        }
+
+        .act-dot.blue {
+            background: #dbeafe;
+        }
+
+        .act-dot.blue svg {
+            color: #2563eb;
+        }
+
+        .act-info {
+            flex: 1;
+        }
+
+        .act-name {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+
+        .act-status {
+            font-size: 0.7rem;
+            color: #16a34a;
+        }
+
+        .act-status.blue {
+            color: #2563eb;
+        }
+
+        .act-time {
+            font-size: 0.68rem;
+            color: #9ca3af;
+            white-space: nowrap;
+            margin-top: 2px;
+        }
+
+        .view-all {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .view-all:hover {
+            text-decoration: underline;
+        }
+
+        .view-all svg {
+            width: 13px;
+            height: 13px;
+        }
+
+        /* STATS FOOTER */
+        .stats-bar {
+            background: #2563eb;
+            display: flex;
+            align-items: center;
+            padding: 14px 28px;
+            gap: 0;
+            flex-shrink: 0;
+        }
+
+        .stats-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-right: 28px;
+            border-right: 1px solid rgba(255, 255, 255, 0.25);
+            flex-shrink: 0;
+        }
+
+        .stats-trophy {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+
+        .stats-trophy svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .stats-caption strong {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .stats-caption small {
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.72);
+        }
+
+        .stats-items {
+            display: flex;
+            flex: 1;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        .stats-sep {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.32);
+            padding: 0 6px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-num {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        .stat-num svg {
+            width: 16px;
+            height: 16px;
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        .stat-num strong {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.68);
+            margin-top: 1px;
+        }
+
+        /* MODAL GENERAL STYLES */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-container {
+            background: #ffffff;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform: translateY(-20px) scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-overlay.active .modal-container {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fff;
+        }
+
+        .modal-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .modal-close:hover {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .modal-close svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .modal-body {
+            padding: 20px 24px;
+            overflow-y: auto;
+            flex: 1;
+            scrollbar-width: thin;
+        }
+
+        /* OVERALL PROGRESS MODAL SPECIFIC */
+        .progress-modal-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .prog-module-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 14px 18px;
+            background: #fff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .prog-module-card:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .prog-module-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .prog-module-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .prog-module-icon {
+            font-size: 1.2rem;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .prog-module-title {
+            font-size: 0.88rem;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        .prog-status-badge {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+        .prog-status-badge.completed { background: #dcfce7; color: #16a34a; }
+        .prog-status-badge.in-progress { background: #fef3c7; color: #d97706; }
+        .prog-status-badge.not-started { background: #f1f5f9; color: #64748b; }
+
+        .prog-bar-container {
+            margin-bottom: 12px;
+        }
+        .prog-bar-label-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.72rem;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+        .prog-bar-bg {
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .prog-bar-fill {
+            height: 100%;
+            background: #2563eb;
+            border-radius: 3px;
+            transition: width 0.5s ease-out;
+        }
+
+        .prog-activities-row {
+            display: flex;
+            gap: 16px;
+            border-top: 1px dashed #e2e8f0;
+            padding-top: 10px;
+        }
+
+        .prog-activity-subitem {
+            flex: 1;
+            font-size: 0.72rem;
+            color: #475569;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .prog-activity-subitem strong {
+            font-size: 0.76rem;
+            color: #1e293b;
+        }
+
+        .modal-footer {
+            padding: 12px 24px;
+            border-top: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: flex-end;
+            background: #f8fafc;
+        }
+
+        .modal-btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-decoration: none;
+        }
+
+        .modal-btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        /* ACTIVITY MODAL SPECIFIC */
+        .activity-modal-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .act-modal-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 10px;
+            background: #f8fafc;
+            transition: background 0.2s;
+        }
+
+        .act-modal-item:hover {
+            background: #f1f5f9;
+        }
+
+        .act-modal-icon-wrap {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .act-modal-icon-wrap.module { background: #eff6ff; color: #2563eb; }
+        .act-modal-icon-wrap.practice { background: #fff7ed; color: #ea580c; }
+        .act-modal-icon-wrap.assessment { background: #f0fdf4; color: #16a34a; }
+
+        .act-modal-icon-wrap svg {
+            width: 15px;
+            height: 15px;
+        }
+
+        .act-modal-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .act-modal-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 2px;
+        }
+
+        .act-modal-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.7rem;
+            color: #64748b;
+        }
+
+        .act-modal-status-badge {
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .act-modal-time {
+            font-size: 0.68rem;
+            color: #94a3b8;
+            white-space: nowrap;
+            align-self: flex-start;
+            margin-top: 2px;
+        }
+
+        .activity-widget {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #recentActivityList {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 6px;
+            min-height: 0;
+        }
+
+        #recentActivityList::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        #recentActivityList::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 4px;
+        }
+
+        #recentActivityList::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.12);
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        #recentActivityList::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.24);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <a class="nav-brand" href="feature.html">
+            <img src="images/finalogo.png" alt="MotoMaster Logo">
+            <span>MOTOMASTER</span>
+        </a>
+        <div class="nav-right">
+            <button class="nav-bell">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                </svg>
+            </button>
+            <div class="nav-user-wrap">
+                <div class="nav-user">
+                    <div class="nav-avatar"><img src="images/unknown-avatar.svg" alt="User"></div>
+                    <div>
+                        <div class="nav-user-name" id="studentFullName"></div>
+                        <div class="nav-user-role">Student</div>
+                    </div>
+                    <span class="nav-chevron">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                    </span>
+                </div>
+                <div class="nav-dropdown">
+                    <a href="editprofile.html">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>
+                        Edit Profile
+                    </a>
+                    <div class="nav-dropdown-sep"></div>
+                    <a href="index.html" class="logout-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                            <polyline points="16 17 21 12 16 7" />
+                            <line x1="21" y1="12" x2="9" y2="12" />
+                        </svg>
+                        Log Out
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-layout">
+
+        <!-- CONTENT COLUMN -->
+        <div class="content-col">
+
+            <!-- HERO BANNER -->
+            <div class="hero-banner">
+                <div class="hero-text-wrap">
+                    <div class="hero-tagline">Skill. Precision. Performance.</div>
+                    <h1 class="hero-title">MASTER THE <span>MECHANIC IN YOU</span></h1>
+                    <p class="hero-desc">Interactive modules, real-world practice, and assessments<br>to take your
+                        skills to the next level.</p>
+                </div>
+            </div>
+
+            <!-- FEATURE CARDS -->
+            <div class="cards-row">
+
+                <div class="feat-card" onclick="window.location.href='modules.html'">
+                    <img class="feat-card-img" src="images/moduless.png" alt="Learning Modules">
+                    <div class="feat-card-body">
+                        <div class="feat-card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                            </svg>
+                        </div>
+                        <div class="feat-card-title">LEARNING MODULES</div>
+                        <div class="feat-card-footer">
+                            <div class="feat-card-desc">Step-by-step learning with interactive content.</div>
+                            <div class="feat-card-arrow">&#8250;</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feat-card" onclick="window.location.href='practicetasks.html'">
+                    <img class="feat-card-img" src="images/practicee.png" alt="Practice Simulation">
+                    <div class="feat-card-body">
+                        <div class="feat-card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polygon points="10 8 16 12 10 16 10 8" />
+                            </svg>
+                        </div>
+                        <div class="feat-card-title">PRACTICE SIMULATION</div>
+                        <div class="feat-card-footer">
+                            <div class="feat-card-desc">Realistic scenarios to sharpen your automotive skills.</div>
+                            <div class="feat-card-arrow">&#8250;</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feat-card" onclick="window.location.href='assessmenttasks.html'">
+                    <img class="feat-card-img" src="images/assessmentt.png" alt="Assessment">
+                    <div class="feat-card-body">
+                        <div class="feat-card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 11l3 3L22 4" />
+                                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                            </svg>
+                        </div>
+                        <div class="feat-card-title">ASSESSMENT</div>
+                        <div class="feat-card-footer">
+                            <div class="feat-card-desc">Test your knowledge and track your progress.</div>
+                            <div class="feat-card-arrow">&#8250;</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feat-card" onclick="window.location.href='trackperf.html'">
+                    <img class="feat-card-img" src="images/perfimg.png" alt="Performance Tracking">
+                    <div class="feat-card-body">
+                        <div class="feat-card-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                            </svg>
+                        </div>
+                        <div class="feat-card-title">PERFORMANCE TRACKING</div>
+                        <div class="feat-card-footer">
+                            <div class="feat-card-desc">View scores, track performance and check activity history.</div>
+                            <div class="feat-card-arrow">&#8250;</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- SIDEBAR -->
+        <div class="sidebar-col">
+
+            <!-- Overall Progress -->
+            <div class="widget progress-widget">
+                <div class="widget-title">Overall Progress</div>
+                <div class="progress-ring-wrap">
+                    <div class="progress-ring">
+                        <svg width="84" height="84" viewBox="0 0 84 84">
+                            <circle class="progress-ring-bg" cx="42" cy="42" r="34" />
+                            <circle class="progress-ring-fill" id="overallProgressRingFill" cx="42" cy="42" r="34" />
+                        </svg>
+                        <div class="progress-pct" id="overallProgressPct">
+                            <strong>0%</strong>
+                            <small>Completed</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="progress-modules" id="overallProgressCaption">0 of 6 modules</div>
+                <button class="progress-btn" id="viewProgressBtn">
+                    View Progress
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                        <polyline points="12 5 19 12 12 19" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Current Streak -->
+            <div class="widget">
+                <div class="widget-title">Current Streak</div>
+                <div class="streak-row">
+                    <span class="streak-fire">&#128293;</span>
+                    <div>
+                        <div class="streak-num">12 <span
+                                style="font-size:0.88rem;font-weight:600;color:#6b7280">Days</span></div>
+                        <div class="streak-sub">Keep it up!</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="widget activity-widget">
+                <div class="widget-title">Recent Activity</div>
+                <div id="recentActivityList">
+                    <!-- Will be dynamically populated -->
+                </div>
+                <a href="#" class="view-all" id="viewAllActivityLink">
+                    View All Activity
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                        <polyline points="12 5 19 12 12 19" />
+                    </svg>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- STATS FOOTER -->
+    <div class="stats-bar">
+        <div class="stats-left">
+            <div class="stats-trophy">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+                    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+                    <path d="M4 22h16" />
+                    <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+                    <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
+                    <path d="M18 2H6v7a6 6 0 0 0 12 0V2z" />
+                </svg>
+            </div>
+            <div class="stats-caption">
+                <strong>Keep Going, Future Mechanic!</strong>
+                <small>Consistency today, mastery tomorrow.</small>
+            </div>
+        </div>
+        <div class="stats-items">
+            <div class="stat-item">
+                <div class="stat-num">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7" />
+                        <rect x="14" y="3" width="7" height="7" />
+                        <rect x="3" y="14" width="7" height="7" />
+                        <rect x="14" y="14" width="7" height="7" />
+                    </svg>
+                    <strong id="footerTotalModules">0</strong>
+                </div>
+                <div class="stat-label">Total Modules</div>
+            </div>
+            <div class="stats-sep">+</div>
+            <div class="stat-item">
+                <div class="stat-num">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 11l3 3L22 4" />
+                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                    </svg>
+                    <strong id="footerCompletedModules">0</strong>
+                </div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stats-sep">+</div>
+            <div class="stat-item">
+                <div class="stat-num">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9 11 12 14 22 4" />
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                    </svg>
+                    <strong id="footerAssessments">0</strong>
+                </div>
+                <div class="stat-label">Assessments</div>
+            </div>
+            <div class="stats-sep">+</div>
+            <div class="stat-item">
+                <div class="stat-num">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                    </svg>
+                    <strong id="footerAverageScore">0%</strong>
+                </div>
+                <div class="stat-label">Average Score</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- OVERALL PROGRESS BREAKDOWN MODAL -->
+    <div class="modal-overlay" id="progressModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 class="modal-title">Overall Progress Breakdown</h3>
+                <button class="modal-close" aria-label="Close modal">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="progress-modal-list" id="progressModalList">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="trackperf.html" class="modal-btn-primary">
+                    Detailed Charts & Performance
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ACTIVITY LOG MODAL -->
+    <div class="modal-overlay" id="activityModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 class="modal-title">All Activity Log</h3>
+                <button class="modal-close" aria-label="Close modal">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="activity-modal-list" id="activityModalList">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/student-dashboard.js"></script>
+
+    <script src="js/notifications.js"></script>
+</body>
+
+</html>
