@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Tracking</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+</head>
+
+<style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: 'Nunito', sans-serif;
+        background:
+            radial-gradient(1100px 500px at 100% -10%, rgba(37,99,235,0.10), transparent 60%),
+            radial-gradient(900px 500px at -10% 110%, rgba(124,58,237,0.07), transparent 55%),
+            #eef1f8;
+        color: #1a1a2e; height: 100vh; display: flex; flex-direction: column; overflow: hidden;
+    }
+
+    /* TOP NAVBAR */
+    .navbar { background: rgba(255,255,255,0.85); backdrop-filter: blur(10px); display: flex; align-items: center; padding: 0 24px; height: 62px; box-shadow: 0 2px 14px rgba(20,30,70,0.06); border-bottom: 1px solid #eef0f5; flex-shrink: 0; z-index: 100; gap: 14px; }
+    .nav-back { display: flex; align-items: center; gap: 7px; padding: 7px 14px; border: 1.5px solid #e5e7eb; border-radius: 9px; background: #fff; cursor: pointer; text-decoration: none; color: #374151; font-size: 0.82rem; font-weight: 700; transition: all 0.2s; flex-shrink: 0; }
+    .nav-back:hover { border-color: #2563eb; color: #2563eb; box-shadow: 0 2px 8px rgba(37,99,235,0.15); transform: translateY(-1px); }
+    .nav-back svg { width: 14px; height: 14px; }
+    .nav-divider { width: 1px; height: 28px; background: linear-gradient(#e5e7eb, transparent); flex-shrink: 0; }
+    .nav-icon { width: 38px; height: 38px; border-radius: 11px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 4px 12px rgba(37,99,235,0.35); }
+    .nav-icon svg { width: 18px; height: 18px; color: #fff; }
+    .nav-title-group { display: flex; flex-direction: column; }
+    .nav-title { font-family: 'Rajdhani', sans-serif; font-size: 1.12rem; font-weight: 700; color: #12122b; line-height: 1.15; }
+    .nav-subtitle { font-size: 0.72rem; color: #9ca3af; }
+    .nav-right { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+    .export-btn { display: flex; align-items: center; gap: 7px; padding: 8px 18px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: #fff; border: none; border-radius: 9px; font-family: 'Nunito', sans-serif; font-size: 0.78rem; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
+    .export-btn:hover { box-shadow: 0 6px 16px rgba(37,99,235,0.42); transform: translateY(-1px); }
+    .export-btn svg { width: 14px; height: 14px; }
+    .last-updated { display: flex; align-items: center; gap: 8px; padding: 6px 14px; border: 1.5px solid #e5e7eb; border-radius: 9px; font-size: 0.72rem; color: #6b7280; background: #fff; }
+    .last-updated svg { width: 15px; height: 15px; color: #2563eb; }
+    .last-updated strong { color: #1a1a2e; display: block; font-size: 0.75rem; }
+
+    /* BODY LAYOUT */
+    .page-body { display: flex; flex: 1; overflow: hidden; }
+
+    /* SIDEBAR */
+    .sidebar { width: 240px; background: #fff; border-right: 1px solid #eef0f5; display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0; }
+    .sidebar-header { padding: 16px 18px 12px; border-bottom: 1px solid #f3f4f6; }
+    .sidebar-label { font-size: 0.68rem; font-weight: 800; color: #9ca3af; text-transform: uppercase; letter-spacing: 1.2px; }
+    .modules-list { flex: 1; overflow-y: auto; padding: 10px; scrollbar-width: none; }
+    .modules-list::-webkit-scrollbar { display: none; }
+    .module-item { position: relative; display: flex; align-items: center; gap: 11px; padding: 11px 10px; border-radius: 12px; cursor: pointer; transition: all 0.18s; margin-bottom: 3px; border: 1px solid transparent; }
+    .module-item:hover { background: #f7f8fc; }
+    .module-item.active { background: linear-gradient(135deg, #eff6ff, #f5f8ff); border-color: #dbe7fd; box-shadow: 0 2px 10px rgba(37,99,235,0.08); }
+    .module-item.active::before { content: ''; position: absolute; left: -10px; top: 8px; bottom: 8px; width: 4px; border-radius: 4px; background: linear-gradient(180deg, #3b82f6, #1d4ed8); }
+    .module-item.active .module-name { color: #1d4ed8; }
+    .mod-icon { width: 38px; height: 38px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; box-shadow: 0 2px 6px rgba(20,30,70,0.08); }
+    .module-info { flex: 1; min-width: 0; }
+    .module-name { font-size: 0.79rem; font-weight: 700; color: #1a1a2e; line-height: 1.25; }
+    .module-status { font-size: 0.66rem; font-weight: 700; margin-top: 1px; }
+    .module-status.completed { color: #16a34a; }
+    .module-status.in-progress { color: #f59e0b; }
+    .module-status.not-started { color: #9ca3af; }
+    .mod-right { text-align: right; flex-shrink: 0; }
+    .module-percentage { font-size: 0.75rem; font-weight: 800; color: #1a1a2e; margin-bottom: 5px; }
+    .progress-bar-mini { width: 44px; height: 4px; background: #eef0f5; border-radius: 3px; overflow: hidden; }
+    .progress-bar-mini-fill { height: 100%; background: linear-gradient(90deg, #3b82f6, #1d4ed8); border-radius: 3px; }
+
+    /* MAIN AREA */
+    .main-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+    /* STATS ROW */
+    .stats-row { display: flex; gap: 12px; padding: 16px 18px 0; flex-shrink: 0; }
+    .stat-tile { flex: 1; display: flex; align-items: center; gap: 13px; padding: 14px 16px; background: #fff; border: 1px solid #eef0f5; border-radius: 14px; box-shadow: 0 2px 10px rgba(20,30,70,0.05); transition: transform 0.18s, box-shadow 0.18s; }
+    .stat-tile:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(20,30,70,0.09); }
+    .stat-tile-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #fff; }
+    .stat-tile-icon svg { width: 18px; height: 18px; }
+    .stat-tile-icon.blue { background: linear-gradient(135deg, #60a5fa, #2563eb); box-shadow: 0 4px 10px rgba(37,99,235,0.3); }
+    .stat-tile-icon.green { background: linear-gradient(135deg, #4ade80, #16a34a); box-shadow: 0 4px 10px rgba(22,163,74,0.28); }
+    .stat-tile-icon.orange { background: linear-gradient(135deg, #fbbf24, #f59e0b); box-shadow: 0 4px 10px rgba(245,158,11,0.28); }
+    .stat-tile-icon.purple { background: linear-gradient(135deg, #a78bfa, #7c3aed); box-shadow: 0 4px 10px rgba(124,58,237,0.28); }
+    .stat-tile-icon.teal { background: linear-gradient(135deg, #2dd4bf, #0d9488); box-shadow: 0 4px 10px rgba(13,148,136,0.28); }
+    .stat-tile-num { font-family: 'Rajdhani', sans-serif; font-size: 1.55rem; font-weight: 700; color: #12122b; line-height: 1; }
+    .stat-tile-label { font-size: 0.68rem; color: #9ca3af; margin-top: 2px; font-weight: 600; }
+
+    /* CONTENT SCROLL AREA */
+    .content-scroll { flex: 1; overflow-y: auto; padding: 14px 18px 18px; scrollbar-width: none; }
+    .content-scroll::-webkit-scrollbar { display: none; }
+
+    /* CONTENT GRID */
+    .content-grid { display: flex; flex-direction: column; gap: 14px; }
+    .grid-row { display: grid; gap: 14px; }
+    .grid-row-top { grid-template-columns: 1fr 310px; }
+    .grid-row-bottom { grid-template-columns: 1fr 310px; }
+    .card-perf { height: 310px; }
+    .card-score { height: 310px; }
+    .card-task { height: 300px; }
+    .card-activity { height: 300px; }
+
+    /* CARDS */
+    .card { background: #fff; border: 1px solid #eef0f5; border-radius: 16px; padding: 20px 22px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 2px 12px rgba(20,30,70,0.05); transition: box-shadow 0.2s; }
+    .card:hover { box-shadow: 0 8px 24px rgba(20,30,70,0.08); }
+    .card-title { font-size: 0.71rem; font-weight: 800; color: #374151; text-transform: uppercase; letter-spacing: 0.9px; margin-bottom: 16px; flex-shrink: 0; display: flex; align-items: center; justify-content: space-between; }
+    .card-title-filter { display: flex; align-items: center; gap: 6px; padding: 5px 11px; border: 1.5px solid #e5e7eb; border-radius: 8px; font-size: 0.72rem; color: #6b7280; font-weight: 700; cursor: pointer; background: #fff; text-transform: none; letter-spacing: 0; transition: border-color 0.2s; }
+    .card-title-filter:hover { border-color: #2563eb; color: #2563eb; }
+    .card-title-filter svg { width: 12px; height: 12px; }
+    .chart-wrap { flex: 1; position: relative; min-height: 0; }
+
+    /* OVERALL SCORE — top-right */
+    .card-score { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 20px 22px; background: linear-gradient(180deg, #ffffff, #fbfcff); }
+    /* RECENT ACTIVITY — bottom-right */
+    .card-activity { overflow-y: auto; }
+
+    /* SCORE DONUT */
+    .score-donut-wrap { position: relative; width: 152px; height: 152px; margin: 8px auto 14px; flex-shrink: 0; filter: drop-shadow(0 6px 14px rgba(37,99,235,0.18)); }
+    .score-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .score-num { font-family: 'Rajdhani', sans-serif; font-size: 2.3rem; font-weight: 700; background: linear-gradient(135deg, #2563eb, #1d4ed8); -webkit-background-clip: text; background-clip: text; color: transparent; line-height: 1; }
+    .score-sub { font-size: 0.69rem; color: #6b7280; margin-top: 3px; font-weight: 700; }
+    .score-msg { background: linear-gradient(135deg, #eff6ff, #f5f8ff); border: 1px solid #dbe7fd; border-radius: 10px; padding: 10px 13px; display: flex; align-items: flex-start; gap: 8px; font-size: 0.71rem; color: #374151; line-height: 1.45; margin-top: 6px; width: 100%; }
+    .score-msg svg { width: 14px; height: 14px; color: #2563eb; flex-shrink: 0; margin-top: 1px; }
+
+    /* ACTIVITY LIST */
+    .activity-list { display: flex; flex-direction: column; gap: 2px; position: relative; }
+    .activity-item { position: relative; display: flex; align-items: flex-start; gap: 10px; padding: 8px 4px; border-radius: 10px; transition: background 0.15s; }
+    .activity-item:hover { background: #f7f8fc; }
+    .activity-item:not(:last-child)::after { content: ''; position: absolute; left: 21px; top: 34px; bottom: -6px; width: 1.5px; background: #eef0f5; }
+    .act-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; z-index: 1; box-shadow: 0 2px 6px rgba(20,30,70,0.08); }
+    .act-dot.green { background: linear-gradient(135deg, #4ade80, #16a34a); color: #fff; }
+    .act-dot.orange { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #fff; }
+    .act-dot.gray { background: #eef0f5; color: #9ca3af; }
+    .act-dot svg { width: 12px; height: 12px; }
+    .act-body { flex: 1; min-width: 0; }
+    .act-name { font-size: 0.76rem; font-weight: 700; color: #1a1a2e; }
+    .act-name span { font-weight: 400; color: #6b7280; }
+    .act-score { font-size: 0.68rem; color: #9ca3af; margin-top: 1px; }
+    .act-time { font-size: 0.65rem; color: #9ca3af; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #b8bcc6; }
+</style>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <a href="feature.html" class="nav-back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+            Back
+        </a>
+        <div class="nav-divider"></div>
+        <div class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+        </div>
+        <div class="nav-title-group">
+            <div class="nav-title" id="navTitle">Engine Oil Change</div>
+            <div class="nav-subtitle" id="navSubtitle">Track and manage engine oil change services.</div>
+        </div>
+        <div class="nav-right">
+            <button class="export-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Export Report
+            </button>
+            <div class="last-updated">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <div>
+                    <span style="font-size:0.65rem;color:#9ca3af;">Last Updated</span>
+                    <strong>June 3, 2026 10:30 AM</strong>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- PAGE BODY -->
+    <div class="page-body">
+
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-label">Modules</div>
+            </div>
+            <div class="modules-list">
+                <div class="module-item active" data-module="engine">
+                    <div class="mod-icon" style="background:linear-gradient(135deg,#93c5fd,#2563eb);">⚙️</div>
+                    <div class="module-info">
+                        <div class="module-name">Engine Oil Change</div>
+                        <div class="module-status completed">Completed</div>
+                    </div>
+                    <div class="mod-right">
+                        <div class="module-percentage">100%</div>
+                        <div class="progress-bar-mini"><div class="progress-bar-mini-fill" style="width:100%"></div></div>
+                    </div>
+                </div>
+                <div class="module-item" data-module="brake">
+                    <div class="mod-icon" style="background:linear-gradient(135deg,#fca5a5,#ef4444);">🔧</div>
+                    <div class="module-info">
+                        <div class="module-name">Brake Pad Replacement</div>
+                        <div class="module-status in-progress">In Progress</div>
+                    </div>
+                    <div class="mod-right">
+                        <div class="module-percentage">60%</div>
+                        <div class="progress-bar-mini"><div class="progress-bar-mini-fill" style="width:60%"></div></div>
+                    </div>
+                </div>
+                <div class="module-item" data-module="air">
+                    <div class="mod-icon" style="background:linear-gradient(135deg,#86efac,#16a34a);">💨</div>
+                    <div class="module-info">
+                        <div class="module-name">Air Filter Replacement</div>
+                        <div class="module-status completed">Completed</div>
+                    </div>
+                    <div class="mod-right">
+                        <div class="module-percentage">100%</div>
+                        <div class="progress-bar-mini"><div class="progress-bar-mini-fill" style="width:100%"></div></div>
+                    </div>
+                </div>
+                <div class="module-item" data-module="fuel">
+                    <div class="mod-icon" style="background:linear-gradient(135deg,#fdba74,#ea580c);">🔩</div>
+                    <div class="module-info">
+                        <div class="module-name">Fuel Filter Replacement</div>
+                        <div class="module-status in-progress">In Progress</div>
+                    </div>
+                    <div class="mod-right">
+                        <div class="module-percentage">60%</div>
+                        <div class="progress-bar-mini"><div class="progress-bar-mini-fill" style="width:60%"></div></div>
+                    </div>
+                </div>
+                <div class="module-item" data-module="spark">
+                    <div class="mod-icon" style="background:linear-gradient(135deg,#c4b5fd,#7c3aed);">⚡</div>
+                    <div class="module-info">
+                        <div class="module-name">Spark Plug Replacement</div>
+                        <div class="module-status not-started">Not Started</div>
+                    </div>
+                    <div class="mod-right">
+                        <div class="module-percentage">0%</div>
+                        <div class="progress-bar-mini"><div class="progress-bar-mini-fill" style="width:0%"></div></div>
+                    </div>
+                </div>
+                <div class="module-item" data-module="battery">
+                    <div class="mod-icon" style="background:linear-gradient(135deg,#5eead4,#0d9488);">🔋</div>
+                    <div class="module-info">
+                        <div class="module-name">Battery Servicing</div>
+                        <div class="module-status completed">Completed</div>
+                    </div>
+                    <div class="mod-right">
+                        <div class="module-percentage">100%</div>
+                        <div class="progress-bar-mini"><div class="progress-bar-mini-fill" style="width:100%"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN AREA -->
+        <div class="main-area">
+
+            <!-- STATS ROW -->
+            <div class="stats-row">
+                <div class="stat-tile">
+                    <div class="stat-tile-icon blue">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                    </div>
+                    <div>
+                        <div class="stat-tile-num" id="statTotalTasks">6</div>
+                        <div class="stat-tile-label">Total Tasks</div>
+                    </div>
+                </div>
+                <div class="stat-tile">
+                    <div class="stat-tile-icon green">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                    <div>
+                        <div class="stat-tile-num" id="statCompletedTasks">6</div>
+                        <div class="stat-tile-label">Completed Tasks</div>
+                    </div>
+                </div>
+                <div class="stat-tile">
+                    <div class="stat-tile-icon orange">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </div>
+                    <div>
+                        <div class="stat-tile-num" id="statBestTime">18m 42s</div>
+                        <div class="stat-tile-label">Best Time</div>
+                    </div>
+                </div>
+                <div class="stat-tile">
+                    <div class="stat-tile-icon purple">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    </div>
+                    <div>
+                        <div class="stat-tile-num" id="statAttempts">3</div>
+                        <div class="stat-tile-label">Total Attempts</div>
+                    </div>
+                </div>
+                <div class="stat-tile">
+                    <div class="stat-tile-icon teal">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15l8.5-8.5M16 4h4v4M8 22H4v-4M7 17L2 22"/><circle cx="12" cy="12" r="3"/></svg>
+                    </div>
+                    <div>
+                        <div class="stat-tile-num" id="statCompletionRate">100%</div>
+                        <div class="stat-tile-label">Completion Rate</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTENT GRID -->
+            <div class="content-scroll">
+            <div class="content-grid">
+
+                <!-- TOP ROW: Performance Over Time + Overall Score -->
+                <div class="grid-row grid-row-top">
+
+                    <!-- PERFORMANCE OVER TIME -->
+                    <div class="card card-perf">
+                        <div class="card-title">
+                            Performance Over Time
+                            <button class="card-title-filter">All Tasks <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
+                        </div>
+                        <div class="chart-wrap">
+                            <canvas id="performanceChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- OVERALL SCORE -->
+                    <div class="card card-score">
+                        <div class="card-title" style="width:100%;">Overall Score</div>
+                        <div class="score-donut-wrap">
+                            <canvas id="scoreChart"></canvas>
+                            <div class="score-overlay">
+                                <div class="score-num" id="overallScoreNum">76%</div>
+                                <div class="score-sub" id="overallScoreSub">Good Performance</div>
+                            </div>
+                        </div>
+                        <div class="score-msg" id="overallScoreMsg">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            <span id="overallScoreMsgText">Keep up the great work! You're performing well and improving consistently.</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- BOTTOM ROW: Task Performance + Recent Activity -->
+                <div class="grid-row grid-row-bottom">
+
+                    <!-- TASK PERFORMANCE -->
+                    <div class="card card-task">
+                        <div class="card-title">Task Performance</div>
+                        <div class="chart-wrap">
+                            <canvas id="taskChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- RECENT ACTIVITY -->
+                    <div class="card card-activity">
+                        <div class="card-title">Recent Activity</div>
+                        <div class="activity-list" id="activityList"></div>
+                    </div>
+
+                </div>
+
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const chartOptionsLine = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: { color: '#9ca3af', stepSize: 25, font: { size: 11 } },
+                    grid: { color: '#f3f4f6', drawBorder: false }
+                },
+                x: {
+                    ticks: { color: '#9ca3af', font: { size: 11 } },
+                    grid: { display: false }
+                }
+            }
+        };
+
+        const chartOptionsDoughnut = {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '75%',
+            plugins: { legend: { display: false }, tooltip: { enabled: false } }
+        };
+
+        const chartOptionsBar = {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: { color: '#9ca3af', font: { size: 10 }, callback: v => v + '%' },
+                    grid: { color: '#f3f4f6' }
+                },
+                y: {
+                    ticks: { color: '#6b7280', font: { size: 11 } },
+                    grid: { display: false }
+                }
+            }
+        };
+
+        const MODULE_PERFORMANCE = {
+            engine: {
+                title: 'Engine Oil Change',
+                subtitle: 'Track and manage engine oil change services.',
+                stats: { totalTasks: 6, completedTasks: 6, bestTime: '18m 42s', attempts: 3, completionRate: '100%' },
+                overallScore: 76,
+                scoreLabel: 'Good Performance',
+                scoreMessage: 'Keep up the great work! You\'re performing well on oil change procedures.',
+                trend: { labels: ['Mar 1', 'Mar 8', 'Mar 15', 'Mar 22', 'Mar 29', 'Apr 5', 'Apr 12'], data: [25, 50, 70, 75, 70, 85, 92] },
+                tasks: {
+                    labels: ['Drain Oil', 'Replace Filter', 'Add New Oil', 'Check Level', 'Inspect for Leaks', 'Reset Oil Monitor'],
+                    data: [95, 90, 65, 75, 55, 70]
+                },
+                activity: [
+                    { label: 'Practice simulation', status: 'completed', score: '92%', time: 'Today, 10:30 AM', dot: 'green' },
+                    { label: 'Assessment attempt', status: 'completed', score: '88%', time: 'Apr 11, 2025', dot: 'green' },
+                    { label: 'Module review', status: 'completed', score: '100%', time: 'Apr 8, 2025', dot: 'green' },
+                    { label: 'First practice run', status: 'completed', score: '74%', time: 'Mar 29, 2025', dot: 'orange' }
+                ]
+            },
+            brake: {
+                title: 'Brake Pad Replacement',
+                subtitle: 'Track brake pad inspection, removal, and installation performance.',
+                stats: { totalTasks: 7, completedTasks: 4, bestTime: '24m 15s', attempts: 2, completionRate: '57%' },
+                overallScore: 58,
+                scoreLabel: 'Needs Work',
+                scoreMessage: 'Focus on caliper handling and torque sequence — scores are improving with each attempt.',
+                trend: { labels: ['Mar 5', 'Mar 12', 'Mar 19', 'Mar 26', 'Apr 2', 'Apr 9'], data: [15, 28, 35, 42, 48, 58] },
+                tasks: {
+                    labels: ['Lift Vehicle', 'Remove Wheel', 'Remove Caliper', 'Replace Pads', 'Reinstall Caliper', 'Bleed Brakes', 'Road Test'],
+                    data: [80, 72, 45, 52, 48, 38, 55]
+                },
+                activity: [
+                    { label: 'Practice simulation', status: 'in progress', score: '58%', time: 'Yesterday, 3:45 PM', dot: 'orange' },
+                    { label: 'Step 4 — Replace Pads', status: 'mistakes noted', score: '52%', time: 'Yesterday, 3:20 PM', dot: 'orange' },
+                    { label: 'Module progress', status: 'in progress', score: '60%', time: 'Apr 5, 2025', dot: 'orange' },
+                    { label: 'First attempt', status: 'started', score: '35%', time: 'Mar 26, 2025', dot: 'gray' }
+                ]
+            },
+            air: {
+                title: 'Air Filter Replacement',
+                subtitle: 'Monitor air filter inspection and replacement accuracy.',
+                stats: { totalTasks: 5, completedTasks: 5, bestTime: '12m 08s', attempts: 2, completionRate: '100%' },
+                overallScore: 91,
+                scoreLabel: 'Excellent',
+                scoreMessage: 'Outstanding consistency — filter orientation and housing seal checks are strong.',
+                trend: { labels: ['Mar 10', 'Mar 17', 'Mar 24', 'Mar 31', 'Apr 7', 'Apr 14'], data: [55, 68, 78, 82, 88, 91] },
+                tasks: {
+                    labels: ['Open Housing', 'Remove Old Filter', 'Clean Housing', 'Install New Filter', 'Close & Verify'],
+                    data: [98, 94, 88, 92, 85]
+                },
+                activity: [
+                    { label: 'Assessment', status: 'completed', score: '94%', time: 'Apr 10, 2025', dot: 'green' },
+                    { label: 'Practice simulation', status: 'completed', score: '91%', time: 'Apr 7, 2025', dot: 'green' },
+                    { label: 'Module completed', status: 'completed', score: '100%', time: 'Apr 3, 2025', dot: 'green' }
+                ]
+            },
+            fuel: {
+                title: 'Fuel Filter Replacement',
+                subtitle: 'Track fuel line safety and filter replacement steps.',
+                stats: { totalTasks: 6, completedTasks: 4, bestTime: '21m 33s', attempts: 2, completionRate: '67%' },
+                overallScore: 62,
+                scoreLabel: 'Fair',
+                scoreMessage: 'Relieve fuel pressure before disconnecting lines — review step 2 before your next attempt.',
+                trend: { labels: ['Mar 8', 'Mar 15', 'Mar 22', 'Mar 29', 'Apr 5'], data: [20, 32, 45, 55, 62] },
+                tasks: {
+                    labels: ['Depressurize System', 'Disconnect Lines', 'Remove Old Filter', 'Install New Filter', 'Reconnect Lines', 'Leak Check'],
+                    data: [70, 48, 55, 62, 58, 68]
+                },
+                activity: [
+                    { label: 'Practice simulation', status: 'in progress', score: '62%', time: 'Apr 8, 2025', dot: 'orange' },
+                    { label: 'Depressurize step', status: 'mistakes noted', score: '48%', time: 'Apr 8, 2025', dot: 'orange' },
+                    { label: 'Module progress', status: 'in progress', score: '60%', time: 'Apr 2, 2025', dot: 'orange' }
+                ]
+            },
+            spark: {
+                title: 'Spark Plug Replacement',
+                subtitle: 'Performance data will appear once you start this module.',
+                stats: { totalTasks: 6, completedTasks: 0, bestTime: '—', attempts: 0, completionRate: '0%' },
+                overallScore: 0,
+                scoreLabel: 'Not Started',
+                scoreMessage: 'Complete the learning module and practice simulation to unlock performance tracking.',
+                trend: { labels: ['—'], data: [0] },
+                tasks: {
+                    labels: ['Gap Plugs', 'Remove Old Plugs', 'Inspect Threads', 'Install New Plugs', 'Torque Plugs', 'Reconnect Coils'],
+                    data: [0, 0, 0, 0, 0, 0]
+                },
+                activity: [
+                    { label: 'Module', status: 'not started', score: '—', time: '—', dot: 'gray' },
+                    { label: 'Practice', status: 'locked', score: '—', time: '—', dot: 'gray' }
+                ]
+            },
+            battery: {
+                title: 'Battery Servicing',
+                subtitle: 'Track battery inspection, terminal cleaning, and maintenance scores.',
+                stats: { totalTasks: 5, completedTasks: 5, bestTime: '16m 55s', attempts: 4, completionRate: '100%' },
+                overallScore: 84,
+                scoreLabel: 'Good Performance',
+                scoreMessage: 'Strong on inspection checklist — watch cap removal order on electrolyte steps.',
+                trend: { labels: ['Mar 12', 'Mar 19', 'Mar 26', 'Apr 2', 'Apr 9', 'Apr 16'], data: [40, 55, 62, 71, 78, 84] },
+                tasks: {
+                    labels: ['Inspect Condition', 'Clean Terminals', 'Check Electrolyte', 'Secure Mount', 'Test Electrical'],
+                    data: [88, 82, 76, 90, 85]
+                },
+                activity: [
+                    { label: 'Assessment', status: 'completed', score: '85%', time: 'Today, 9:15 AM', dot: 'green' },
+                    { label: 'Practice simulation', status: 'completed', score: '88%', time: 'Apr 14, 2025', dot: 'green' },
+                    { label: 'Attempt again reset', status: 'retried', score: '72%', time: 'Apr 12, 2025', dot: 'orange' },
+                    { label: 'First assessment', status: 'completed', score: '68%', time: 'Apr 9, 2025', dot: 'green' }
+                ]
+            }
+        };
+
+        const performanceChart = new Chart(document.getElementById('performanceChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: MODULE_PERFORMANCE.engine.trend.labels,
+                datasets: [{
+                    label: 'Performance',
+                    data: MODULE_PERFORMANCE.engine.trend.data,
+                    borderColor: '#2563eb',
+                    backgroundColor: 'rgba(37,99,235,0.08)',
+                    borderWidth: 2.5,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#2563eb',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: chartOptionsLine
+        });
+
+        const scoreChart = new Chart(document.getElementById('scoreChart').getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [76, 24],
+                    backgroundColor: ['#2563eb', '#e5e7eb'],
+                    borderWidth: 0
+                }]
+            },
+            options: chartOptionsDoughnut
+        });
+
+        const taskChart = new Chart(document.getElementById('taskChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: MODULE_PERFORMANCE.engine.tasks.labels,
+                datasets: [{
+                    label: 'Score',
+                    data: MODULE_PERFORMANCE.engine.tasks.data,
+                    backgroundColor: '#2563eb',
+                    borderRadius: 4,
+                    borderSkipped: false,
+                    barThickness: 10
+                }]
+            },
+            options: chartOptionsBar
+        });
+
+        const dotIcons = {
+            green: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>',
+            orange: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+            gray: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'
+        };
+
+        function renderActivityList(items) {
+            const list = document.getElementById('activityList');
+            if (!list) return;
+            list.innerHTML = items.map((item) => `
+                <div class="activity-item">
+                    <div class="act-dot ${item.dot}">${dotIcons[item.dot] || dotIcons.gray}</div>
+                    <div class="act-body">
+                        <div class="act-name">${item.label} <span>${item.status}</span></div>
+                        <div class="act-score">${item.score}${item.score !== '—' ? ' Score' : ''}</div>
+                    </div>
+                    <div class="act-time">${item.time}</div>
+                </div>
+            `).join('');
+        }
+
+        function selectModule(moduleId) {
+            const data = MODULE_PERFORMANCE[moduleId];
+            if (!data) return;
+
+            document.getElementById('navTitle').textContent = data.title;
+            document.getElementById('navSubtitle').textContent = data.subtitle;
+
+            document.getElementById('statTotalTasks').textContent = data.stats.totalTasks;
+            document.getElementById('statCompletedTasks').textContent = data.stats.completedTasks;
+            document.getElementById('statBestTime').textContent = data.stats.bestTime;
+            document.getElementById('statAttempts').textContent = data.stats.attempts;
+            document.getElementById('statCompletionRate').textContent = data.stats.completionRate;
+
+            const score = data.overallScore;
+            document.getElementById('overallScoreNum').textContent = score + '%';
+            document.getElementById('overallScoreSub').textContent = data.scoreLabel;
+            document.getElementById('overallScoreMsgText').textContent = data.scoreMessage;
+
+            performanceChart.data.labels = data.trend.labels;
+            performanceChart.data.datasets[0].data = data.trend.data;
+            performanceChart.update();
+
+            scoreChart.data.datasets[0].data = [score, Math.max(0, 100 - score)];
+            scoreChart.update();
+
+            taskChart.data.labels = data.tasks.labels;
+            taskChart.data.datasets[0].data = data.tasks.data;
+            taskChart.update();
+
+            renderActivityList(data.activity);
+        }
+
+        document.querySelectorAll('.module-item').forEach((item) => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.module-item').forEach((m) => m.classList.remove('active'));
+                item.classList.add('active');
+                const moduleId = item.dataset.module;
+                if (moduleId) selectModule(moduleId);
+            });
+        });
+
+        renderActivityList(MODULE_PERFORMANCE.engine.activity);
+    </script>
+
+</body>
+
+</html>
